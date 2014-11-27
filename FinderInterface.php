@@ -6,7 +6,7 @@ interface FinderInterface
 {
     /**
      * Locate a collection of resources from the
-     * given locator. 
+     * given locator.
      *
      * @see Puli\Repository\ResourceRepositoryInterface#find
      *

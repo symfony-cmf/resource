@@ -61,19 +61,22 @@ class PhpcrOdmRepository implements ResourceRepositoryInterface
     }
 
     /**
-     * We could support this by implenting some glob utility which could
-     * also be used in PHPCR-Shell or by using XPath queries.
-     *
      * {@inheritDoc}
      */
     public function find($selector)
     {
-        $documents =  $this->finder->find($selector);
-
+        $documents = $this->finder->find($selector);
         $collection = new ResourceCollection();
 
-        foreach ($documents as $node) {
-            $collection->add(new ObjectResource($node->getPath(), $node));
+        if (!$documents) {
+            return $collection;
+        }
+
+        $uow = $this->getManager()->getUnitOfWork();
+
+        foreach ($documents as $document) {
+            $path = $uow->getDocumentId($document);
+            $collection->add(new ObjectResource($path, $document));
         }
 
         return $collection;
