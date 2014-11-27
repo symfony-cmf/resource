@@ -14,9 +14,9 @@ namespace Symfony\Cmf\Component\Resource\Repository;
 use Puli\Repository\ResourceRepositoryInterface;
 use Doctrine\Common\Persistence\ManagerRegistry;
 use Puli\Repository\ResourceNotFoundException;
-use Puli\Resource\Collection\ResourceCollection;
 use Symfony\Cmf\Component\Resource\ObjectResource;
 use Symfony\Cmf\Component\Resource\FinderInterface;
+use Puli\Resource\Collection\ResourceCollection;
 
 class PhpcrOdmRepository implements ResourceRepositoryInterface
 {
@@ -55,8 +55,7 @@ class PhpcrOdmRepository implements ResourceRepositoryInterface
             ));
         }
 
-        $absPath = $this->getManager()->getNodeForDocument($document)->getPath();
-        $resource = new ObjectResource($absPath, $document);
+        $resource = new ObjectResource($path, $document);
 
         return $resource;
     }
@@ -69,13 +68,15 @@ class PhpcrOdmRepository implements ResourceRepositoryInterface
      */
     public function find($selector)
     {
-        $phpcrNodes = $this->finder->find($selector);
+        $documents =  $this->finder->find($selector);
 
-        foreach ($phpcrNodes as $phpcrNode) {
-            $paths = $phpcrNode->getPath();
+        $collection = new ResourceCollection();
+
+        foreach ($documents as $node) {
+            $collection->add(new ObjectResource($node->getPath(), $node));
         }
 
-        return $this->getManager()->findMany(null, $paths);
+        return $collection;
     }
 
     /**

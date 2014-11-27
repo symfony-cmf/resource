@@ -12,7 +12,6 @@
 namespace Symfony\Cmf\Component\Resource\Finder;
 
 use Prophecy\PhpUnit\ProphecyTestCase;
-use Symfony\Cmf\Component\Resource\Repository\PhpcrOdmRepository;
 
 class SelectorParserTest extends ProphecyTestCase
 {

@@ -72,10 +72,9 @@ class PhpcrRepository implements ResourceRepositoryInterface
         $nodes = $this->finder->find($selector);
         $collection = new ResourceCollection();
 
-        foreach($nodes as $node) {
+        foreach ($nodes as $node) {
             $collection->add(new ObjectResource($node->getPath(), $node));
         }
-
 
         return $collection;
     }

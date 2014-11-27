@@ -21,24 +21,36 @@ class PhpcrOdmRepositoryTest extends ProphecyTestCase
         $this->documentManager = $this->prophesize('Doctrine\ODM\PHPCR\DocumentManager');
         $this->managerRegistry = $this->prophesize('Doctrine\Common\Persistence\ManagerRegistry');
         $this->finder = $this->prophesize('Symfony\Cmf\Component\Resource\FinderInterface');
-        $this->node = $this->prophesize('PHPCR\NodeInterface');
+        $this->document = new \stdClass;
 
         $this->managerRegistry->getManager()->willReturn($this->documentManager);
 
         $this->repository = new PhpcrOdmRepository($this->managerRegistry->reveal(), $this->finder->reveal());
-        $this->object = new \stdClass;
+        $this->object = new \stdClass();
     }
 
     public function testGet()
     {
         $this->documentManager->find(null, '/cmf/foobar')->willReturn($this->object);
-        $this->documentManager->getNodeForDocument($this->object)->willReturn($this->node);
-        $this->node->getPath()->willReturn('/cmf/foobar');
-        $res = $this->repository->get('/cmf/foobar');
+        $this->documentManager->getNodeForDocument($this->object)->willReturn($this->document);
 
         $this->assertInstanceOf('Symfony\Cmf\Component\Resource\ObjectResource', $res);
-        $this->assertEquals('/cmf', $res->getPath());
-        $this->assertEquals('foobar', $res->getName());
         $this->assertSame($this->object, $res->getObject());
+    }
+
+    public function testFind()
+    {
+        $this->documentManager->find(null, '/cmf/foobar')->willReturn($this->document);
+        $this->finder->find('/cmf/*')->willReturn(array(
+            $this->document
+        ));
+
+        $res = $this->repository->find('/cmf/*');
+
+        $this->assertInstanceOf('Puli\Resource\Collection\ResourceCollection', $res);
+        $this->assertCount(1, $res);
+        $documentResource = $res->offsetGet(0);
+            ;
+        $this->assertSame($this->document->reveal(), $documentResource->getObject());
     }
 }

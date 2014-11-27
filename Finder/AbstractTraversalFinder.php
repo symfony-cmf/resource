@@ -9,17 +9,13 @@
  * file that was distributed with this source code.
  */
 
-namespace Symfony\Cmf\Component\Resource\Finder\Phpcr;
+namespace Symfony\Cmf\Component\Resource\Finder;
 
-use Puli\Resource\ResourceInterface;
 use Symfony\Cmf\Component\Resource\FinderInterface;
-use Puli\Resource\Collection\ResourceCollection;
-use Symfony\Cmf\Component\Resource\Finder\SelectorParser;
 use PHPCR\NodeInterface;
-use PHPCR\SessionInterface;
 
 /**
- * PHPCR finder which users traversal.
+ * Finder which uses traversal.
  *
  * Supports single-star matching on path elements.
  * Currently does not support the double-star syntax
@@ -27,7 +23,7 @@ use PHPCR\SessionInterface;
  *
  * @author Daniel Leech <daniel@dantleech.com>
  */
-class TraversalFinder implements FinderInterface
+abstract class AbstractTraversalFinder implements FinderInterface
 {
     /**
      * @var SelectorParser
@@ -35,18 +31,11 @@ class TraversalFinder implements FinderInterface
     private $parser;
 
     /**
-     * @var SessionInterface
-     */
-    private $session;
-
-    /**
-     * @param SessionInterface $session
      * @param SelectorParser $parser
      */
-    public function __construct(SessionInterface $session, SelectorParser $parser)
+    public function __construct(SelectorParser $parser)
     {
         $this->parser = $parser;
-        $this->session = $session;
     }
 
     /**
@@ -102,7 +91,7 @@ class TraversalFinder implements FinderInterface
                     return;
                 }
 
-                $children = $parentNode->getNodes($element);
+                $children = $this->getChildren($parentNode, $element);
 
                 foreach ($children as $child) {
                     if ($bitmask & SelectorParser::T_LAST) {
@@ -117,16 +106,20 @@ class TraversalFinder implements FinderInterface
         } while (count($segments));
     }
 
-    private function getNode(array $path)
-    {
-        $absPath = '/' . implode('/', $path);
+    /**
+     * Return nodes for given path
+     * The path is given as an array of path segments
+     *
+     * @param string[] Path segments
+     *
+     * @return mixed The node matching the given path
+     */
+    abstract protected function getNode(array $pathSegments);
 
-        try {
-            $node = $this->session->getNode($absPath);
-        } catch (\PHPCR\PathNotFoundException $e) {
-            $node = null;
-        }
-
-        return $node;
-    }
+    /**
+     * Return children of given node matching the given selector
+     *
+     * @return mixed[] Array of nodes
+     */
+    abstract protected function getChildren($parentNode, $selector);
 }

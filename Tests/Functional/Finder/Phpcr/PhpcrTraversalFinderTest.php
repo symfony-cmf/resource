@@ -11,15 +11,12 @@
 
 namespace Symfony\Cmf\Component\Resource\Finder\Phpcr;
 
-use Prophecy\PhpUnit\ProphecyTestCase;
-use Symfony\Cmf\Component\Resource\Repository\PhpcrOdmRepository;
 use Jackalope\RepositoryFactoryFilesystem;
 use PHPCR\SimpleCredentials;
 use Symfony\Cmf\Component\Resource\Finder\SelectorParser;
-use Symfony\Cmf\Component\Resource\Finder\Phpcr\TraversalFinder;
 use Symfony\Component\Filesystem\Filesystem;
 
-class TraversalFinderTest extends \PHPUnit_Framework_TestCase
+class PhpcrTraversalFinderTest extends \PHPUnit_Framework_TestCase
 {
     private $session;
 
@@ -38,7 +35,7 @@ class TraversalFinderTest extends \PHPUnit_Framework_TestCase
         $this->session = $repository->login($credentials);
 
         $parser = new SelectorParser();
-        $this->finder = new TraversalFinder($this->session, $parser);
+        $this->finder = new PhpcrTraversalFinder($this->session, $parser);
     }
 
     public function provideFind()
@@ -157,4 +154,3 @@ class TraversalFinderTest extends \PHPUnit_Framework_TestCase
         $this->session->save();
     }
 }
-

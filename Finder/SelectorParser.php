@@ -11,10 +11,6 @@
 
 namespace Symfony\Cmf\Component\Resource\Finder;
 
-use Puli\Resource\ResourceInterface;
-use Symfony\Cmf\Component\Resource\FinderInterface;
-use Puli\Resource\Collection\ResourceCollection;
-
 /**
  * Parser for selector patterns
  *
@@ -77,4 +73,3 @@ class SelectorParser
         return true;
     }
 }
-
