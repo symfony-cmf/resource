@@ -16,6 +16,7 @@ use Doctrine\Common\Persistence\ManagerRegistry;
 use Puli\Repository\ResourceNotFoundException;
 use Puli\Resource\Collection\ResourceCollection;
 use Symfony\Cmf\Component\Resource\ObjectResource;
+use Symfony\Cmf\Component\Resource\FinderInterface;
 
 class PhpcrOdmRepository implements ResourceRepositoryInterface
 {

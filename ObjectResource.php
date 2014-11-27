@@ -12,6 +12,7 @@
 namespace Symfony\Cmf\Component\Resource;
 
 use Puli\Resource\ResourceInterface;
+use PHPCR\Util\PathHelper;
 
 /**
  * Resource for objects, intended for use with content repositories
@@ -24,7 +25,7 @@ class ObjectResource implements ResourceInterface
     /**
      * @var string
      */
-    private $absPath;
+    private $path;
 
     /**
      * @var object
@@ -32,10 +33,10 @@ class ObjectResource implements ResourceInterface
     private $object;
 
     /**
-     * @param string $absPath Absolute path to object (e.g. /cmf/foobar/mynode)
+     * @param string $path Absolute path to object (e.g. /cmf/foobar/mynode)
      * @param object $object
      */
-    public function __construct($absPath, $object)
+    public function __construct($path, $object)
     {
         if (!is_object($object)) {
             throw new \InvalidArgumentException(sprintf(
@@ -44,7 +45,7 @@ class ObjectResource implements ResourceInterface
             ));
         }
 
-        $this->absPath = $absPath;
+        $this->path = $path;
         $this->object = $object;
     }
 
@@ -65,7 +66,7 @@ class ObjectResource implements ResourceInterface
      */
     public function getPath()
     {
-        return dirname($this->absPath);
+        return PathHelper::getParentPath($this->path);
     }
 
     /**
@@ -75,6 +76,6 @@ class ObjectResource implements ResourceInterface
      */
     public function getName()
     {
-        return basename($this->name);
+        return PathHelper::getNodeName($this->path);
     }
 }

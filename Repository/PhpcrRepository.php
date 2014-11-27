@@ -12,11 +12,11 @@
 namespace Symfony\Cmf\Component\Resource\Repository;
 
 use Puli\Repository\ResourceRepositoryInterface;
-use Doctrine\Common\Persistence\ManagerRegistry;
 use Puli\Repository\ResourceNotFoundException;
 use Puli\Resource\Collection\ResourceCollection;
 use Symfony\Cmf\Component\Resource\ObjectResource;
 use Symfony\Cmf\Component\Resource\FinderInterface;
+use PHPCR\SessionInterface;
 
 /**
  * Resource repository for PHPCR
@@ -51,7 +51,7 @@ class PhpcrRepository implements ResourceRepositoryInterface
     public function get($path)
     {
         try {
-            $node = $this->session->getNode();
+            $node = $this->session->getNode($path);
         } catch (\PathNotFoundException $e) {
             throw new ResourceNotFoundException(sprintf(
                 'No PHPCR node could be found at "%s"',
@@ -65,16 +65,19 @@ class PhpcrRepository implements ResourceRepositoryInterface
     }
 
     /**
-     * We could support this by implenting some glob utility which could
-     * also be used in PHPCR-Shell or by using XPath queries.
-     *
      * {@inheritDoc}
      */
     public function find($selector)
     {
         $nodes = $this->finder->find($selector);
+        $collection = new ResourceCollection();
 
-        return $nodes;
+        foreach($nodes as $node) {
+            $collection->add(new ObjectResource($node->getPath(), $node));
+        }
+
+
+        return $collection;
     }
 
     /**
@@ -88,7 +91,7 @@ class PhpcrRepository implements ResourceRepositoryInterface
     /**
      * {@inheritDoc}
      */
-    public function getByTag($tag)
+    public function findByTag($tag)
     {
         throw new \Exception('Get by tag not currently supported');
     }
