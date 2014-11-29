@@ -22,7 +22,7 @@ class PhpcrRepositoryTest extends ProphecyTestCase
         $this->finder = $this->prophesize('Symfony\Cmf\Component\Resource\FinderInterface');
         $this->node = $this->prophesize('PHPCR\NodeInterface');
 
-        $this->repository = new PhpcrRepository($this->session->reveal(), $this->finder->reveal());
+        $this->repository = new PhpcrRepository($this->session->reveal(), null, $this->finder->reveal());
     }
 
     public function testGet()

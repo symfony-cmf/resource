@@ -27,18 +27,49 @@ class PhpcrOdmRepositoryTest extends ProphecyTestCase
         $this->managerRegistry->getManager()->willReturn($this->documentManager);
         $this->documentManager->getUnitOfWork()->willReturn($this->uow->reveal());
 
-        $this->repository = new PhpcrOdmRepository($this->managerRegistry->reveal(), $this->finder->reveal());
         $this->object = new \stdClass();
     }
 
-    public function testGet()
+    public function provideGet()
     {
-        $this->documentManager->find(null, '/cmf/foobar')->willReturn($this->object);
+        return array(
+            array(null, '/cmf/foobar', '/cmf/foobar'),
+            array('/site/foo.com', '/cmf/foobar', '/site/foo.com/cmf/foobar'),
+            array('/site/foo.com', '/../foobar', '/site/foobar'),
+            array('\site/foo.com', '\..\foobar', '/site/foobar'),
+        );
+    }
 
-        $res = $this->repository->get('/cmf/foobar');
+    /**
+     * @dataProvider provideGet
+     */
+    public function testGet($basePath, $requestedPath, $evaluatedPath)
+    {
+        $this->documentManager->find(null, $evaluatedPath)->willReturn($this->object);
+
+        $res = $this->getRepository($basePath)->get($requestedPath);
 
         $this->assertInstanceOf('Symfony\Cmf\Component\Resource\ObjectResource', $res);
         $this->assertSame($this->object, $res->getObject());
+    }
+
+    public function provideGetInvalid()
+    {
+        return array(
+            array(null, 'cmf/foobar'),
+            array(null, ''),
+            array(null, new \stdClass),
+            array('asd', 'asd'),
+        );
+    }
+
+    /**
+     * @dataProvider provideGetInvalid
+     * @expectedException Puli\Repository\InvalidPathException
+     */
+    public function testGetInvalid($basePath, $requestedPath)
+    {
+        $this->getRepository($basePath)->get($requestedPath);
     }
 
     public function testFind()
@@ -50,12 +81,18 @@ class PhpcrOdmRepositoryTest extends ProphecyTestCase
             $this->document
         ));
 
-        $res = $this->repository->find('/cmf/*');
+        $res = $this->getRepository()->find('/cmf/*');
 
         $this->assertInstanceOf('Puli\Resource\Collection\ResourceCollection', $res);
         $this->assertCount(1, $res);
         $documentResource = $res->offsetGet(0);
             ;
         $this->assertSame($this->document, $documentResource->getObject());
+    }
+
+    protected function getRepository($path = null)
+    {
+        $repository = new PhpcrOdmRepository($this->managerRegistry->reveal(), $path, $this->finder->reveal());
+        return $repository;
     }
 }

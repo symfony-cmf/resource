@@ -33,9 +33,9 @@ abstract class AbstractTraversalFinder implements FinderInterface
     /**
      * @param SelectorParser $parser
      */
-    public function __construct(SelectorParser $parser)
+    public function __construct(SelectorParser $parser = null)
     {
-        $this->parser = $parser;
+        $this->parser = $parser ? : new SelectorParser();
     }
 
     /**

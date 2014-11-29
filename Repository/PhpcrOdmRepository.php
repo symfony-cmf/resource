@@ -17,8 +17,9 @@ use Puli\Repository\ResourceNotFoundException;
 use Symfony\Cmf\Component\Resource\ObjectResource;
 use Symfony\Cmf\Component\Resource\FinderInterface;
 use Puli\Resource\Collection\ResourceCollection;
+use Symfony\Cmf\Component\Resource\Finder\PhpcrOdmTraversalFinder;
 
-class PhpcrOdmRepository implements ResourceRepositoryInterface
+class PhpcrOdmRepository extends AbstractPhpcrRepository
 {
     /**
      * @var ManagerRegistry
@@ -30,10 +31,11 @@ class PhpcrOdmRepository implements ResourceRepositoryInterface
      */
     private $finder;
 
-    public function __construct(ManagerRegistry $managerRegistry, FinderInterface $finder)
+    public function __construct(ManagerRegistry $managerRegistry, $basePath = null, FinderInterface $finder = null)
     {
+        parent::__construct($basePath);
         $this->managerRegistry = $managerRegistry;
-        $this->finder = $finder;
+        $this->finder = $finder ? : new PhpcrOdmTraversalFinder($managerRegistry);
     }
 
     protected function getManager()
@@ -46,7 +48,7 @@ class PhpcrOdmRepository implements ResourceRepositoryInterface
      */
     public function get($path)
     {
-        $document = $this->getManager()->find(null, $path);
+        $document = $this->getManager()->find(null, $this->getPath($path));
 
         if (null === $document) {
             throw new ResourceNotFoundException(sprintf(

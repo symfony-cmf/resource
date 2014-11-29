@@ -9,11 +9,11 @@
  * file that was distributed with this source code.
  */
 
-namespace Symfony\Cmf\Component\Resource\Finder\Phpcr;
+namespace Symfony\Cmf\Component\Resource\Finder;
 
 use Symfony\Cmf\Component\Resource\Finder\SelectorParser;
-use PHPCR\SessionInterface;
 use Symfony\Cmf\Component\Resource\Finder\AbstractTraversalFinder;
+use Doctrine\Common\Persistence\ManagerRegistry;
 
 /**
  * PHPCR ODM finder which users traversal.
@@ -33,7 +33,7 @@ class PhpcrOdmTraversalFinder extends AbstractTraversalFinder
      * @param SessionInterface $managerRegistry
      * @param SelectorParser $parser
      */
-    public function __construct(ManagerRegistry $managerRegistry, SelectorParser $parser)
+    public function __construct(ManagerRegistry $managerRegistry, SelectorParser $parser = null)
     {
         parent::__construct($parser);
         $this->managerRegistry = $managerRegistry;

@@ -11,19 +11,19 @@
 
 namespace Symfony\Cmf\Component\Resource\Repository;
 
-use Puli\Repository\ResourceRepositoryInterface;
 use Puli\Repository\ResourceNotFoundException;
 use Puli\Resource\Collection\ResourceCollection;
 use Symfony\Cmf\Component\Resource\ObjectResource;
 use Symfony\Cmf\Component\Resource\FinderInterface;
 use PHPCR\SessionInterface;
+use Symfony\Cmf\Component\Resource\Finder\PhpcrTraversalFinder;
 
 /**
  * Resource repository for PHPCR
  *
  * @author Daniel Leech <daniel@dantleech.com>
  */
-class PhpcrRepository implements ResourceRepositoryInterface
+class PhpcrRepository extends AbstractPhpcrRepository
 {
     /**
      * @var ManagerRegistry
@@ -36,13 +36,15 @@ class PhpcrRepository implements ResourceRepositoryInterface
     private $finder;
 
     /**
-     * @param SessionInterface
-     * @param FinderInterface
+     * @param SessionInterface $session
+     * @param FinderInterface $finder
+     * @param string $basePath
      */
-    public function __construct(SessionInterface $session, FinderInterface $finder)
+    public function __construct(SessionInterface $session, $basePath = null, FinderInterface $finder = null)
     {
+        parent::__construct($basePath);
         $this->session = $session;
-        $this->finder = $finder;
+        $this->finder = $finder ? : new PhpcrTraversalFinder($session);
     }
 
     /**
@@ -51,7 +53,7 @@ class PhpcrRepository implements ResourceRepositoryInterface
     public function get($path)
     {
         try {
-            $node = $this->session->getNode($path);
+            $node = $this->session->getNode($this->getPath($path));
         } catch (\PathNotFoundException $e) {
             throw new ResourceNotFoundException(sprintf(
                 'No PHPCR node could be found at "%s"',

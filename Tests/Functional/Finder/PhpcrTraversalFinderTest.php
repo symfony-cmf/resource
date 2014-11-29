@@ -9,12 +9,13 @@
  * file that was distributed with this source code.
  */
 
-namespace Symfony\Cmf\Component\Resource\Finder\Phpcr;
+namespace Symfony\Cmf\Component\Resource\Tests\Functional\Finder;
 
 use Jackalope\RepositoryFactoryFilesystem;
 use PHPCR\SimpleCredentials;
 use Symfony\Cmf\Component\Resource\Finder\SelectorParser;
 use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Cmf\Component\Resource\Finder\PhpcrTraversalFinder;
 
 class PhpcrTraversalFinderTest extends \PHPUnit_Framework_TestCase
 {
@@ -35,7 +36,7 @@ class PhpcrTraversalFinderTest extends \PHPUnit_Framework_TestCase
         $this->session = $repository->login($credentials);
 
         $parser = new SelectorParser();
-        $this->finder = new PhpcrTraversalFinder($this->session, $parser);
+        $this->finder = new PhpcrTraversalFinder($this->session);
     }
 
     public function provideFind()

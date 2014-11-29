@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Symfony\Cmf\Component\Resource\Finder\Phpcr;
+namespace Symfony\Cmf\Component\Resource\Finder;
 
 use Symfony\Cmf\Component\Resource\Finder\SelectorParser;
 use PHPCR\SessionInterface;
@@ -35,7 +35,7 @@ class PhpcrTraversalFinder extends AbstractTraversalFinder
      * @param SessionInterface $session
      * @param SelectorParser $parser
      */
-    public function __construct(SessionInterface $session, SelectorParser $parser)
+    public function __construct(SessionInterface $session, SelectorParser $parser = null)
     {
         parent::__construct($parser);
         $this->session = $session;
