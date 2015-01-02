@@ -16,7 +16,8 @@ use Puli\Resource\Collection\ResourceCollection;
 use Symfony\Cmf\Component\Resource\ObjectResource;
 use Symfony\Cmf\Component\Resource\FinderInterface;
 use PHPCR\SessionInterface;
-use Symfony\Cmf\Component\Resource\Finder\PhpcrTraversalFinder;
+use DTL\Glob\Finder\PhpcrTraversalFinder;
+use DTL\Glob\FinderInterface;
 
 /**
  * Resource repository for PHPCR
@@ -69,24 +70,30 @@ class PhpcrRepository extends AbstractPhpcrRepository
     /**
      * {@inheritDoc}
      */
-    public function find($selector)
+    public function find($selector, $language = 'glob')
     {
-        $nodes = $this->finder->find($selector);
-        $collection = new ResourceCollection();
-
-        foreach ($nodes as $node) {
-            $collection->add(new ObjectResource($node->getPath(), $node));
+        if ($language != 'glob') {
+            throw new UnsupportedLanguageException($language);
         }
 
-        return $collection;
+        $nodes = $this->finder->find($selector);
+
+        return $this->buildCollection($nodes);
+    }
+
+    public function listChildren($path)
+    {
+        $node = $this->get($path);
+
+        return $this->buildCollection($node->getNodes());
     }
 
     /**
      * {@inheritDoc}
      */
-    public function contains($selector)
+    public function contains($selector, $language = 'glob')
     {
-        return count($this->find($selector)) > 0;
+        return count($this->find($selector, $language)) > 0;
     }
 
     /**
@@ -103,5 +110,10 @@ class PhpcrRepository extends AbstractPhpcrRepository
     public function getTags()
     {
         return array();
+    }
+
+    protected function createResource($path, $object)
+    {
+        return new PhpcrResource($path, $object);
     }
 }

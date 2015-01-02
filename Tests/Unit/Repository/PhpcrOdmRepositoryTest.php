@@ -20,7 +20,7 @@ class PhpcrOdmRepositoryTest extends ProphecyTestCase
     {
         $this->documentManager = $this->prophesize('Doctrine\ODM\PHPCR\DocumentManager');
         $this->managerRegistry = $this->prophesize('Doctrine\Common\Persistence\ManagerRegistry');
-        $this->finder = $this->prophesize('Symfony\Cmf\Component\Resource\FinderInterface');
+        $this->finder = $this->prophesize('DTL\Glob\FinderInterface');
         $this->uow = $this->prophesize('Doctrine\ODM\PHPCR\UnitOfWork');
         $this->document = new \stdClass;
 

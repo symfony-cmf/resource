@@ -11,7 +11,8 @@
     ],
     "minimum-stability": "dev",
     "require": {
-        "puli/resource": "dev-master"
+        "puli/repository": "dev-master",
+        "dantleech/glob-finder": "~1.0"
     },
     "require-dev": {
         "phpspec/prophecy-phpunit": "~1.0.0",

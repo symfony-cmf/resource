@@ -15,9 +15,9 @@ use Puli\Repository\ResourceRepositoryInterface;
 use Doctrine\Common\Persistence\ManagerRegistry;
 use Puli\Repository\ResourceNotFoundException;
 use Symfony\Cmf\Component\Resource\ObjectResource;
-use Symfony\Cmf\Component\Resource\FinderInterface;
 use Puli\Resource\Collection\ResourceCollection;
-use Symfony\Cmf\Component\Resource\Finder\PhpcrOdmTraversalFinder;
+use DTL\Glob\Finder\PhpcrOdmTraversalFinder;
+use DTL\Glob\FinderInterface;
 
 class PhpcrOdmRepository extends AbstractPhpcrRepository
 {
@@ -65,31 +65,31 @@ class PhpcrOdmRepository extends AbstractPhpcrRepository
     /**
      * {@inheritDoc}
      */
-    public function find($selector)
+    public function find($query, $language = 'glob')
     {
+        if ($language != 'glob') {
+            throw new UnsupportedLanguageException($language);
+        }
+
         $documents = $this->finder->find($selector);
-        $collection = new ResourceCollection();
 
-        if (!$documents) {
-            return $collection;
-        }
+        return $this->buildCollection($documents);
+    }
 
-        $uow = $this->getManager()->getUnitOfWork();
+    public function listChildren($path)
+    {
+        $document = $this->get($path);
+        $children = $this->getManager()->getChildren($document);
 
-        foreach ($documents as $document) {
-            $path = $uow->getDocumentId($document);
-            $collection->add(new ObjectResource($path, $document));
-        }
-
-        return $collection;
+        return $this->buildCollection($children);
     }
 
     /**
      * {@inheritDoc}
      */
-    public function contains($selector)
+    public function contains($selector, $language = 'glob')
     {
-        return count($this->find($selector)) > 0;
+        return count($this->find($selector, $language)) > 0;
     }
 
     /**
@@ -106,5 +106,23 @@ class PhpcrOdmRepository extends AbstractPhpcrRepository
     public function getTags()
     {
         return array();
+    }
+
+    private function buildCollection(array $documents)
+    {
+        $collection = new ResourceCollection();
+
+        if (!$documents) {
+            return $collection;
+        }
+
+        $uow = $this->getManager()->getUnitOfWork();
+
+        foreach ($documents as $document) {
+            $path = $uow->getDocumentId($document);
+            $collection->add(new ObjectResource($path, $document));
+        }
+
+        return $collection;
     }
 }

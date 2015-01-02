@@ -19,7 +19,7 @@ class PhpcrRepositoryTest extends ProphecyTestCase
     public function setUp()
     {
         $this->session = $this->prophesize('PHPCR\SessionInterface');
-        $this->finder = $this->prophesize('Symfony\Cmf\Component\Resource\FinderInterface');
+        $this->finder = $this->prophesize('DTL\Glob\FinderInterface');
         $this->node = $this->prophesize('PHPCR\NodeInterface');
 
         $this->repository = new PhpcrRepository($this->session->reveal(), null, $this->finder->reveal());
@@ -32,10 +32,10 @@ class PhpcrRepositoryTest extends ProphecyTestCase
 
         $res = $this->repository->get('/cmf/foobar');
 
-        $this->assertInstanceOf('Symfony\Cmf\Component\Resource\ObjectResource', $res);
+        $this->assertInstanceOf('Symfony\Cmf\Component\Resource\PhpcrResource', $res);
         $this->assertEquals('/cmf', $res->getPath());
         $this->assertEquals('foobar', $res->getName());
-        $this->assertSame($this->node->reveal(), $res->getObject());
+        $this->assertSame($this->node->reveal(), $res->getNode());
     }
 
     public function testFind()

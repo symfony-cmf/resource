@@ -11,21 +11,22 @@
 
 namespace Symfony\Cmf\Component\Resource\Repository;
 
-use Puli\Repository\ResourceRepositoryInterface;
 use Doctrine\Common\Persistence\ManagerRegistry;
 use Puli\Repository\ResourceNotFoundException;
 use Symfony\Cmf\Component\Resource\ObjectResource;
 use Symfony\Cmf\Component\Resource\FinderInterface;
 use Puli\Resource\Collection\ResourceCollection;
 use Puli\Repository\InvalidPathException;
-use Puli\Util\Path;
+use Puli\Repository\Api\ResourceRepository;
+use Webmozart\PathUtil\Path;
+use Puli\Repository\Resource\Collection\ArrayResourceCollection;
 
 /**
  * Abstract repository for both PHPCR and PHPCR-ODM repositories
  *
  * @author Daniel Leech <daniel@dantleech.com>
  */
-abstract class AbstractPhpcrRepository implements ResourceRepositoryInterface
+abstract class AbstractPhpcrRepository implements ResourceRepository
 {
     /**
      * Base path from which to serve nodes / documents
@@ -40,6 +41,14 @@ abstract class AbstractPhpcrRepository implements ResourceRepositoryInterface
     public function __construct($basePath = null)
     {
         $this->basePath = $basePath;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function hasChildren($path)
+    {
+        return !empty($this->listChildren($path));
     }
 
     /**
@@ -78,5 +87,25 @@ abstract class AbstractPhpcrRepository implements ResourceRepositoryInterface
 
         return $path;
     }
-}
 
+    /**
+     * Build a collection of PHPCR / ODM resources
+     *
+     * @return ArrayResourceCollection
+     */
+    private function buildCollection(array $nodes)
+    {
+        $collection = new ArrayResourceCollection();
+
+        if (!$nodes) {
+            return $collection;
+        }
+
+        foreach ($nodes as $node) {
+            $path = substr($node->getPath(), strlen($this->basePath));
+            $collection->add($this->createResource($path, $node));
+        }
+
+        return $collection;
+    }
+}

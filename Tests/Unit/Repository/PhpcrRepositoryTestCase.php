@@ -17,7 +17,7 @@ class PhpcrOdmRepositoryTest extends ProphecyTestCase
 {
     public function setUp()
     {
-        $this->finder = $this->prophesize('Symfony\Cmf\Component\Resource\FinderInterface');
+        $this->finder = $this->prophesize('DTL\Glob\FinderInterface');
     }
 
     public function provideGet()
