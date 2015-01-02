@@ -13,4 +13,3 @@ interface RepositoryFactoryInterface
      */
     public function create($selector);
 }
-

@@ -11,13 +11,12 @@
 
 namespace Symfony\Cmf\Component\Resource\Repository;
 
-use Puli\Repository\ResourceRepositoryInterface;
 use Doctrine\Common\Persistence\ManagerRegistry;
 use Puli\Repository\ResourceNotFoundException;
-use Symfony\Cmf\Component\Resource\ObjectResource;
-use Symfony\Cmf\Component\Resource\FinderInterface;
-use Puli\Resource\Collection\ResourceCollection;
-use Symfony\Cmf\Component\Resource\Finder\PhpcrOdmTraversalFinder;
+use DTL\Glob\Finder\PhpcrOdmTraversalFinder;
+use DTL\Glob\FinderInterface;
+use Symfony\Cmf\Component\Resource\Repository\Resource\PhpcrOdmResource;
+use Puli\Repository\Resource\Collection\ArrayResourceCollection;
 
 class PhpcrOdmRepository extends AbstractPhpcrRepository
 {
@@ -35,7 +34,7 @@ class PhpcrOdmRepository extends AbstractPhpcrRepository
     {
         parent::__construct($basePath);
         $this->managerRegistry = $managerRegistry;
-        $this->finder = $finder ? : new PhpcrOdmTraversalFinder($managerRegistry);
+        $this->finder = $finder ?: new PhpcrOdmTraversalFinder($managerRegistry);
     }
 
     protected function getManager()
@@ -48,7 +47,7 @@ class PhpcrOdmRepository extends AbstractPhpcrRepository
      */
     public function get($path)
     {
-        $document = $this->getManager()->find(null, $this->getPath($path));
+        $document = $this->getManager()->find(null, $this->resolvePath($path));
 
         if (null === $document) {
             throw new ResourceNotFoundException(sprintf(
@@ -57,7 +56,7 @@ class PhpcrOdmRepository extends AbstractPhpcrRepository
             ));
         }
 
-        $resource = new ObjectResource($path, $document);
+        $resource = new PhpcrOdmResource($path, $document);
 
         return $resource;
     }
@@ -65,31 +64,31 @@ class PhpcrOdmRepository extends AbstractPhpcrRepository
     /**
      * {@inheritDoc}
      */
-    public function find($selector)
+    public function find($query, $language = 'glob')
     {
-        $documents = $this->finder->find($selector);
-        $collection = new ResourceCollection();
-
-        if (!$documents) {
-            return $collection;
+        if ($language != 'glob') {
+            throw new UnsupportedLanguageException($language);
         }
 
-        $uow = $this->getManager()->getUnitOfWork();
+        $documents = $this->finder->find($query);
 
-        foreach ($documents as $document) {
-            $path = $uow->getDocumentId($document);
-            $collection->add(new ObjectResource($path, $document));
-        }
+        return $this->buildCollection($documents);
+    }
 
-        return $collection;
+    public function listChildren($path)
+    {
+        $document = $this->get($path);
+        $children = $this->getManager()->getChildren($document);
+
+        return $this->buildCollection($children);
     }
 
     /**
      * {@inheritDoc}
      */
-    public function contains($selector)
+    public function contains($selector, $language = 'glob')
     {
-        return count($this->find($selector)) > 0;
+        return count($this->find($selector, $language)) > 0;
     }
 
     /**
@@ -106,5 +105,30 @@ class PhpcrOdmRepository extends AbstractPhpcrRepository
     public function getTags()
     {
         return array();
+    }
+
+    /**
+     * Build a collection of PHPCR resources
+     *
+     * @return ArrayResourceCollection
+     */
+    private function buildCollection(array $documents)
+    {
+        $collection = new ArrayResourceCollection();
+
+        if (empty($documents)) {
+            return $collection;
+        }
+
+        $uow = $this->getManager()->getUnitOfWork();
+
+        foreach ($documents as $document) {
+            $path = $this->unresolvePath($uow->getDocumentId($document));
+            $resource = new PhpcrOdmResource($path, $document);
+            $resource->attachTo($this);
+            $collection->add($resource);
+        }
+
+        return $collection;
     }
 }

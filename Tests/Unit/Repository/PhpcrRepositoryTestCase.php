@@ -9,15 +9,15 @@
  * file that was distributed with this source code.
  */
 
-namespace Symfony\Cmf\Component\DependencyInjection;
+namespace Symfony\Cmf\Component\Resource\Repository;
 
 use Prophecy\PhpUnit\ProphecyTestCase;
 
-class PhpcrOdmRepositoryTest extends ProphecyTestCase
+class PhpcrRepositoryTestCase extends ProphecyTestCase
 {
     public function setUp()
     {
-        $this->finder = $this->prophesize('Symfony\Cmf\Component\Resource\FinderInterface');
+        $this->finder = $this->prophesize('DTL\Glob\FinderInterface');
     }
 
     public function provideGet()
@@ -28,4 +28,3 @@ class PhpcrOdmRepositoryTest extends ProphecyTestCase
         );
     }
 }
-

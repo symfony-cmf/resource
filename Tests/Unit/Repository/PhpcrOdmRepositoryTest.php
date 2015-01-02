@@ -9,10 +9,9 @@
  * file that was distributed with this source code.
  */
 
-namespace Symfony\Cmf\Component\DependencyInjection;
+namespace Symfony\Cmf\Component\Resource\Repository;
 
 use Prophecy\PhpUnit\ProphecyTestCase;
-use Symfony\Cmf\Component\Resource\Repository\PhpcrOdmRepository;
 
 class PhpcrOdmRepositoryTest extends ProphecyTestCase
 {
@@ -20,9 +19,9 @@ class PhpcrOdmRepositoryTest extends ProphecyTestCase
     {
         $this->documentManager = $this->prophesize('Doctrine\ODM\PHPCR\DocumentManager');
         $this->managerRegistry = $this->prophesize('Doctrine\Common\Persistence\ManagerRegistry');
-        $this->finder = $this->prophesize('Symfony\Cmf\Component\Resource\FinderInterface');
+        $this->finder = $this->prophesize('DTL\Glob\FinderInterface');
         $this->uow = $this->prophesize('Doctrine\ODM\PHPCR\UnitOfWork');
-        $this->document = new \stdClass;
+        $this->document = new \stdClass();
 
         $this->managerRegistry->getManager()->willReturn($this->documentManager);
         $this->documentManager->getUnitOfWork()->willReturn($this->uow->reveal());
@@ -36,7 +35,6 @@ class PhpcrOdmRepositoryTest extends ProphecyTestCase
             array(null, '/cmf/foobar', '/cmf/foobar'),
             array('/site/foo.com', '/cmf/foobar', '/site/foo.com/cmf/foobar'),
             array('/site/foo.com', '/../foobar', '/site/foobar'),
-            array('\site/foo.com', '\..\foobar', '/site/foobar'),
         );
     }
 
@@ -49,8 +47,8 @@ class PhpcrOdmRepositoryTest extends ProphecyTestCase
 
         $res = $this->getRepository($basePath)->get($requestedPath);
 
-        $this->assertInstanceOf('Symfony\Cmf\Component\Resource\ObjectResource', $res);
-        $this->assertSame($this->object, $res->getObject());
+        $this->assertInstanceOf('Symfony\Cmf\Component\Resource\Repository\Resource\PhpcrOdmResource', $res);
+        $this->assertSame($this->object, $res->getDocument());
     }
 
     public function provideGetInvalid()
@@ -58,14 +56,14 @@ class PhpcrOdmRepositoryTest extends ProphecyTestCase
         return array(
             array(null, 'cmf/foobar'),
             array(null, ''),
-            array(null, new \stdClass),
+            array(null, new \stdClass()),
             array('asd', 'asd'),
         );
     }
 
     /**
      * @dataProvider provideGetInvalid
-     * @expectedException Puli\Repository\InvalidPathException
+     * @expectedException Assert\InvalidArgumentException
      */
     public function testGetInvalid($basePath, $requestedPath)
     {
@@ -78,21 +76,21 @@ class PhpcrOdmRepositoryTest extends ProphecyTestCase
         $this->uow->getDocumentId($this->document)->willReturn('/cmf/foobar');
 
         $this->finder->find('/cmf/*')->willReturn(array(
-            $this->document
+            $this->document,
         ));
 
         $res = $this->getRepository()->find('/cmf/*');
 
-        $this->assertInstanceOf('Puli\Resource\Collection\ResourceCollection', $res);
+        $this->assertInstanceOf('Puli\Repository\Resource\Collection\ArrayResourceCollection', $res);
         $this->assertCount(1, $res);
         $documentResource = $res->offsetGet(0);
-            ;
-        $this->assertSame($this->document, $documentResource->getObject());
+        $this->assertSame($this->document, $documentResource->getDocument());
     }
 
     protected function getRepository($path = null)
     {
         $repository = new PhpcrOdmRepository($this->managerRegistry->reveal(), $path, $this->finder->reveal());
+
         return $repository;
     }
 }

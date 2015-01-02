@@ -11,21 +11,16 @@
 
 namespace Symfony\Cmf\Component\Resource\Repository;
 
-use Puli\Repository\ResourceRepositoryInterface;
-use Doctrine\Common\Persistence\ManagerRegistry;
-use Puli\Repository\ResourceNotFoundException;
-use Symfony\Cmf\Component\Resource\ObjectResource;
-use Symfony\Cmf\Component\Resource\FinderInterface;
-use Puli\Resource\Collection\ResourceCollection;
-use Puli\Repository\InvalidPathException;
-use Puli\Util\Path;
+use Puli\Repository\Api\ResourceRepository;
+use Webmozart\PathUtil\Path;
+use Puli\Repository\Assert\Assertion;
 
 /**
  * Abstract repository for both PHPCR and PHPCR-ODM repositories
  *
  * @author Daniel Leech <daniel@dantleech.com>
  */
-abstract class AbstractPhpcrRepository implements ResourceRepositoryInterface
+abstract class AbstractPhpcrRepository implements ResourceRepository
 {
     /**
      * Base path from which to serve nodes / documents
@@ -43,6 +38,14 @@ abstract class AbstractPhpcrRepository implements ResourceRepositoryInterface
     }
 
     /**
+     * {@inheritDoc}
+     */
+    public function hasChildren($path)
+    {
+        return !empty($this->listChildren($path));
+    }
+
+    /**
      * Return the path with the basePath prefix
      * if it has been set.
      *
@@ -50,18 +53,9 @@ abstract class AbstractPhpcrRepository implements ResourceRepositoryInterface
      *
      * @return string
      */
-    protected function getPath($path)
+    protected function resolvePath($path)
     {
-        if ('' === $path) {
-            throw new InvalidPathException('The path must not be empty.');
-        }
-
-        if (!is_string($path)) {
-            throw new InvalidPathException(sprintf(
-                'The path must be a string. Is: %s.',
-                is_object($path) ? get_class($path) : gettype($path)
-            ));
-        }
+        Assertion::path($path);
 
         if ($this->basePath) {
             $path = $this->basePath . $path;
@@ -69,14 +63,20 @@ abstract class AbstractPhpcrRepository implements ResourceRepositoryInterface
 
         $path = Path::canonicalize($path);
 
-        if ('/' !== $path[0]) {
-            throw new InvalidPathException(sprintf(
-                'The path "%s" is not absolute.',
-                $path
-            ));
-        }
+        return $path;
+    }
+
+    /**
+     * Remove the base prefix from the given path
+     *
+     * @param string $path
+     *
+     * @return string
+     */
+    protected function unresolvePath($path)
+    {
+        $path = substr($path, strlen($this->basePath));
 
         return $path;
     }
 }
-
