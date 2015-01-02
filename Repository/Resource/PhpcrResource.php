@@ -3,31 +3,28 @@
 namespace Symfony\Cmf\Component\Resource\Repository\Resource;
 
 use Puli\Repository\Api\Resource\Resource;
-use Puli\Repository\Api\ResourceRepository;
 use PHPCR\NodeInterface;
 use Puli\Repository\Resource\Collection\ArrayResourceCollection;
 use Symfony\Cmf\Component\Resource\Repository\Resource\Metadata\PhpcrMetadata;
+use Puli\Repository\Resource\GenericResource;
 
 /**
  * Resource representing a PHPCR node
  *
  * @author Daniel Leech <daniel@dantleech.com>
  */
-class PhpcrResource implements Resource
+class PhpcrResource extends GenericResource
 {
     private $node;
-    private $path;
-    private $repoPath;
 
     /**
-     * @param string $path
+     * @param string        $path
      * @param NodeInterface $node
      */
     public function __construct($path, NodeInterface $node)
     {
+        parent::__construct($path);
         $this->node = $node;
-        $this->repoPath = $path;
-        $this->path = $path;
     }
 
     /**
@@ -44,14 +41,6 @@ class PhpcrResource implements Resource
     /**
      * {@inheritDoc}
      */
-    public function getPath()
-    {
-        return $this->path;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     public function getName()
     {
         return $this->node->getName();
@@ -63,7 +52,8 @@ class PhpcrResource implements Resource
     public function getChild($relPath)
     {
         $child = $this->node->getNode($relPath);
-        return new self($this->path . '/' . $relPath, $child);
+
+        return new self($this->getPath().'/'.$relPath, $child);
     }
 
     /**
@@ -89,7 +79,7 @@ class PhpcrResource implements Resource
     {
         $collection = new ArrayResourceCollection();
         foreach ($this->node->getNodes() as $node) {
-            $collection->add(new self($this->path . '/' . $node->getName(), $node));
+            $collection->add(new self($this->getPath() . '/' . $node->getName(), $node));
         }
 
         return $collection;
@@ -101,74 +91,5 @@ class PhpcrResource implements Resource
     public function getMetadata()
     {
         return new PhpcrMetadata($this->node);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function getRepository()
-    {
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function getRepositoryPath()
-    {
-        return $this->repoPath;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function attachTo(ResourceRepository $repo, $path = null)
-    {
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function detach()
-    {
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function isAttached()
-    {
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function createReference($path)
-    {
-        $ref = clone $this;
-        $ref->path = $path;
-
-        return $ref;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function isReference()
-    {
-        return $this->path != $this->repoPath;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function serialize()
-    {
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function unserialize($string)
-    {
     }
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace Unit\Repository\Resource\Resource;
+namespace Symfony\Cmf\Component\Resource\Tests\Unit\Repository\Resource;
 
 use Prophecy\PhpUnit\ProphecyTestCase;
 use Symfony\Cmf\Component\Resource\Repository\Resource\PhpcrResource;
@@ -19,11 +19,6 @@ class PhpcrResourceTest extends ProphecyTestCase
     public function testGetNode()
     {
         $this->assertSame($this->resource->getNode(), $this->node->reveal());
-    }
-
-    public function testGetPath()
-    {
-        $this->assertEquals('/foo', $this->resource->getPath());
     }
 
     public function testGetName()
@@ -68,12 +63,5 @@ class PhpcrResourceTest extends ProphecyTestCase
     {
         $res = $this->resource->getMetadata();
         $this->assertInstanceOf('Symfony\Cmf\Component\Resource\Repository\Resource\Metadata\PhpcrMetadata', $res);
-    }
-
-    public function testCreateReference()
-    {
-        $ref = $this->resource->createReference('/bar');
-        $this->assertInstanceOf('Symfony\Cmf\Component\Resource\Repository\Resource\PhpcrResource', $ref);
-        $this->assertTrue($ref->isReference());
     }
 }

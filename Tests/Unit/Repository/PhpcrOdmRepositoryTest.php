@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Symfony\Cmf\Component\DependencyInjection;
+namespace Symfony\Cmf\Component\Resource\Repository
 
 use Prophecy\PhpUnit\ProphecyTestCase;
 use Symfony\Cmf\Component\Resource\Repository\PhpcrOdmRepository;
