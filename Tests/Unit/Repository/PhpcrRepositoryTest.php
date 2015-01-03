@@ -32,8 +32,9 @@ class PhpcrRepositoryTest extends ProphecyTestCase
 
         $res = $this->repository->get('/cmf/foobar');
 
-        $this->assertInstanceOf('Symfony\Cmf\Component\Resource\PhpcrResource', $res);
-        $this->assertEquals('/cmf', $res->getPath());
+        $this->assertInstanceOf('Symfony\Cmf\Component\Resource\Repository\Resource\PhpcrResource', $res);
+
+        $this->assertEquals('/cmf/foobar', $res->getPath());
         $this->assertEquals('foobar', $res->getName());
         $this->assertSame($this->node->reveal(), $res->getNode());
     }
@@ -47,10 +48,9 @@ class PhpcrRepositoryTest extends ProphecyTestCase
 
         $res = $this->repository->find('/cmf/*');
 
-        $this->assertInstanceOf('Puli\Resource\Collection\ResourceCollection', $res);
+        $this->assertInstanceOf('Puli\Repository\Resource\Collection\ArrayResourceCollection', $res);
         $this->assertCount(1, $res);
         $nodeResource = $res->offsetGet(0);
-            ;
-        $this->assertSame($this->node->reveal(), $nodeResource->getObject());
+        $this->assertSame($this->node->reveal(), $nodeResource->getNode());
     }
 }

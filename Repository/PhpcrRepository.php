@@ -12,12 +12,11 @@
 namespace Symfony\Cmf\Component\Resource\Repository;
 
 use Puli\Repository\ResourceNotFoundException;
-use Puli\Resource\Collection\ResourceCollection;
-use Symfony\Cmf\Component\Resource\ObjectResource;
-use Symfony\Cmf\Component\Resource\FinderInterface;
 use PHPCR\SessionInterface;
 use DTL\Glob\Finder\PhpcrTraversalFinder;
 use DTL\Glob\FinderInterface;
+use Symfony\Cmf\Component\Resource\Repository\Resource\PhpcrResource;
+use Puli\Repository\Resource\Collection\ArrayResourceCollection;
 
 /**
  * Resource repository for PHPCR
@@ -38,14 +37,14 @@ class PhpcrRepository extends AbstractPhpcrRepository
 
     /**
      * @param SessionInterface $session
-     * @param FinderInterface $finder
-     * @param string $basePath
+     * @param FinderInterface  $finder
+     * @param string           $basePath
      */
     public function __construct(SessionInterface $session, $basePath = null, FinderInterface $finder = null)
     {
         parent::__construct($basePath);
         $this->session = $session;
-        $this->finder = $finder ? : new PhpcrTraversalFinder($session);
+        $this->finder = $finder ?: new PhpcrTraversalFinder($session);
     }
 
     /**
@@ -54,7 +53,7 @@ class PhpcrRepository extends AbstractPhpcrRepository
     public function get($path)
     {
         try {
-            $node = $this->session->getNode($this->getPath($path));
+            $node = $this->session->getNode($this->resolvePath($path));
         } catch (\PathNotFoundException $e) {
             throw new ResourceNotFoundException(sprintf(
                 'No PHPCR node could be found at "%s"',
@@ -62,7 +61,7 @@ class PhpcrRepository extends AbstractPhpcrRepository
             ), null, $e);
         }
 
-        $resource = new ObjectResource($node->getPath(), $node);
+        $resource = new PhpcrResource($node->getPath(), $node);
 
         return $resource;
     }
@@ -112,8 +111,26 @@ class PhpcrRepository extends AbstractPhpcrRepository
         return array();
     }
 
-    protected function createResource($path, $object)
+    /**
+     * Build a collection of PHPCR resources
+     *
+     * @return ArrayResourceCollection
+     */
+    private function buildCollection(array $nodes)
     {
-        return new PhpcrResource($path, $object);
+        $collection = new ArrayResourceCollection();
+
+        if (!$nodes) {
+            return $collection;
+        }
+
+        foreach ($nodes as $node) {
+            $path = $this->unresolvePath($node->getPath());
+            $resource = new PhpcrResource($path, $node);
+            $resource->attachTo($this);
+            $collection->add($resource);
+        }
+
+        return $collection;
     }
 }

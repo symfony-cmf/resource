@@ -18,6 +18,8 @@ use Symfony\Cmf\Component\Resource\ObjectResource;
 use Puli\Resource\Collection\ResourceCollection;
 use DTL\Glob\Finder\PhpcrOdmTraversalFinder;
 use DTL\Glob\FinderInterface;
+use Symfony\Cmf\Component\Resource\Repository\Resource\PhpcrOdmResource;
+use Puli\Repository\Resource\Collection\ArrayResourceCollection;
 
 class PhpcrOdmRepository extends AbstractPhpcrRepository
 {
@@ -48,7 +50,7 @@ class PhpcrOdmRepository extends AbstractPhpcrRepository
      */
     public function get($path)
     {
-        $document = $this->getManager()->find(null, $this->getPath($path));
+        $document = $this->getManager()->find(null, $this->resolvePath($path));
 
         if (null === $document) {
             throw new ResourceNotFoundException(sprintf(
@@ -57,7 +59,7 @@ class PhpcrOdmRepository extends AbstractPhpcrRepository
             ));
         }
 
-        $resource = new ObjectResource($path, $document);
+        $resource = new PhpcrOdmResource($path, $document);
 
         return $resource;
     }
@@ -71,7 +73,7 @@ class PhpcrOdmRepository extends AbstractPhpcrRepository
             throw new UnsupportedLanguageException($language);
         }
 
-        $documents = $this->finder->find($selector);
+        $documents = $this->finder->find($query);
 
         return $this->buildCollection($documents);
     }
@@ -108,19 +110,26 @@ class PhpcrOdmRepository extends AbstractPhpcrRepository
         return array();
     }
 
+    /**
+     * Build a collection of PHPCR resources
+     *
+     * @return ArrayResourceCollection
+     */
     private function buildCollection(array $documents)
     {
-        $collection = new ResourceCollection();
+        $collection = new ArrayResourceCollection();
 
-        if (!$documents) {
+        if (empty($documents)) {
             return $collection;
         }
 
         $uow = $this->getManager()->getUnitOfWork();
 
         foreach ($documents as $document) {
-            $path = $uow->getDocumentId($document);
-            $collection->add(new ObjectResource($path, $document));
+            $path = $this->unresolvePath($uow->getDocumentId($document));
+            $resource = new PhpcrOdmResource($path, $document);
+            $resource->attachTo($this);
+            $collection->add($resource);
         }
 
         return $collection;

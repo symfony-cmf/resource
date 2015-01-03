@@ -16,10 +16,10 @@ use Puli\Repository\ResourceNotFoundException;
 use Symfony\Cmf\Component\Resource\ObjectResource;
 use Symfony\Cmf\Component\Resource\FinderInterface;
 use Puli\Resource\Collection\ResourceCollection;
-use Puli\Repository\InvalidPathException;
 use Puli\Repository\Api\ResourceRepository;
 use Webmozart\PathUtil\Path;
 use Puli\Repository\Resource\Collection\ArrayResourceCollection;
+use Puli\Repository\Assert\Assertion;
 
 /**
  * Abstract repository for both PHPCR and PHPCR-ODM repositories
@@ -59,18 +59,9 @@ abstract class AbstractPhpcrRepository implements ResourceRepository
      *
      * @return string
      */
-    protected function getPath($path)
+    protected function resolvePath($path)
     {
-        if ('' === $path) {
-            throw new InvalidPathException('The path must not be empty.');
-        }
-
-        if (!is_string($path)) {
-            throw new InvalidPathException(sprintf(
-                'The path must be a string. Is: %s.',
-                is_object($path) ? get_class($path) : gettype($path)
-            ));
-        }
+        Assertion::path($path);
 
         if ($this->basePath) {
             $path = $this->basePath . $path;
@@ -78,34 +69,20 @@ abstract class AbstractPhpcrRepository implements ResourceRepository
 
         $path = Path::canonicalize($path);
 
-        if ('/' !== $path[0]) {
-            throw new InvalidPathException(sprintf(
-                'The path "%s" is not absolute.',
-                $path
-            ));
-        }
-
         return $path;
     }
 
     /**
-     * Build a collection of PHPCR / ODM resources
+     * Remove the base prefix from the given path
      *
-     * @return ArrayResourceCollection
+     * @param string $path
+     *
+     * @return string
      */
-    private function buildCollection(array $nodes)
+    protected function unresolvePath($path)
     {
-        $collection = new ArrayResourceCollection();
+        $path = substr($path, strlen($this->basePath));
 
-        if (!$nodes) {
-            return $collection;
-        }
-
-        foreach ($nodes as $node) {
-            $path = substr($node->getPath(), strlen($this->basePath));
-            $collection->add($this->createResource($path, $node));
-        }
-
-        return $collection;
+        return $path;
     }
 }

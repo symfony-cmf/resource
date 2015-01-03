@@ -41,53 +41,6 @@ class PhpcrResource extends GenericResource
     /**
      * {@inheritDoc}
      */
-    public function getName()
-    {
-        return $this->node->getName();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function getChild($relPath)
-    {
-        $child = $this->node->getNode($relPath);
-
-        return new self($this->getPath().'/'.$relPath, $child);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function hasChild($relPath)
-    {
-        return $this->node->hasNode($relPath);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function hasChildren()
-    {
-        return $this->node->hasNodes();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function listChildren()
-    {
-        $collection = new ArrayResourceCollection();
-        foreach ($this->node->getNodes() as $node) {
-            $collection->add(new self($this->getPath() . '/' . $node->getName(), $node));
-        }
-
-        return $collection;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     public function getMetadata()
     {
         return new PhpcrMetadata($this->node);
