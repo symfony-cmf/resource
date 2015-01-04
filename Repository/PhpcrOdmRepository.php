@@ -11,11 +11,8 @@
 
 namespace Symfony\Cmf\Component\Resource\Repository;
 
-use Puli\Repository\ResourceRepositoryInterface;
 use Doctrine\Common\Persistence\ManagerRegistry;
 use Puli\Repository\ResourceNotFoundException;
-use Symfony\Cmf\Component\Resource\ObjectResource;
-use Puli\Resource\Collection\ResourceCollection;
 use DTL\Glob\Finder\PhpcrOdmTraversalFinder;
 use DTL\Glob\FinderInterface;
 use Symfony\Cmf\Component\Resource\Repository\Resource\PhpcrOdmResource;
@@ -37,7 +34,7 @@ class PhpcrOdmRepository extends AbstractPhpcrRepository
     {
         parent::__construct($basePath);
         $this->managerRegistry = $managerRegistry;
-        $this->finder = $finder ? : new PhpcrOdmTraversalFinder($managerRegistry);
+        $this->finder = $finder ?: new PhpcrOdmTraversalFinder($managerRegistry);
     }
 
     protected function getManager()

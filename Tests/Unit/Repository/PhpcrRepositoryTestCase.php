@@ -13,7 +13,7 @@ namespace Symfony\Cmf\Component\Resource\Repository;
 
 use Prophecy\PhpUnit\ProphecyTestCase;
 
-class PhpcrOdmRepositoryTest extends ProphecyTestCase
+class PhpcrRepositoryTestCase extends ProphecyTestCase
 {
     public function setUp()
     {
@@ -28,4 +28,3 @@ class PhpcrOdmRepositoryTest extends ProphecyTestCase
         );
     }
 }
-

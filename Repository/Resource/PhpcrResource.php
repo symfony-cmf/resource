@@ -4,7 +4,6 @@ namespace Symfony\Cmf\Component\Resource\Repository\Resource;
 
 use Puli\Repository\Api\Resource\Resource;
 use PHPCR\NodeInterface;
-use Puli\Repository\Resource\Collection\ArrayResourceCollection;
 use Symfony\Cmf\Component\Resource\Repository\Resource\Metadata\PhpcrMetadata;
 use Puli\Repository\Resource\GenericResource;
 

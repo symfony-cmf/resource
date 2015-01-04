@@ -12,7 +12,6 @@
 namespace Symfony\Cmf\Component\Resource\Repository;
 
 use Prophecy\PhpUnit\ProphecyTestCase;
-use Symfony\Cmf\Component\Resource\Repository\PhpcrRepository;
 
 class PhpcrRepositoryTest extends ProphecyTestCase
 {
@@ -43,7 +42,7 @@ class PhpcrRepositoryTest extends ProphecyTestCase
     {
         $this->session->getNode('/cmf/foobar')->willReturn($this->node);
         $this->finder->find('/cmf/*')->willReturn(array(
-            $this->node
+            $this->node,
         ));
 
         $res = $this->repository->find('/cmf/*');

@@ -25,6 +25,7 @@ class ContainerRepositoryFactoryTest extends ProphecyTestCase
     private function getFactory($map)
     {
         $factory = new ContainerRepositoryFactory($this->container->reveal(), $map);
+
         return $factory;
     }
 
@@ -50,4 +51,3 @@ class ContainerRepositoryFactoryTest extends ProphecyTestCase
         $this->assertSame($this->repository->reveal(), $res);
     }
 }
-

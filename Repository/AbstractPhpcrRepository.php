@@ -11,14 +11,8 @@
 
 namespace Symfony\Cmf\Component\Resource\Repository;
 
-use Doctrine\Common\Persistence\ManagerRegistry;
-use Puli\Repository\ResourceNotFoundException;
-use Symfony\Cmf\Component\Resource\ObjectResource;
-use Symfony\Cmf\Component\Resource\FinderInterface;
-use Puli\Resource\Collection\ResourceCollection;
 use Puli\Repository\Api\ResourceRepository;
 use Webmozart\PathUtil\Path;
-use Puli\Repository\Resource\Collection\ArrayResourceCollection;
 use Puli\Repository\Assert\Assertion;
 
 /**

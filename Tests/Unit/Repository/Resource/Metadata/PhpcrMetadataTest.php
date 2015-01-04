@@ -26,7 +26,7 @@ class PhpcrMetadataTest extends ProphecyTestCase
                 true,
                 'jcr:created',
                 new \DateTime('2015-01-01'),
-                1420070400
+                1420070400,
             ),
             array(
                 'getModificationTime',
@@ -34,7 +34,7 @@ class PhpcrMetadataTest extends ProphecyTestCase
                 true,
                 'jcr:lastModified',
                 new \DateTime('2015-01-01'),
-                1420070400
+                1420070400,
             ),
             array(
                 'getCreationTime',
@@ -42,7 +42,7 @@ class PhpcrMetadataTest extends ProphecyTestCase
                 false,
                 null,
                 null,
-                0
+                0,
             ),
             array(
                 'getModificationTime',
@@ -50,7 +50,7 @@ class PhpcrMetadataTest extends ProphecyTestCase
                 false,
                 null,
                 null,
-                0
+                0,
             ),
             array(
                 'getAccessTime',
@@ -58,7 +58,7 @@ class PhpcrMetadataTest extends ProphecyTestCase
                 null,
                 null,
                 null,
-                0
+                0,
             ),
         );
     }

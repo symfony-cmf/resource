@@ -15,7 +15,7 @@ use Symfony\Cmf\Component\Resource\RepositoryFactoryInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
- * Factory which uses a Symfony DI container to instnatiate
+ * Factory which uses a Symfony DI container to create
  * new repositories.
  *
  * NOTE: All repository services should be defined as scope=prototype

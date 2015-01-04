@@ -12,7 +12,6 @@
 namespace Symfony\Cmf\Component\Resource\Repository;
 
 use Prophecy\PhpUnit\ProphecyTestCase;
-use Symfony\Cmf\Component\Resource\Repository\PhpcrOdmRepository;
 
 class PhpcrOdmRepositoryTest extends ProphecyTestCase
 {
@@ -22,7 +21,7 @@ class PhpcrOdmRepositoryTest extends ProphecyTestCase
         $this->managerRegistry = $this->prophesize('Doctrine\Common\Persistence\ManagerRegistry');
         $this->finder = $this->prophesize('DTL\Glob\FinderInterface');
         $this->uow = $this->prophesize('Doctrine\ODM\PHPCR\UnitOfWork');
-        $this->document = new \stdClass;
+        $this->document = new \stdClass();
 
         $this->managerRegistry->getManager()->willReturn($this->documentManager);
         $this->documentManager->getUnitOfWork()->willReturn($this->uow->reveal());
@@ -57,7 +56,7 @@ class PhpcrOdmRepositoryTest extends ProphecyTestCase
         return array(
             array(null, 'cmf/foobar'),
             array(null, ''),
-            array(null, new \stdClass),
+            array(null, new \stdClass()),
             array('asd', 'asd'),
         );
     }
@@ -77,7 +76,7 @@ class PhpcrOdmRepositoryTest extends ProphecyTestCase
         $this->uow->getDocumentId($this->document)->willReturn('/cmf/foobar');
 
         $this->finder->find('/cmf/*')->willReturn(array(
-            $this->document
+            $this->document,
         ));
 
         $res = $this->getRepository()->find('/cmf/*');
@@ -85,13 +84,13 @@ class PhpcrOdmRepositoryTest extends ProphecyTestCase
         $this->assertInstanceOf('Puli\Repository\Resource\Collection\ArrayResourceCollection', $res);
         $this->assertCount(1, $res);
         $documentResource = $res->offsetGet(0);
-            ;
         $this->assertSame($this->document, $documentResource->getDocument());
     }
 
     protected function getRepository($path = null)
     {
         $repository = new PhpcrOdmRepository($this->managerRegistry->reveal(), $path, $this->finder->reveal());
+
         return $repository;
     }
 }
