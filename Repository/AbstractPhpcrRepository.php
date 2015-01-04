@@ -14,6 +14,7 @@ namespace Symfony\Cmf\Component\Resource\Repository;
 use Puli\Repository\Api\ResourceRepository;
 use Webmozart\PathUtil\Path;
 use Puli\Repository\Assert\Assertion;
+use DTL\Glob\FinderInterface;
 
 /**
  * Abstract repository for both PHPCR and PHPCR-ODM repositories
@@ -23,17 +24,23 @@ use Puli\Repository\Assert\Assertion;
 abstract class AbstractPhpcrRepository implements ResourceRepository
 {
     /**
-     * Base path from which to serve nodes / documents
+     * Base path from which to serve nodes / nodes
      *
      * @var string $basePath
      */
     private $basePath;
 
     /**
+     * @var FinderInterface
+     */
+    private $finder;
+
+    /**
      * @param string $basePath
      */
-    public function __construct($basePath = null)
+    public function __construct(FinderInterface $finder, $basePath = null)
     {
+        $this->finder = $finder;
         $this->basePath = $basePath;
     }
 
@@ -45,6 +52,20 @@ abstract class AbstractPhpcrRepository implements ResourceRepository
         $children = $this->listChildren();
 
         return !empty($children);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function find($query, $language = 'glob')
+    {
+        if ($language != 'glob') {
+            throw new UnsupportedLanguageException($language);
+        }
+
+        $nodes = $this->finder->find($this->resolvePath($query));
+
+        return $this->buildCollection($nodes);
     }
 
     /**
@@ -81,4 +102,11 @@ abstract class AbstractPhpcrRepository implements ResourceRepository
 
         return $path;
     }
+
+    /**
+     * Build a collection of PHPCR resources
+     *
+     * @return ArrayResourceCollection
+     */
+    abstract protected function buildCollection(array $nodes);
 }

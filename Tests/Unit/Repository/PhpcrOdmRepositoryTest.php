@@ -72,14 +72,14 @@ class PhpcrOdmRepositoryTest extends ProphecyTestCase
 
     public function testFind()
     {
-        $this->documentManager->find(null, '/cmf/foobar')->willReturn($this->document);
+        $this->documentManager->find(null, '/base/path/cmf/foobar')->willReturn($this->document);
         $this->uow->getDocumentId($this->document)->willReturn('/cmf/foobar');
 
-        $this->finder->find('/cmf/*')->willReturn(array(
+        $this->finder->find('/base/path/cmf/*')->willReturn(array(
             $this->document,
         ));
 
-        $res = $this->getRepository()->find('/cmf/*');
+        $res = $this->getRepository('/base/path')->find('/cmf/*');
 
         $this->assertInstanceOf('Puli\Repository\Resource\Collection\ArrayResourceCollection', $res);
         $this->assertCount(1, $res);

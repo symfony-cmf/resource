@@ -25,16 +25,11 @@ class PhpcrOdmRepository extends AbstractPhpcrRepository
      */
     private $managerRegistry;
 
-    /**
-     * @var FinderInterface
-     */
-    private $finder;
-
     public function __construct(ManagerRegistry $managerRegistry, $basePath = null, FinderInterface $finder = null)
     {
-        parent::__construct($basePath);
+        $finder = $finder ?: new PhpcrOdmTraversalFinder($managerRegistry);
+        parent::__construct($finder, $basePath);
         $this->managerRegistry = $managerRegistry;
-        $this->finder = $finder ?: new PhpcrOdmTraversalFinder($managerRegistry);
     }
 
     protected function getManager()
@@ -64,17 +59,6 @@ class PhpcrOdmRepository extends AbstractPhpcrRepository
     /**
      * {@inheritDoc}
      */
-    public function find($query, $language = 'glob')
-    {
-        if ($language != 'glob') {
-            throw new UnsupportedLanguageException($language);
-        }
-
-        $documents = $this->finder->find($query);
-
-        return $this->buildCollection($documents);
-    }
-
     public function listChildren($path)
     {
         $document = $this->get($path);
@@ -108,11 +92,9 @@ class PhpcrOdmRepository extends AbstractPhpcrRepository
     }
 
     /**
-     * Build a collection of PHPCR resources
-     *
-     * @return ArrayResourceCollection
+     * {@inheritDoc}
      */
-    private function buildCollection(array $documents)
+    protected function buildCollection(array $documents)
     {
         $collection = new ArrayResourceCollection();
 

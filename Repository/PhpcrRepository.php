@@ -31,20 +31,15 @@ class PhpcrRepository extends AbstractPhpcrRepository
     private $session;
 
     /**
-     * @var FinderInterface
-     */
-    private $finder;
-
-    /**
      * @param SessionInterface $session
      * @param FinderInterface  $finder
      * @param string           $basePath
      */
     public function __construct(SessionInterface $session, $basePath = null, FinderInterface $finder = null)
     {
-        parent::__construct($basePath);
+        $finder = $finder ?: new PhpcrTraversalFinder($session);
+        parent::__construct($finder, $basePath);
         $this->session = $session;
-        $this->finder = $finder ?: new PhpcrTraversalFinder($session);
     }
 
     /**
@@ -64,20 +59,6 @@ class PhpcrRepository extends AbstractPhpcrRepository
         $resource = new PhpcrResource($node->getPath(), $node);
 
         return $resource;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function find($selector, $language = 'glob')
-    {
-        if ($language != 'glob') {
-            throw new UnsupportedLanguageException($language);
-        }
-
-        $nodes = $this->finder->find($selector);
-
-        return $this->buildCollection($nodes);
     }
 
     public function listChildren($path)
@@ -112,11 +93,9 @@ class PhpcrRepository extends AbstractPhpcrRepository
     }
 
     /**
-     * Build a collection of PHPCR resources
-     *
-     * @return ArrayResourceCollection
+     * {@inheritDoc}
      */
-    private function buildCollection(array $nodes)
+    protected function buildCollection(array $nodes)
     {
         $collection = new ArrayResourceCollection();
 
