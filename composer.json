@@ -17,8 +17,7 @@
     "require-dev": {
         "phpspec/prophecy-phpunit": "~1.0.0",
         "doctrine/phpcr-odm": "~1.2",
-        "jackalope/jackalope-fs": "dev-master",
-        "symfony/dependency-injection": "~2.3"
+        "jackalope/jackalope-fs": "dev-master"
     },
     "suggest": {
         "doctrine/phpcr-odm": "To enable support for the PHPCR ODM documents",
