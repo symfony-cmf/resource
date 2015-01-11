@@ -42,12 +42,13 @@ class PhpcrOdmRepository extends AbstractPhpcrRepository
      */
     public function get($path)
     {
-        $document = $this->getManager()->find(null, $this->resolvePath($path));
+        $resolvedPath = $this->resolvePath($path);
+        $document = $this->getManager()->find(null, $resolvedPath);
 
         if (null === $document) {
             throw new ResourceNotFoundException(sprintf(
                 'No PHPCR-ODM document could be found at "%s"',
-                $path
+                $resolvedPath
             ));
         }
 
@@ -61,8 +62,8 @@ class PhpcrOdmRepository extends AbstractPhpcrRepository
      */
     public function listChildren($path)
     {
-        $document = $this->get($path);
-        $children = $this->getManager()->getChildren($document);
+        $resource = $this->get($path);
+        $children = $this->getManager()->getChildren($resource->getDocument());
 
         return $this->buildCollection($children);
     }
@@ -105,7 +106,8 @@ class PhpcrOdmRepository extends AbstractPhpcrRepository
         $uow = $this->getManager()->getUnitOfWork();
 
         foreach ($documents as $document) {
-            $path = $this->unresolvePath($uow->getDocumentId($document));
+            $childPath = $uow->getDocumentId($document);
+            $path = $this->unresolvePath($childPath);
             $resource = new PhpcrOdmResource($path, $document);
             $resource->attachTo($this);
             $collection->add($resource);

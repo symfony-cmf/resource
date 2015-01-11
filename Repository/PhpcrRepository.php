@@ -47,25 +47,27 @@ class PhpcrRepository extends AbstractPhpcrRepository
      */
     public function get($path)
     {
+        $resolvedPath = $this->resolvePath($path);
+
         try {
-            $node = $this->session->getNode($this->resolvePath($path));
+            $node = $this->session->getNode($resolvedPath);
         } catch (\PathNotFoundException $e) {
             throw new ResourceNotFoundException(sprintf(
                 'No PHPCR node could be found at "%s"',
-                $path
+                $resolvedPath
             ), null, $e);
         }
 
-        $resource = new PhpcrResource($node->getPath(), $node);
+        $resource = new PhpcrResource($path, $node);
 
         return $resource;
     }
 
     public function listChildren($path)
     {
-        $node = $this->get($path);
+        $resource = $this->get($path);
 
-        return $this->buildCollection($node->getNodes());
+        return $this->buildCollection($resource->getNode()->getNodes());
     }
 
     /**

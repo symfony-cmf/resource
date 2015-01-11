@@ -9,11 +9,12 @@
  * file that was distributed with this source code.
  */
 
-namespace Symfony\Cmf\Component\Resource\Repository;
+namespace Symfony\Cmf\Component\Resource\Tests\Unit\Repository;
 
 use Prophecy\PhpUnit\ProphecyTestCase;
+use Symfony\Cmf\Component\Resource\Repository\PhpcrOdmRepository;
 
-class PhpcrOdmRepositoryTest extends ProphecyTestCase
+class PhpcrOdmRepositoryTest extends RepositoryTestCase
 {
     public function setUp()
     {
@@ -22,6 +23,8 @@ class PhpcrOdmRepositoryTest extends ProphecyTestCase
         $this->finder = $this->prophesize('DTL\Glob\FinderInterface');
         $this->uow = $this->prophesize('Doctrine\ODM\PHPCR\UnitOfWork');
         $this->document = new \stdClass();
+        $this->child1 = new \stdClass();
+        $this->child2 = new \stdClass();
 
         $this->managerRegistry->getManager()->willReturn($this->documentManager);
         $this->documentManager->getUnitOfWork()->willReturn($this->uow->reveal());
@@ -29,19 +32,10 @@ class PhpcrOdmRepositoryTest extends ProphecyTestCase
         $this->object = new \stdClass();
     }
 
-    public function provideGet()
-    {
-        return array(
-            array(null, '/cmf/foobar', '/cmf/foobar'),
-            array('/site/foo.com', '/cmf/foobar', '/site/foo.com/cmf/foobar'),
-            array('/site/foo.com', '/../foobar', '/site/foobar'),
-        );
-    }
-
     /**
      * @dataProvider provideGet
      */
-    public function testGet($basePath, $requestedPath, $evaluatedPath)
+    public function testGet($basePath, $requestedPath, $canonicalPath, $evaluatedPath)
     {
         $this->documentManager->find(null, $evaluatedPath)->willReturn($this->object);
 
@@ -49,25 +43,6 @@ class PhpcrOdmRepositoryTest extends ProphecyTestCase
 
         $this->assertInstanceOf('Symfony\Cmf\Component\Resource\Repository\Resource\PhpcrOdmResource', $res);
         $this->assertSame($this->object, $res->getDocument());
-    }
-
-    public function provideGetInvalid()
-    {
-        return array(
-            array(null, 'cmf/foobar'),
-            array(null, ''),
-            array(null, new \stdClass()),
-            array('asd', 'asd'),
-        );
-    }
-
-    /**
-     * @dataProvider provideGetInvalid
-     * @expectedException Assert\InvalidArgumentException
-     */
-    public function testGetInvalid($basePath, $requestedPath)
-    {
-        $this->getRepository($basePath)->get($requestedPath);
     }
 
     public function testFind()
@@ -85,6 +60,44 @@ class PhpcrOdmRepositoryTest extends ProphecyTestCase
         $this->assertCount(1, $res);
         $documentResource = $res->offsetGet(0);
         $this->assertSame($this->document, $documentResource->getDocument());
+    }
+
+    /**
+     * @dataProvider provideGet
+     */
+    public function testListChildren($basePath, $requestedPath, $canonicalPath, $absPath)
+    {
+        $this->documentManager->find(null, $absPath)->willReturn($this->document);
+        $this->documentManager->getChildren($this->document)->willReturn(array(
+            $this->child1, $this->child2
+        ));
+        $this->uow->getDocumentId($this->child1)->willReturn($absPath . '/child1');
+        $this->uow->getDocumentId($this->child2)->willReturn($absPath . '/child2');
+
+        $res = $this->getRepository($basePath)->listChildren($requestedPath);
+
+        $this->assertInstanceOf('Puli\Repository\Resource\Collection\ArrayResourceCollection', $res);
+        $this->assertCount(2, $res);
+        $this->assertInstanceOf('Symfony\Cmf\Component\Resource\Repository\Resource\PhpcrOdmResource', $res[0]);
+        $this->assertEquals($canonicalPath. '/child2', $res[0]->getPath());
+    }
+
+    /**
+     * @dataProvider provideHasChildren
+     */
+    public function testHasChildren($nbChildren, $hasChildren)
+    {
+        $children = array();
+        for ($i = 0; $i < $nbChildren; $i++) {
+            $children[] = new \stdClass();
+        }
+
+        $this->documentManager->find(null, '/test')->willReturn($this->document);
+        $this->documentManager->getChildren($this->document)->willReturn($children);
+
+        $res = $this->getRepository()->hasChildren('/test');
+
+        $this->assertEquals($hasChildren, $res);
     }
 
     protected function getRepository($path = null)

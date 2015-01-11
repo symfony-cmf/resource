@@ -9,31 +9,35 @@
  * file that was distributed with this source code.
  */
 
-namespace Symfony\Cmf\Component\Resource\Repository;
+namespace Symfony\Cmf\Component\Resource\Tests\Unit\Repository;
 
 use Prophecy\PhpUnit\ProphecyTestCase;
+use Symfony\Cmf\Component\Resource\Repository\PhpcrRepository;
 
-class PhpcrRepositoryTest extends ProphecyTestCase
+class PhpcrRepositoryTest extends RepositoryTestCase
 {
     public function setUp()
     {
         $this->session = $this->prophesize('PHPCR\SessionInterface');
         $this->finder = $this->prophesize('DTL\Glob\FinderInterface');
         $this->node = $this->prophesize('PHPCR\NodeInterface');
-
-        $this->repository = new PhpcrRepository($this->session->reveal(), null, $this->finder->reveal());
+        $this->child1 = $this->prophesize('PHPCR\NodeInterface');
+        $this->child2 = $this->prophesize('PHPCR\NodeInterface');
     }
 
-    public function testGet()
+    /**
+     * @dataProvider provideGet
+     */
+    public function testGet($basePath, $requestedPath, $canonicalPath, $evaluatedPath)
     {
-        $this->session->getNode('/cmf/foobar')->willReturn($this->node);
-        $this->node->getPath()->willReturn('/cmf/foobar');
+        $this->session->getNode($evaluatedPath)->willReturn($this->node);
+        $this->node->getPath()->willReturn($evaluatedPath);
 
-        $res = $this->repository->get('/cmf/foobar');
+        $res = $this->getRepository($basePath)->get($requestedPath);
 
         $this->assertInstanceOf('Symfony\Cmf\Component\Resource\Repository\Resource\PhpcrResource', $res);
 
-        $this->assertEquals('/cmf/foobar', $res->getPath());
+        $this->assertEquals($requestedPath, $res->getPath());
         $this->assertEquals('foobar', $res->getName());
         $this->assertSame($this->node->reveal(), $res->getNode());
     }
@@ -45,11 +49,56 @@ class PhpcrRepositoryTest extends ProphecyTestCase
             $this->node,
         ));
 
-        $res = $this->repository->find('/cmf/*');
+        $res = $this->getRepository()->find('/cmf/*');
 
         $this->assertInstanceOf('Puli\Repository\Resource\Collection\ArrayResourceCollection', $res);
         $this->assertCount(1, $res);
         $nodeResource = $res->offsetGet(0);
         $this->assertSame($this->node->reveal(), $nodeResource->getNode());
+    }
+
+    /**
+     * @dataProvider provideGet
+     */
+    public function testListChildren($basePath, $requestedPath, $canonicalPath, $absPath)
+    {
+        $this->session->getNode($absPath)->willReturn($this->node);
+        $this->node->getNodes()->willReturn(array(
+            $this->child1, $this->child2
+        ));
+        $this->child1->getPath()->willReturn($absPath . '/child1');
+        $this->child2->getPath()->willReturn($absPath . '/child2');
+
+        $res = $this->getRepository($basePath)->listChildren($requestedPath);
+
+        $this->assertInstanceOf('Puli\Repository\Resource\Collection\ArrayResourceCollection', $res);
+        $this->assertCount(2, $res);
+        $this->assertInstanceOf('Symfony\Cmf\Component\Resource\Repository\Resource\PhpcrResource', $res[0]);
+        $this->assertEquals($canonicalPath. '/child1', $res[0]->getPath());
+    }
+
+    /**
+     * @dataProvider provideHasChildren
+     */
+    public function testHasChildren($nbChildren, $hasChildren)
+    {
+        $children = array();
+        for ($i = 0; $i < $nbChildren; $i++) {
+            $children[] = $this->prophesize('PHPCR\NodeInterface');
+        }
+
+        $this->session->getNode('/test')->willReturn($this->node);
+        $this->node->getNodes()->willReturn($children);
+
+        $res = $this->getRepository()->hasChildren('/test');
+
+        $this->assertEquals($hasChildren, $res);
+    }
+
+    protected function getRepository($path = null)
+    {
+        $repository = new PhpcrRepository($this->session->reveal(), $path, $this->finder->reveal());
+
+        return $repository;
     }
 }
