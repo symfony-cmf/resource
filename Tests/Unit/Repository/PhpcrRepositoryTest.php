@@ -78,6 +78,15 @@ class PhpcrRepositoryTest extends RepositoryTestCase
     }
 
     /**
+     * @expectedException Puli\Repository\Api\ResourceNotFoundException
+     */
+    public function testGetNotExisting()
+    {
+        $this->session->getNode('/test')->willThrow(new \PHPCR\PathNotFoundException());
+        $this->getRepository()->get('/test');
+    }
+
+    /**
      * @dataProvider provideHasChildren
      */
     public function testHasChildren($nbChildren, $hasChildren)

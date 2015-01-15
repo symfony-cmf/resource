@@ -24,8 +24,6 @@ abstract class RepositoryTestCase extends ProphecyTestCase
         );
     }
 
-    abstract public function testGet($basePath, $requestedPath, $canonicalPath, $evaluatedPath);
-
     public function provideGetInvalid()
     {
         return array(
@@ -45,7 +43,26 @@ abstract class RepositoryTestCase extends ProphecyTestCase
         $this->getRepository($basePath)->get($requestedPath);
     }
 
-    abstract public function testFind();
+    public function provideHasChildren()
+    {
+        return array(
+            array(2, true),
+            array(0, false),
+        );
+    }
+
+    abstract public function testGetNotExisting();
+
+    /**
+     * @param integer $nbChildren Number of children expected
+     * @param boolean $hasChildren Expected result
+     */
+    abstract public function testHasChildren($nbChildren, $hasChildren);
+
+    /**
+     * @param string $path
+     */
+    abstract protected function getRepository($path = null);
 
     /**
      * @param string $basePath Base path of repository
@@ -55,19 +72,7 @@ abstract class RepositoryTestCase extends ProphecyTestCase
      */
     abstract public function testListChildren($basePath, $requestedPath, $canonicalPath, $absPath);
 
-    public function provideHasChildren()
-    {
-        return array(
-            array(2, true),
-            array(0, false),
-        );
-    }
+    abstract public function testFind();
 
-    /**
-     * @param integer $nbChildren Number of children expected
-     * @param boolean $hasChildren Expected result
-     */
-    abstract public function testHasChildren($nbChildren, $hasChildren);
-
-    abstract protected function getRepository($path = null);
+    abstract public function testGet($basePath, $requestedPath, $canonicalPath, $evaluatedPath);
 }

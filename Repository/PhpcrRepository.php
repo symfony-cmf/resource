@@ -11,12 +11,12 @@
 
 namespace Symfony\Cmf\Component\Resource\Repository;
 
-use Puli\Repository\ResourceNotFoundException;
 use PHPCR\SessionInterface;
 use DTL\Glob\Finder\PhpcrTraversalFinder;
 use DTL\Glob\FinderInterface;
 use Symfony\Cmf\Component\Resource\Repository\Resource\PhpcrResource;
 use Puli\Repository\Resource\Collection\ArrayResourceCollection;
+use Puli\Repository\Api\ResourceNotFoundException;
 
 /**
  * Resource repository for PHPCR
@@ -51,11 +51,15 @@ class PhpcrRepository extends AbstractPhpcrRepository
 
         try {
             $node = $this->session->getNode($resolvedPath);
-        } catch (\PathNotFoundException $e) {
+        } catch (\PHPCR\PathNotFoundException $e) {
             throw new ResourceNotFoundException(sprintf(
                 'No PHPCR node could be found at "%s"',
                 $resolvedPath
             ), null, $e);
+        }
+
+        if (null === $node) {
+            throw new \RuntimeException('Session did not return a node or throw an exception');
         }
 
         $resource = new PhpcrResource($path, $node);

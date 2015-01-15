@@ -100,6 +100,15 @@ class PhpcrOdmRepositoryTest extends RepositoryTestCase
         $this->assertEquals($hasChildren, $res);
     }
 
+    /**
+     * @expectedException Puli\Repository\Api\ResourceNotFoundException
+     */
+    public function testGetNotExisting()
+    {
+        $this->documentManager->find(null, '/test')->willReturn(null);
+        $this->getRepository()->get('/test');
+    }
+
     protected function getRepository($path = null)
     {
         $repository = new PhpcrOdmRepository($this->managerRegistry->reveal(), $path, $this->finder->reveal());
