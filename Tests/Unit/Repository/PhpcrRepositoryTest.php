@@ -40,6 +40,7 @@ class PhpcrRepositoryTest extends RepositoryTestCase
         $this->assertEquals($requestedPath, $res->getPath());
         $this->assertEquals('foobar', $res->getName());
         $this->assertSame($this->node->reveal(), $res->getNode());
+        $this->assertTrue($res->isAttached());
     }
 
     public function testFind()

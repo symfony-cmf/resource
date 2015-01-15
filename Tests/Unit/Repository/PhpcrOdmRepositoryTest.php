@@ -43,6 +43,7 @@ class PhpcrOdmRepositoryTest extends RepositoryTestCase
 
         $this->assertInstanceOf('Symfony\Cmf\Component\Resource\Repository\Resource\PhpcrOdmResource', $res);
         $this->assertSame($this->object, $res->getDocument());
+        $this->assertTrue($res->isAttached());
     }
 
     public function testFind()

@@ -63,6 +63,7 @@ class PhpcrRepository extends AbstractPhpcrRepository
         }
 
         $resource = new PhpcrResource($path, $node);
+        $resource->attachTo($this);
 
         return $resource;
     }
