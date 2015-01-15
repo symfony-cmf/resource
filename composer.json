@@ -11,7 +11,7 @@
     ],
     "minimum-stability": "dev",
     "require": {
-        "puli/repository": "dev-master",
+        "puli/repository": "~1.0",
         "dantleech/glob-finder": "~1.0"
     },
     "require-dev": {

@@ -38,7 +38,7 @@ abstract class RepositoryTestCase extends ProphecyTestCase
 
     /**
      * @dataProvider provideGetInvalid
-     * @expectedException Assert\InvalidArgumentException
+     * @expectedException \InvalidArgumentException
      */
     public function testGetInvalid($basePath, $requestedPath)
     {

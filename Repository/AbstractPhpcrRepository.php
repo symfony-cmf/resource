@@ -13,7 +13,7 @@ namespace Symfony\Cmf\Component\Resource\Repository;
 
 use Puli\Repository\Api\ResourceRepository;
 use Webmozart\PathUtil\Path;
-use Puli\Repository\Assert\Assertion;
+use Puli\Repository\Assert\Assert;
 use DTL\Glob\FinderInterface;
 
 /**
@@ -78,7 +78,7 @@ abstract class AbstractPhpcrRepository implements ResourceRepository
      */
     protected function resolvePath($path)
     {
-        Assertion::path($path);
+        Assert::path($path);
 
         if ($this->basePath) {
             $path = $this->basePath . $path;

@@ -19,7 +19,7 @@ use PHPCR\NodeInterface;
  *
  * @author Daniel Leech <daniel@dantleech.com>
  */
-class PhpcrMetadata implements ResourceMetadata
+class PhpcrMetadata extends ResourceMetadata
 {
     private $node;
 
@@ -43,14 +43,6 @@ class PhpcrMetadata implements ResourceMetadata
         $date = $this->node->getProperty('jcr:created')->getDate();
 
         return $date->format('U');
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getAccessTime()
-    {
-        return 0;
     }
 
     /**
