@@ -53,6 +53,7 @@ class PhpcrOdmRepository extends AbstractPhpcrRepository
         }
 
         $resource = new PhpcrOdmResource($path, $document);
+        $resource->attachTo($this);
 
         return $resource;
     }
@@ -65,7 +66,7 @@ class PhpcrOdmRepository extends AbstractPhpcrRepository
         $resource = $this->get($path);
         $children = $this->getManager()->getChildren($resource->getDocument());
 
-        return $this->buildCollection($children);
+        return $this->buildCollection($children->toArray());
     }
 
     /**

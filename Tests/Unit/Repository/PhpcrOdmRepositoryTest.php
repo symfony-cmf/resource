@@ -20,6 +20,7 @@ class PhpcrOdmRepositoryTest extends RepositoryTestCase
     {
         $this->documentManager = $this->prophesize('Doctrine\ODM\PHPCR\DocumentManager');
         $this->managerRegistry = $this->prophesize('Doctrine\Common\Persistence\ManagerRegistry');
+        $this->childrenCollection = $this->prophesize('Doctrine\ODM\PHPCR\ChildrenCollection');
         $this->finder = $this->prophesize('DTL\Glob\FinderInterface');
         $this->uow = $this->prophesize('Doctrine\ODM\PHPCR\UnitOfWork');
         $this->document = new \stdClass();
@@ -69,9 +70,10 @@ class PhpcrOdmRepositoryTest extends RepositoryTestCase
     public function testListChildren($basePath, $requestedPath, $canonicalPath, $absPath)
     {
         $this->documentManager->find(null, $absPath)->willReturn($this->document);
-        $this->documentManager->getChildren($this->document)->willReturn(array(
+        $this->childrenCollection->toArray()->willReturn(array(
             $this->child1, $this->child2
         ));
+        $this->documentManager->getChildren($this->document)->willReturn($this->childrenCollection);
         $this->uow->getDocumentId($this->child1)->willReturn($absPath . '/child1');
         $this->uow->getDocumentId($this->child2)->willReturn($absPath . '/child2');
 
@@ -93,8 +95,9 @@ class PhpcrOdmRepositoryTest extends RepositoryTestCase
             $children[] = new \stdClass();
         }
 
+        $this->childrenCollection->toArray()->willReturn($children);
         $this->documentManager->find(null, '/test')->willReturn($this->document);
-        $this->documentManager->getChildren($this->document)->willReturn($children);
+        $this->documentManager->getChildren($this->document)->willReturn($this->childrenCollection);
 
         $res = $this->getRepository()->hasChildren('/test');
 
