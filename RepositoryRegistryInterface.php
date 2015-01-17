@@ -11,6 +11,8 @@
 
 namespace Symfony\Cmf\Component\Resource;
 
+use Puli\Repository\Api\ResourceRepository;
+
 /**
  * The registry is used to retrieve named repositories
  *
@@ -26,4 +28,13 @@ interface RepositoryRegistryInterface
      * @return Puli\Repository\Api\ResourceRepository
      */
     public function get($repositoryName);
+
+    /**
+     * Return the name assigned to the given resource repository
+     *
+     * @return string
+     *
+     * @throws \RuntimeException If the name cannot be determined
+     */
+    public function getName(ResourceRepository $resource);
 }
