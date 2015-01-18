@@ -72,7 +72,7 @@ class PhpcrRepository extends AbstractPhpcrRepository
     {
         $resource = $this->get($path);
 
-        return $this->buildCollection($resource->getNode()->getNodes());
+        return $this->buildCollection((array) $resource->getNode()->getNodes());
     }
 
     /**
