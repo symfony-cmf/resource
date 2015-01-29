@@ -64,7 +64,7 @@ class PhpcrOdmRepository extends AbstractPhpcrRepository
     public function listChildren($path)
     {
         $resource = $this->get($path);
-        $children = $this->getManager()->getChildren($resource->getDocument());
+        $children = $this->getManager()->getChildren($resource->getPayload());
 
         return $this->buildCollection($children->toArray());
     }

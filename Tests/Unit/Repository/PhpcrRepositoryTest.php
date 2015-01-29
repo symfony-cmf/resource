@@ -39,7 +39,7 @@ class PhpcrRepositoryTest extends RepositoryTestCase
 
         $this->assertEquals($requestedPath, $res->getPath());
         $this->assertEquals('foobar', $res->getName());
-        $this->assertSame($this->node->reveal(), $res->getNode());
+        $this->assertSame($this->node->reveal(), $res->getPayload());
         $this->assertTrue($res->isAttached());
     }
 
@@ -55,7 +55,7 @@ class PhpcrRepositoryTest extends RepositoryTestCase
         $this->assertInstanceOf('Puli\Repository\Resource\Collection\ArrayResourceCollection', $res);
         $this->assertCount(1, $res);
         $nodeResource = $res->offsetGet(0);
-        $this->assertSame($this->node->reveal(), $nodeResource->getNode());
+        $this->assertSame($this->node->reveal(), $nodeResource->getPayload());
     }
 
     /**

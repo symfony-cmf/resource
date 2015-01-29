@@ -32,7 +32,7 @@ class PhpcrOdmResource extends GenericResource
      *
      * @return DocumentInterface
      */
-    public function getDocument()
+    public function getPayload()
     {
         return $this->document;
     }

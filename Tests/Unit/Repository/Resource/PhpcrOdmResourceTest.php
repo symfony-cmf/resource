@@ -17,7 +17,7 @@ class PhpcrOdmResourceTest extends ProphecyTestCase
 
     public function testGetDocument()
     {
-        $this->assertSame($this->resource->getDocument(), $this->document);
+        $this->assertSame($this->resource->getPayload(), $this->document);
     }
 
     public function testGetName()

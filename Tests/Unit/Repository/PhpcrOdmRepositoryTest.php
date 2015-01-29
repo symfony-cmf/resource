@@ -43,7 +43,7 @@ class PhpcrOdmRepositoryTest extends RepositoryTestCase
         $res = $this->getRepository($basePath)->get($requestedPath);
 
         $this->assertInstanceOf('Symfony\Cmf\Component\Resource\Repository\Resource\PhpcrOdmResource', $res);
-        $this->assertSame($this->object, $res->getDocument());
+        $this->assertSame($this->object, $res->getPayload());
         $this->assertTrue($res->isAttached());
     }
 
@@ -61,7 +61,7 @@ class PhpcrOdmRepositoryTest extends RepositoryTestCase
         $this->assertInstanceOf('Puli\Repository\Resource\Collection\ArrayResourceCollection', $res);
         $this->assertCount(1, $res);
         $documentResource = $res->offsetGet(0);
-        $this->assertSame($this->document, $documentResource->getDocument());
+        $this->assertSame($this->document, $documentResource->getPayload());
     }
 
     /**

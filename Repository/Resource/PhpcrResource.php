@@ -32,7 +32,7 @@ class PhpcrResource extends GenericResource
      *
      * @return NodeInterface
      */
-    public function getNode()
+    public function getPayload()
     {
         return $this->node;
     }

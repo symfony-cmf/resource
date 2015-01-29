@@ -18,7 +18,7 @@ class PhpcrResourceTest extends ProphecyTestCase
 
     public function testGetNode()
     {
-        $this->assertSame($this->resource->getNode(), $this->node->reveal());
+        $this->assertSame($this->resource->getPayload(), $this->node->reveal());
     }
 
     public function testGetMetadata()
