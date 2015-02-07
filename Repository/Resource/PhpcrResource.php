@@ -12,7 +12,7 @@ use Puli\Repository\Resource\GenericResource;
  *
  * @author Daniel Leech <daniel@dantleech.com>
  */
-class PhpcrResource extends GenericResource
+class PhpcrResource extends CmfResource
 {
     private $node;
 
@@ -27,14 +27,19 @@ class PhpcrResource extends GenericResource
     }
 
     /**
-     * Return the PHPCR node which this resource
-     * represents.
-     *
-     * @return NodeInterface
+     * {@inheritDoc}
      */
     public function getPayload()
     {
         return $this->node;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getPayloadType()
+    {
+        return $this->node->getPrimaryNodeType()->getName();
     }
 
     /**
