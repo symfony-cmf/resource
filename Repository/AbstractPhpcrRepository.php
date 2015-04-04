@@ -13,7 +13,7 @@ namespace Symfony\Cmf\Component\Resource\Repository;
 
 use Puli\Repository\Api\ResourceRepository;
 use Webmozart\PathUtil\Path;
-use Puli\Repository\Assert\Assert;
+use Webmozart\Assert\Assert;
 use DTL\Glob\FinderInterface;
 
 /**
@@ -78,7 +78,8 @@ abstract class AbstractPhpcrRepository implements ResourceRepository
      */
     protected function resolvePath($path)
     {
-        Assert::path($path);
+        Assert::stringNotEmpty($path, 'The path must be a non-empty string. Got: %s');
+        Assert::startsWith($path, '/', 'The path %s is not absolute.');
 
         if ($this->basePath) {
             $path = $this->basePath . $path;
