@@ -11,6 +11,7 @@
     ],
     "minimum-stability": "dev",
     "require": {
+        "php": ">=5.3.9",
         "puli/repository": "~1.0,>=1.0.0-beta3",
         "dantleech/glob-finder": "~1.0"
     },
