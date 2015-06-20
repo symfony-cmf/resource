@@ -10,6 +10,7 @@ use Puli\Repository\Resource\Collection\ArrayResourceCollection;
 use Webmozart\PathUtil\Path;
 use Webmozart\Assert\Assert;
 use Puli\Repository\InMemoryRepository;
+use Webmozart\Glob\Glob;
 
 /**
  * Composite repository.
@@ -64,9 +65,9 @@ class CompositeRepository implements ResourceRepository
      */
     public function find($query, $language = 'glob')
     {
-        throw new \BadMethodCallException(sprintf(
-            'Not implemented'
-        ));
+        list($repository, $repoPath, $query) = $this->getRepository($query);
+        $query = $repoPath . $query;
+        return $this->replaceByReferences($repository->find($query, $language), $repoPath);
     }
 
     /**
@@ -74,9 +75,7 @@ class CompositeRepository implements ResourceRepository
      */
     public function contains($query, $language = 'glob')
     {
-        throw new \BadMethodCallException(sprintf(
-            'Not implemented'
-        ));
+        return $this->find($query, $language)->count() ? true : false;
     }
 
     /**
@@ -110,7 +109,9 @@ class CompositeRepository implements ResourceRepository
      */
     private function getRepository($path)
     {
-        if ($path === '/') {
+        $realPath = Glob::getStaticPrefix($path);
+
+        if ($realPath === '/') {
             return $this->getMemoryRepository($path);
         }
 

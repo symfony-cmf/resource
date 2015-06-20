@@ -92,8 +92,6 @@ class CompositeRepositoryTest extends \PHPUnit_Framework_TestCase
     /**
      * It should find resources
      * It should say if it contains resources
-     *
-     * @expectedException BadMethodCallException 
      */
     public function testFindResources()
     {
