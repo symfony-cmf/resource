@@ -66,7 +66,6 @@ class CompositeRepository implements ResourceRepository
     public function find($query, $language = 'glob')
     {
         list($repository, $repoPath, $query) = $this->getRepository($query);
-        $query = $repoPath . $query;
         return $this->replaceByReferences($repository->find($query, $language), $repoPath);
     }
 
@@ -129,7 +128,11 @@ class CompositeRepository implements ResourceRepository
         }
 
         if (null !== $resolvedRepo) {
-            $resolvedPath = $resolvedRepoPath === $path ? '/' : substr($path, strlen($resolvedRepoPath));
+            if ($resolvedRepoPath === '/') {
+                $resolvedPath = $path;
+            } else {
+                $resolvedPath = ($resolvedRepoPath === $realPath) ? '/' : substr($path, strlen($resolvedRepoPath));
+            }
             return array($resolvedRepo, $resolvedRepoPath, $resolvedPath);
         }
 
