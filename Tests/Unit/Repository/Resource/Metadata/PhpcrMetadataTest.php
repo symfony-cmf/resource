@@ -25,7 +25,7 @@ class PhpcrMetadataTest extends ProphecyTestCase
                 'mix:created',
                 true,
                 'jcr:created',
-                new \DateTime('2015-01-01'),
+                new \DateTime('2015-01-01 00:00:00', new \DateTimeZone('UTC')),
                 1420070400,
             ),
             array(
@@ -33,7 +33,7 @@ class PhpcrMetadataTest extends ProphecyTestCase
                 'mix:lastModified',
                 true,
                 'jcr:lastModified',
-                new \DateTime('2015-01-01'),
+                new \DateTime('2015-01-01 00:00:00', new \DateTimeZone('UTC')),
                 1420070400,
             ),
             array(

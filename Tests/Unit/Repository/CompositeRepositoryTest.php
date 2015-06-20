@@ -26,7 +26,7 @@ class CompositeRepositoryTest extends \PHPUnit_Framework_TestCase
         $resources = $this->repository->listChildren('/');
 
         $this->assertEquals(array(
-            '/dir1', '/dir2', '/file1.txt', '/file2.txt'
+            '/dir2', '/file1.txt', '/file2.txt'
         ), $resources->getPaths());
     }
 
@@ -51,7 +51,7 @@ class CompositeRepositoryTest extends \PHPUnit_Framework_TestCase
 
         $resources = $this->repository->listChildren('/child1');
         $this->assertEquals(array(
-            'dir1', 'dir2', 'file1.txt', 'file2.txt'
+            'dir2', 'file1.txt', 'file2.txt'
         ), $resources->getNames());
     }
 
@@ -65,7 +65,7 @@ class CompositeRepositoryTest extends \PHPUnit_Framework_TestCase
 
         $resources = $this->repository->listChildren('/');
         $this->assertEquals(array(
-            'child', 'dir1', 'dir2', 'file1.txt', 'file2.txt'
+            'child', 'dir2', 'file1.txt', 'file2.txt'
         ), $resources->getNames());
 
         $resources = $this->repository->listChildren('/child');
@@ -101,7 +101,7 @@ class CompositeRepositoryTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($this->repository->contains('/*'));
         // TODO: Why does this return "/" ?
         $this->assertEquals(array(
-            '', 'child', 'dir1', 'dir2', 'file1.txt', 'file2.txt'
+            '', 'child', 'dir2', 'file1.txt', 'file2.txt'
         ), $resources->getNames());
 
         $this->assertTrue($this->repository->contains('/*/*'));
