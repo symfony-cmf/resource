@@ -54,6 +54,8 @@ class CompositeRepository implements ResourceRepository
     {
         list($repository, $repoPath, $path) = $this->getRepository($path);
 
+        $repoPath = $repoPath == '/' ? '' : $repoPath;
+
         return $repository->get($path)->createReference($repoPath.$path);
     }
 
@@ -62,8 +64,9 @@ class CompositeRepository implements ResourceRepository
      */
     public function find($query, $language = 'glob')
     {
-        list($repository, $repoPath, $query) = $this->getRepository($query);
-        return $this->replaceByReferences($repository->find($query), $repoPath);
+        throw new \BadMethodCallException(sprintf(
+            'Not implemented'
+        ));
     }
 
     /**
@@ -71,7 +74,9 @@ class CompositeRepository implements ResourceRepository
      */
     public function contains($query, $language = 'glob')
     {
-        return $this->find($query, $language)->count() ? true : false;
+        throw new \BadMethodCallException(sprintf(
+            'Not implemented'
+        ));
     }
 
     /**
@@ -109,21 +114,22 @@ class CompositeRepository implements ResourceRepository
             return $this->getMemoryRepository($path);
         }
 
-        $resolvedRepository = null;
-        $resolvedPath = null;
+        $resolvedRepo = null;
+        $resolvedRepoPath = null;
         foreach ($this->repos as $repoPath => $repository) {
-            if (0 !== strpos($repoPath, $path)) {
+            if (0 !== strpos($path, $repoPath)) {
                 continue;
             }
 
-            if (null === $resolvedRepository || strlen($repoPath) > strlen($resolvedPath)) {
-                $resolvedRepository = $repository;
-                $resolvedPath = $repoPath;
+            if (null === $resolvedRepo || strlen($repoPath) > strlen($resolvedRepoPath)) {
+                $resolvedRepo = $repository;
+                $resolvedRepoPath = $repoPath;
             }
         }
 
-        if (null !== $resolvedRepository) {
-            return array($resolvedRepository, $resolvedPath, '/' . substr($path, strlen($resolvedPath)));
+        if (null !== $resolvedRepo) {
+            $resolvedPath = $resolvedRepoPath === $path ? '/' : substr($path, strlen($resolvedRepoPath));
+            return array($resolvedRepo, $resolvedRepoPath, $resolvedPath);
         }
 
         return $this->getMemoryRepository($path);

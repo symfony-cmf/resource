@@ -84,11 +84,16 @@ class CompositeRepositoryTest extends \PHPUnit_Framework_TestCase
 
         $resource = $this->repository->get('/child/file1.txt');
         $this->assertNotNull($resource);
+        $this->assertEquals('/child/file1.txt', $resource->getPath());
+        $repository = $resource->getRepository();
+        $this->assertInstanceOf('Puli\Repository\FilesystemRepository', $repository);
     }
 
     /**
      * It should find resources
      * It should say if it contains resources
+     *
+     * @expectedException BadMethodCallException 
      */
     public function testFindResources()
     {
@@ -96,7 +101,6 @@ class CompositeRepositoryTest extends \PHPUnit_Framework_TestCase
         $this->repository->mount('/child', $this->repository2);
 
         $resources = $this->repository->find('/*');
-
 
         $this->assertTrue($this->repository->contains('/*'));
         // TODO: Why does this return "/" ?
