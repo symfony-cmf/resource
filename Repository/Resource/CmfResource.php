@@ -16,7 +16,8 @@ use Puli\Repository\Resource\GenericResource;
 /**
  * Base class for CMF resources.
  *
- * NOTE: This is not ideal and only exists here to add the "getPayloadType" method to the Puli API.
+ * NOTE: This is not ideal and only exists here to add the "getPayload" and
+ *       "getPayloadType" methods to the Puli API.
  *       See: https://github.com/puli/issues/issues/44
  */
 class CmfResource extends GenericResource
@@ -32,6 +33,16 @@ class CmfResource extends GenericResource
      * @return string|null
      */
     public function getPayloadType()
+    {
+        return null;
+    }
+    
+    /**
+     * Returns additional, implementation-specific data attached to the resource.
+     * 
+     * @return mixed The payload of the resource.
+     */
+    public function getPayload()
     {
         return null;
     }
