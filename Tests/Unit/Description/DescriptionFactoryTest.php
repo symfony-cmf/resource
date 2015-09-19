@@ -13,8 +13,8 @@ namespace Symfony\Cmf\Component\Resource\Tests\Unit\Repository;
 
 use Symfony\Cmf\Component\Resource\Description\Description;
 use Symfony\Cmf\Component\Resource\Description\DescriptionEnhancerInterface;
-use Prophecy\Argument;
 use Symfony\Cmf\Component\Resource\Description\DescriptionFactory;
+use Prophecy\Argument;
 use Puli\Repository\Api\Resource\PuliResource;
 
 class DescriptionFactoryTest extends \PHPUnit_Framework_TestCase
