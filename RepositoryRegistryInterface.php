@@ -14,14 +14,14 @@ namespace Symfony\Cmf\Component\Resource;
 use Puli\Repository\Api\ResourceRepository;
 
 /**
- * The registry is used to retrieve named repositories
+ * The registry is used to retrieve named repositories.
  *
  * @author Daniel Leech <daniel@dantleech.com>
  */
 interface RepositoryRegistryInterface
 {
     /**
-     * Return the named repository
+     * Return the named repository.
      *
      * @param string $name
      *
@@ -30,7 +30,7 @@ interface RepositoryRegistryInterface
     public function get($repositoryName);
 
     /**
-     * Return the name assigned to the given resource repository
+     * Return the name assigned to the given resource repository.
      *
      * @return string
      *
@@ -39,7 +39,7 @@ interface RepositoryRegistryInterface
     public function getRepositoryAlias(ResourceRepository $resource);
 
     /**
-     * Return the type for the given resource repository
+     * Return the type for the given resource repository.
      *
      * @return string
      *

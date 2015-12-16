@@ -34,9 +34,9 @@ class CmfResource extends GenericResource
      */
     public function getPayloadType()
     {
-        return null;
+        return;
     }
-    
+
     /**
      * Returns additional, implementation-specific data attached to the resource.
      * 
@@ -44,6 +44,6 @@ class CmfResource extends GenericResource
      */
     public function getPayload()
     {
-        return null;
+        return;
     }
 }

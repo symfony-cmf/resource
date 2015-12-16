@@ -19,7 +19,7 @@ use Puli\Repository\Resource\Collection\ArrayResourceCollection;
 use Puli\Repository\Api\ResourceNotFoundException;
 
 /**
- * Resource repository for PHPCR
+ * Resource repository for PHPCR.
  *
  * @author Daniel Leech <daniel@dantleech.com>
  */
@@ -43,7 +43,7 @@ class PhpcrRepository extends AbstractPhpcrRepository
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function get($path)
     {
@@ -76,7 +76,7 @@ class PhpcrRepository extends AbstractPhpcrRepository
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function contains($selector, $language = 'glob')
     {
@@ -84,7 +84,7 @@ class PhpcrRepository extends AbstractPhpcrRepository
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function findByTag($tag)
     {
@@ -92,7 +92,7 @@ class PhpcrRepository extends AbstractPhpcrRepository
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getTags()
     {
@@ -100,7 +100,7 @@ class PhpcrRepository extends AbstractPhpcrRepository
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     protected function buildCollection(array $nodes)
     {

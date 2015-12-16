@@ -38,7 +38,7 @@ class PhpcrOdmRepository extends AbstractPhpcrRepository
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function get($path)
     {
@@ -59,7 +59,7 @@ class PhpcrOdmRepository extends AbstractPhpcrRepository
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function listChildren($path)
     {
@@ -70,7 +70,7 @@ class PhpcrOdmRepository extends AbstractPhpcrRepository
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function contains($selector, $language = 'glob')
     {
@@ -78,7 +78,7 @@ class PhpcrOdmRepository extends AbstractPhpcrRepository
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function findByTag($tag)
     {
@@ -86,7 +86,7 @@ class PhpcrOdmRepository extends AbstractPhpcrRepository
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getTags()
     {
@@ -94,7 +94,7 @@ class PhpcrOdmRepository extends AbstractPhpcrRepository
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     protected function buildCollection(array $documents)
     {

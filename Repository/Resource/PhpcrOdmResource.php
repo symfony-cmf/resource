@@ -14,11 +14,10 @@ namespace Symfony\Cmf\Component\Resource\Repository\Resource;
 use Puli\Repository\Api\Resource\Resource;
 use PHPCR\DocumentInterface;
 use PHPCR\Util\PathHelper;
-use Puli\Repository\Resource\GenericResource;
 use Doctrine\Common\Util\ClassUtils;
 
 /**
- * Resource representing a PHPCR document
+ * Resource representing a PHPCR document.
  *
  * @author Daniel Leech <daniel@dantleech.com>
  */
@@ -48,7 +47,7 @@ class PhpcrOdmResource extends CmfResource
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getPayloadType()
     {
@@ -56,7 +55,7 @@ class PhpcrOdmResource extends CmfResource
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getName()
     {

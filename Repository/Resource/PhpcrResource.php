@@ -14,10 +14,9 @@ namespace Symfony\Cmf\Component\Resource\Repository\Resource;
 use Puli\Repository\Api\Resource\Resource;
 use PHPCR\NodeInterface;
 use Symfony\Cmf\Component\Resource\Repository\Resource\Metadata\PhpcrMetadata;
-use Puli\Repository\Resource\GenericResource;
 
 /**
- * Resource representing a PHPCR node
+ * Resource representing a PHPCR node.
  *
  * @author Daniel Leech <daniel@dantleech.com>
  */
@@ -36,7 +35,7 @@ class PhpcrResource extends CmfResource
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getPayload()
     {
@@ -44,7 +43,7 @@ class PhpcrResource extends CmfResource
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getPayloadType()
     {
@@ -52,7 +51,7 @@ class PhpcrResource extends CmfResource
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getMetadata()
     {
