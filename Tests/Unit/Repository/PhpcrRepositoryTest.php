@@ -11,7 +11,6 @@
 
 namespace Symfony\Cmf\Component\Resource\Tests\Unit\Repository;
 
-use Prophecy\PhpUnit\ProphecyTestCase;
 use Symfony\Cmf\Component\Resource\Repository\PhpcrRepository;
 
 class PhpcrRepositoryTest extends RepositoryTestCase
@@ -65,17 +64,17 @@ class PhpcrRepositoryTest extends RepositoryTestCase
     {
         $this->session->getNode($absPath)->willReturn($this->node);
         $this->node->getNodes()->willReturn(array(
-            $this->child1, $this->child2
+            $this->child1, $this->child2,
         ));
-        $this->child1->getPath()->willReturn($absPath . '/child1');
-        $this->child2->getPath()->willReturn($absPath . '/child2');
+        $this->child1->getPath()->willReturn($absPath.'/child1');
+        $this->child2->getPath()->willReturn($absPath.'/child2');
 
         $res = $this->getRepository($basePath)->listChildren($requestedPath);
 
         $this->assertInstanceOf('Puli\Repository\Resource\Collection\ArrayResourceCollection', $res);
         $this->assertCount(2, $res);
         $this->assertInstanceOf('Symfony\Cmf\Component\Resource\Repository\Resource\PhpcrResource', $res[0]);
-        $this->assertEquals($canonicalPath. '/child1', $res[0]->getPath());
+        $this->assertEquals($canonicalPath.'/child1', $res[0]->getPath());
     }
 
     /**
@@ -93,7 +92,7 @@ class PhpcrRepositoryTest extends RepositoryTestCase
     public function testHasChildren($nbChildren, $hasChildren)
     {
         $children = array();
-        for ($i = 0; $i < $nbChildren; $i++) {
+        for ($i = 0; $i < $nbChildren; ++$i) {
             $children[] = $this->prophesize('PHPCR\NodeInterface');
         }
 

@@ -54,8 +54,8 @@ abstract class RepositoryTestCase extends ProphecyTestCase
     abstract public function testGetNotExisting();
 
     /**
-     * @param integer $nbChildren Number of children expected
-     * @param boolean $hasChildren Expected result
+     * @param int  $nbChildren  Number of children expected
+     * @param bool $hasChildren Expected result
      */
     abstract public function testHasChildren($nbChildren, $hasChildren);
 
@@ -65,10 +65,10 @@ abstract class RepositoryTestCase extends ProphecyTestCase
     abstract protected function getRepository($path = null);
 
     /**
-     * @param string $basePath Base path of repository
+     * @param string $basePath      Base path of repository
      * @param string $requestedPath Requested path (may be include relative notation eg. ".,")
      * @param string $canonicalPath The expected resolved path (i.e. ".." has been resolved)
-     * @param string $absPath Absolute path to subject in the underlying repository
+     * @param string $absPath       Absolute path to subject in the underlying repository
      */
     abstract public function testListChildren($basePath, $requestedPath, $canonicalPath, $absPath);
 

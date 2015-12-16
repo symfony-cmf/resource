@@ -11,7 +11,6 @@
 
 namespace Symfony\Cmf\Component\Resource\Tests\Unit\Repository;
 
-use Prophecy\PhpUnit\ProphecyTestCase;
 use Symfony\Cmf\Component\Resource\Repository\PhpcrOdmRepository;
 
 class PhpcrOdmRepositoryTest extends RepositoryTestCase
@@ -71,18 +70,18 @@ class PhpcrOdmRepositoryTest extends RepositoryTestCase
     {
         $this->documentManager->find(null, $absPath)->willReturn($this->document);
         $this->childrenCollection->toArray()->willReturn(array(
-            $this->child1, $this->child2
+            $this->child1, $this->child2,
         ));
         $this->documentManager->getChildren($this->document)->willReturn($this->childrenCollection);
-        $this->uow->getDocumentId($this->child1)->willReturn($absPath . '/child1');
-        $this->uow->getDocumentId($this->child2)->willReturn($absPath . '/child2');
+        $this->uow->getDocumentId($this->child1)->willReturn($absPath.'/child1');
+        $this->uow->getDocumentId($this->child2)->willReturn($absPath.'/child2');
 
         $res = $this->getRepository($basePath)->listChildren($requestedPath);
 
         $this->assertInstanceOf('Puli\Repository\Resource\Collection\ArrayResourceCollection', $res);
         $this->assertCount(2, $res);
         $this->assertInstanceOf('Symfony\Cmf\Component\Resource\Repository\Resource\PhpcrOdmResource', $res[0]);
-        $this->assertEquals($canonicalPath. '/child2', $res[0]->getPath());
+        $this->assertEquals($canonicalPath.'/child2', $res[0]->getPath());
     }
 
     /**
@@ -91,7 +90,7 @@ class PhpcrOdmRepositoryTest extends RepositoryTestCase
     public function testHasChildren($nbChildren, $hasChildren)
     {
         $children = array();
-        for ($i = 0; $i < $nbChildren; $i++) {
+        for ($i = 0; $i < $nbChildren; ++$i) {
             $children[] = new \stdClass();
         }
 

@@ -15,7 +15,7 @@ use Puli\Repository\Api\Resource\ResourceMetadata;
 use PHPCR\NodeInterface;
 
 /**
- * Metadata for PHPCR node
+ * Metadata for PHPCR node.
  *
  * @author Daniel Leech <daniel@dantleech.com>
  */

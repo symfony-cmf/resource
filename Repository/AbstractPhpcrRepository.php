@@ -17,16 +17,16 @@ use Webmozart\Assert\Assert;
 use DTL\Glob\FinderInterface;
 
 /**
- * Abstract repository for both PHPCR and PHPCR-ODM repositories
+ * Abstract repository for both PHPCR and PHPCR-ODM repositories.
  *
  * @author Daniel Leech <daniel@dantleech.com>
  */
 abstract class AbstractPhpcrRepository implements ResourceRepository
 {
     /**
-     * Base path from which to serve nodes / nodes
+     * Base path from which to serve nodes / nodes.
      *
-     * @var string $basePath
+     * @var string
      */
     private $basePath;
 
@@ -45,7 +45,7 @@ abstract class AbstractPhpcrRepository implements ResourceRepository
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function hasChildren($path)
     {
@@ -55,7 +55,7 @@ abstract class AbstractPhpcrRepository implements ResourceRepository
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function find($query, $language = 'glob')
     {
@@ -82,7 +82,7 @@ abstract class AbstractPhpcrRepository implements ResourceRepository
         Assert::startsWith($path, '/', 'The path %s is not absolute.');
 
         if ($this->basePath) {
-            $path = $this->basePath . $path;
+            $path = $this->basePath.$path;
         }
 
         $path = Path::canonicalize($path);
@@ -91,7 +91,7 @@ abstract class AbstractPhpcrRepository implements ResourceRepository
     }
 
     /**
-     * Remove the base prefix from the given path
+     * Remove the base prefix from the given path.
      *
      * @param string $path
      *
@@ -105,7 +105,7 @@ abstract class AbstractPhpcrRepository implements ResourceRepository
     }
 
     /**
-     * Build a collection of PHPCR resources
+     * Build a collection of PHPCR resources.
      *
      * @return ArrayResourceCollection
      */
