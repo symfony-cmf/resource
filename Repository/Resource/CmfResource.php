@@ -39,7 +39,7 @@ class CmfResource extends GenericResource
 
     /**
      * Returns additional, implementation-specific data attached to the resource.
-     * 
+     *
      * @return mixed The payload of the resource.
      */
     public function getPayload()

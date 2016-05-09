@@ -51,7 +51,7 @@ abstract class AbstractPhpcrRepository implements ResourceRepository
     {
         $children = $this->listChildren($path);
 
-        return (boolean) count($children);
+        return (bool) count($children);
     }
 
     /**
