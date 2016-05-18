@@ -11,8 +11,20 @@
 
 namespace Symfony\Cmf\Component\Resource\Tests\Unit\Repository;
 
+use Puli\Repository\Resource\Collection\ArrayResourceCollection;
+use Symfony\Cmf\Component\Resource\Tests\Fixtures\FalsyResource;
+
 abstract class RepositoryTestCase extends \PHPUnit_Framework_TestCase
 {
+    protected $finder;
+    protected $session;
+
+    public function setUp()
+    {
+        $this->session = $this->prophesize('PHPCR\SessionInterface');
+        $this->finder = $this->prophesize('DTL\Glob\FinderInterface');
+    }
+
     public function provideGet()
     {
         return array(
@@ -49,6 +61,78 @@ abstract class RepositoryTestCase extends \PHPUnit_Framework_TestCase
         );
     }
 
+    public function provideAddInvalid()
+    {
+        return [
+            ['', null, 'Target path "" must be absolute.'],
+            ['/test', null, 'Expected an instance of', true],
+            ['/test', new FalsyResource(), 'Expected an instance of', true],
+            ['/test', new ArrayResourceCollection([new FalsyResource()]), 'Expected an instance of '],
+        ];
+    }
+
+    public function provideRemoveInvalid()
+    {
+        return [
+            ['/', 'The root directory cannot be deleted.'],
+            ['', 'The target path "" is not absolute.'],
+        ];
+    }
+
+    public function provideInvalidMove()
+    {
+        return [
+            ['', ''],
+            ['', '/'],
+            ['/', ''],
+            ['/', '/'],
+        ];
+    }
+
+    /**
+     * @dataProvider provideRemoveInvalid
+     */
+    public function testRemovePathAssertThrows($path, $expectedExceptionMessage, $language = 'glob')
+    {
+        $this->setExpectedException(\InvalidArgumentException::class, $expectedExceptionMessage);
+
+        $this->getRepository()->remove($path, $language);
+    }
+
+    /**
+     * @expectedException \Puli\Repository\Api\UnsupportedLanguageException
+     */
+    public function testRemoveFailsOnNotSupportedGlob()
+    {
+        $this->getRepository()->remove('/test', 'some-other');
+    }
+
+    /**
+     * @expectedException \Puli\Repository\Api\UnsupportedLanguageException
+     */
+    public function testMoveFailsOnNotSupportedGlob()
+    {
+        $this->getRepository()->move('/test', '/test', 'some-other');
+    }
+
+    /**
+     * @dataProvider provideInvalidMove
+     *
+     * @expectedException \InvalidArgumentException
+     */
+    public function testFailingMoveWillThrow($sourcePath, $targetPath, $language = 'glob')
+    {
+        $this->getRepository()->move($sourcePath, $targetPath, $language);
+    }
+
+    /**
+     * @expectedException \Exception
+     */
+    public function testClearShouldThrow()
+    {
+        $this->getRepository()->clear();
+    }
+
     abstract public function testGetNotExisting();
 
     /**
@@ -75,4 +159,6 @@ abstract class RepositoryTestCase extends \PHPUnit_Framework_TestCase
     abstract public function testGet($basePath, $requestedPath, $canonicalPath, $evaluatedPath);
 
     abstract public function testGetVersion();
+
+    abstract public function testRemove();
 }

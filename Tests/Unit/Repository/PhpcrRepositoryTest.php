@@ -11,14 +11,20 @@
 
 namespace Symfony\Cmf\Component\Resource\Tests\Unit\Repository;
 
+use PHPCR\NodeType\NodeTypeInterface;
+use PHPCR\PathNotFoundException;
 use Symfony\Cmf\Component\Resource\Repository\PhpcrRepository;
+use Symfony\Cmf\Component\Resource\Repository\Resource\PhpcrResource;
 
 class PhpcrRepositoryTest extends RepositoryTestCase
 {
+    protected $node;
+    protected $child1;
+    protected $child2;
+    
     public function setUp()
     {
-        $this->session = $this->prophesize('PHPCR\SessionInterface');
-        $this->finder = $this->prophesize('DTL\Glob\FinderInterface');
+        parent::setUp();
         $this->node = $this->prophesize('PHPCR\NodeInterface');
         $this->child1 = $this->prophesize('PHPCR\NodeInterface');
         $this->child2 = $this->prophesize('PHPCR\NodeInterface');
@@ -78,7 +84,7 @@ class PhpcrRepositoryTest extends RepositoryTestCase
     }
 
     /**
-     * @expectedException Puli\Repository\Api\ResourceNotFoundException
+     * @expectedException \Puli\Repository\Api\ResourceNotFoundException
      */
     public function testGetNotExisting()
     {
@@ -130,5 +136,81 @@ class PhpcrRepositoryTest extends RepositoryTestCase
         $this->session->getNode('/test')->willThrow('\PHPCR\PathNotFoundException');
 
         $this->getRepository()->getVersions('/test');
+    }
+
+    /**
+     * @dataProvider provideAddInvalid
+     */
+    public function testAddWillThrowForNonValidParameters($path, $resource, $expectedExceptionMessage, $noParentNode = false)
+    {
+        $this->setExpectedException(\InvalidArgumentException::class, $expectedExceptionMessage);
+
+        if ($noParentNode) {
+            $this->session->getNode('/test')->willThrow(PathNotFoundException::class);
+            $this->setExpectedException(\InvalidArgumentException::class, 'Parent node for "/test" does not exist');
+        } else {
+            $this->setExpectedException(\InvalidArgumentException::class, $expectedExceptionMessage);
+            $this->session->getNode('/test')->willReturn($this->node);
+        }
+
+        $this->session->save()->shouldNotBeCalled();
+
+        $this->getRepository()->add($path, $resource);
+    }
+
+    public function testAddWillPersist()
+    {
+        $resource = new PhpcrResource('/test', $this->node->reveal());
+
+        $nodeType = $this->prophesize(NodeTypeInterface::class);
+        $this->node->getPrimaryNodeType()->willReturn($nodeType);
+        $nodeType->getName()->willReturn('class-name');
+        $this->session->getNode('/test')->willReturn($this->node);
+
+        $this->session->save()->shouldBeCalled();
+        $this->node->addNode('test', 'class-name')->shouldBeCalled();
+
+        $this->getRepository()->add('/test', $resource);
+    }
+
+    /**
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage Could not remove PHPCR resource at "/test"
+     */
+    public function testRemoveThrowsWhenSessionThrows()
+    {
+        $this->session->removeItem('/test')->willThrow(PathNotFoundException::class);
+        $this->session->getNode('/test')->willReturn($this->node);
+
+        $this->getRepository()->remove('/test');
+    }
+
+    public function testRemove()
+    {
+        $this->session->getNode('/test')->willReturn($this->node);
+        $this->node->getNodes()->willReturn(['1', '2']);
+
+        $this->session->removeItem('/test')->shouldBeCalled();
+        $this->session->save()->shouldBeCalled();
+
+        $this->getRepository()->remove('/test', 'glob');
+    }
+
+    /**
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage Could not move PHPCR resource
+     */
+    public function testFailingMoveOnPathNotFound()
+    {
+        $this->session->move('/source', '/test')->willThrow(PathNotFoundException::class);
+
+        $this->getRepository()->move('/source', '/test');
+    }
+
+    public function testSuccessfullyMove()
+    {
+        $this->session->move('/source', '/test')->shouldBeCalled();
+
+        $this->getRepository()->move('/source', '/test');
     }
 }

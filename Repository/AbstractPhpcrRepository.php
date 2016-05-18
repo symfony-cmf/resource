@@ -11,20 +11,22 @@
 
 namespace Symfony\Cmf\Component\Resource\Repository;
 
+use DTL\Glob\FinderInterface;
 use Puli\Repository\Api\ChangeStream\VersionList;
 use Puli\Repository\Api\NoVersionFoundException;
 use Puli\Repository\Api\ResourceNotFoundException;
 use Puli\Repository\Api\ResourceRepository;
-use Webmozart\PathUtil\Path;
+use Puli\Repository\Api\UnsupportedLanguageException;
+use Puli\Repository\Resource\Collection\ArrayResourceCollection;
 use Webmozart\Assert\Assert;
-use DTL\Glob\FinderInterface;
+use Webmozart\PathUtil\Path;
 
 /**
  * Abstract repository for both PHPCR and PHPCR-ODM repositories.
  *
  * @author Daniel Leech <daniel@dantleech.com>
  */
-abstract class AbstractPhpcrRepository implements ResourceRepository
+abstract class AbstractPhpcrRepository implements ResourceRepository, CmfEditableRepository
 {
     /**
      * Base path from which to serve nodes / nodes.
@@ -125,4 +127,39 @@ abstract class AbstractPhpcrRepository implements ResourceRepository
             throw NoVersionFoundException::forPath($path, $e);
         }
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function remove($query, $language = 'glob')
+    {
+        $this->failUnlessGlob($language);
+
+        Assert::startsWith($query, '/', 'The target path %s is not absolute.');
+        Assert::notEq('', trim($query, '/'), 'The root directory cannot be deleted.');
+        $resolvedPath = $this->resolvePath($query);
+
+        return $this->removeResource($resolvedPath);
+    }
+
+    /**
+     * Validate a language is usable to search in repositories.
+     *
+     * @param string $language
+     */
+    protected function failUnlessGlob($language)
+    {
+        if ('glob' !== $language) {
+            throw UnsupportedLanguageException::forLanguage($language);
+        }
+    }
+
+    /**
+     * Will finally remove the resource.
+     *
+     * @param string $sourcePath
+     *
+     * @return int
+     */
+    abstract protected function removeResource($sourcePath);
 }

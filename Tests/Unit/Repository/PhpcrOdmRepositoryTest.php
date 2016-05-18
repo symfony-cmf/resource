@@ -11,25 +11,35 @@
 
 namespace Symfony\Cmf\Component\Resource\Tests\Unit\Repository;
 
+use Puli\Repository\Resource\Collection\ArrayResourceCollection;
 use Symfony\Cmf\Component\Resource\Repository\PhpcrOdmRepository;
+use Symfony\Cmf\Component\Resource\Repository\Resource\PhpcrOdmResource;
 
 class PhpcrOdmRepositoryTest extends RepositoryTestCase
 {
+    protected $documentManager;
+    protected $managerRegistry;
+    protected $childrenCollection;
+    protected $uow;
+    protected $document;
+    protected $object;
+    protected $child1;
+    protected $child2;
+
     public function setUp()
     {
+        parent::setUp();
         $this->documentManager = $this->prophesize('Doctrine\ODM\PHPCR\DocumentManager');
         $this->managerRegistry = $this->prophesize('Doctrine\Common\Persistence\ManagerRegistry');
         $this->childrenCollection = $this->prophesize('Doctrine\ODM\PHPCR\ChildrenCollection');
-        $this->finder = $this->prophesize('DTL\Glob\FinderInterface');
         $this->uow = $this->prophesize('Doctrine\ODM\PHPCR\UnitOfWork');
-        $this->document = new \stdClass();
+        $this->document = $this->prophesize('PHPCR\DocumentInterface');
         $this->child1 = new \stdClass();
         $this->child2 = new \stdClass();
+        $this->object = new \stdClass();
 
         $this->managerRegistry->getManager()->willReturn($this->documentManager);
         $this->documentManager->getUnitOfWork()->willReturn($this->uow->reveal());
-
-        $this->object = new \stdClass();
     }
 
     /**
@@ -60,7 +70,7 @@ class PhpcrOdmRepositoryTest extends RepositoryTestCase
         $this->assertInstanceOf('Puli\Repository\Resource\Collection\ArrayResourceCollection', $res);
         $this->assertCount(1, $res);
         $documentResource = $res->offsetGet(0);
-        $this->assertSame($this->document, $documentResource->getPayload());
+        $this->assertSame($this->document->reveal(), $documentResource->getPayload());
     }
 
     /**
@@ -137,5 +147,75 @@ class PhpcrOdmRepositoryTest extends RepositoryTestCase
         $this->documentManager->find(null, '/test')->willReturn(null);
 
         $this->getRepository()->getVersions('/test');
+    }
+
+    /**
+     * @dataProvider provideAddInvalid
+     */
+    public function testAddWillThrowForNonValidParameters($path, $resource, $expectedExceptionMessage, $noParent = false)
+    {
+        $this->documentManager->find(null, '/test')->willReturn($noParent ? null : $this->document);
+        $this->setExpectedException(\InvalidArgumentException::class, $expectedExceptionMessage);
+
+        $this->getRepository()->add($path, $resource);
+    }
+
+    public function testAddWillPersistResource()
+    {
+        $resource = new PhpcrOdmResource('/test', $this->document);
+
+        $this->documentManager->find(null, '/test')->willReturn($this->object);
+
+        $this->documentManager->persist($this->document)->shouldBeCalled();
+        $this->documentManager->flush()->shouldBeCalled();
+
+        $this->getRepository()->add('/test', $resource);
+    }
+
+    public function testAddWillPersistResourceCollection()
+    {
+        $resource = new PhpcrOdmResource('/test', $this->document);
+
+        $this->documentManager->find(null, '/test')->willReturn($this->object);
+
+        $this->documentManager->persist($this->document)->shouldBeCalled();
+        $this->documentManager->flush()->shouldBeCalled();
+
+        $this->getRepository()->add('/test', new ArrayResourceCollection([$resource]));
+    }
+
+    public function testRemove()
+    {
+        $this->documentManager->find(null, '/test')->willReturn($this->document);
+
+        $this->childrenCollection->toArray()->willReturn(array(
+            $this->child1, $this->child2,
+        ));
+        $this->documentManager->getChildren($this->document)->willReturn($this->childrenCollection);
+
+        $this->documentManager->remove($this->document)->shouldBeCalled();
+        $this->documentManager->flush()->shouldBeCalled();
+
+        $this->getRepository()->remove('/test', 'glob');
+    }
+
+    /**
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage No document found at /source
+     */
+    public function testFailingMoveOnSourceNotFound()
+    {
+        $this->documentManager->find(null, '/source')->willReturn(null);
+        $this->getRepository()->move('/source', '/target');
+    }
+
+    public function testSuccessfulMove()
+    {
+        $this->documentManager->find(null, '/source')->willReturn($this->document);
+
+        $this->documentManager->move($this->document, '/target')->shouldBeCalled();
+        $this->documentManager->flush()->shouldBeCalled();
+
+        $this->getRepository()->move('/source', '/target');
     }
 }
