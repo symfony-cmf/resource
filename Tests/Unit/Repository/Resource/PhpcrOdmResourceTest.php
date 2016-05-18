@@ -20,6 +20,7 @@ class PhpcrOdmResourceTest extends ProphecyTestCase
 
     public function setUp()
     {
+        parent::setUp();
         $this->document = new \stdClass();
         $this->resource = new PhpcrOdmResource('/foo/foo:bar', $this->document);
     }

@@ -17,6 +17,7 @@ class PhpcrOdmRepositoryTest extends RepositoryTestCase
 {
     public function setUp()
     {
+        parent::setUp();
         $this->documentManager = $this->prophesize('Doctrine\ODM\PHPCR\DocumentManager');
         $this->managerRegistry = $this->prophesize('Doctrine\Common\Persistence\ManagerRegistry');
         $this->childrenCollection = $this->prophesize('Doctrine\ODM\PHPCR\ChildrenCollection');
