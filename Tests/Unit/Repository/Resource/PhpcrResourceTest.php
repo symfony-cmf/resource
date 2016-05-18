@@ -19,6 +19,7 @@ class PhpcrResourceTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
+        parent::setUp();
         $this->node = $this->prophesize('PHPCR\NodeInterface');
         $this->childNode = $this->prophesize('PHPCR\NodeInterface');
         $this->resource = new PhpcrResource('/foo', $this->node->reveal());

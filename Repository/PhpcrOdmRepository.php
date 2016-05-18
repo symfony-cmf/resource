@@ -14,6 +14,9 @@ namespace Symfony\Cmf\Component\Resource\Repository;
 use Doctrine\Common\Persistence\ManagerRegistry;
 use DTL\Glob\Finder\PhpcrOdmTraversalFinder;
 use DTL\Glob\FinderInterface;
+use InvalidArgumentException;
+use Puli\Repository\Api\ChangeStream\VersionList;
+use Puli\Repository\Api\NoVersionFoundException;
 use Symfony\Cmf\Component\Resource\Repository\Resource\PhpcrOdmResource;
 use Puli\Repository\Resource\Collection\ArrayResourceCollection;
 use Puli\Repository\Api\ResourceNotFoundException;
@@ -115,5 +118,21 @@ class PhpcrOdmRepository extends AbstractPhpcrRepository
         }
 
         return $collection;
+    }
+
+    /**
+     * Returns all versions of a resource.
+     *
+     * @param string $path The path to the resource.
+     *
+     * @return VersionList The versions stored for this path.
+     *
+     * @throws NoVersionFoundException  If no version can be found.
+     * @throws InvalidArgumentException If the path is invalid. The path must
+     *                                  be a non-empty string starting with "/".
+     */
+    public function getVersions($path)
+    {
+        return new VersionList($path, []);
     }
 }
