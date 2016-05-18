@@ -35,7 +35,7 @@ class PhpcrMetadataTest extends \PHPUnit_Framework_TestCase
                 true,
                 'jcr:created',
                 new \DateTime('2015-01-01'),
-                1420066800,
+                1420070400,
             ),
             array(
                 'getModificationTime',
@@ -43,7 +43,7 @@ class PhpcrMetadataTest extends \PHPUnit_Framework_TestCase
                 true,
                 'jcr:lastModified',
                 new \DateTime('2015-01-01'),
-                1420066800,
+                1420070400,
             ),
             array(
                 'getCreationTime',
