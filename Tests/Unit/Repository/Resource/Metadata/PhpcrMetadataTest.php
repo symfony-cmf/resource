@@ -11,10 +11,9 @@
 
 namespace Symfony\Cmf\Component\Resource\Unit\Repository\Metadata\Resource;
 
-use Prophecy\PhpUnit\ProphecyTestCase;
 use Symfony\Cmf\Component\Resource\Repository\Resource\Metadata\PhpcrMetadata;
 
-class PhpcrMetadataTest extends ProphecyTestCase
+class PhpcrMetadataTest extends \PHPUnit_Framework_TestCase
 {
     private $node;
     private $property;

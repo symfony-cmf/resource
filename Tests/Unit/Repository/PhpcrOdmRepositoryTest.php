@@ -118,4 +118,24 @@ class PhpcrOdmRepositoryTest extends RepositoryTestCase
 
         return $repository;
     }
+
+    public function testGetVersion()
+    {
+        $this->documentManager->find(null, '/test')->willReturn($this->object);
+
+        $this->assertInstanceOf(
+            '\Puli\Repository\Api\ChangeStream\VersionList',
+            $this->getRepository()->getVersions('/test')
+        );
+    }
+
+    /**
+     * @expectedException \Puli\Repository\Api\NoVersionFoundException
+     */
+    public function testGetVersionsWillThrow()
+    {
+        $this->documentManager->find(null, '/test')->willReturn(null);
+
+        $this->getRepository()->getVersions('/test');
+    }
 }

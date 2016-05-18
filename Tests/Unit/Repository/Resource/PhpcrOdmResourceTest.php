@@ -11,10 +11,9 @@
 
 namespace Symfony\Cmf\Component\Resource\Tests\Unit\Repository\Resource;
 
-use Prophecy\PhpUnit\ProphecyTestCase;
 use Symfony\Cmf\Component\Resource\Repository\Resource\PhpcrOdmResource;
 
-class PhpcrOdmResourceTest extends ProphecyTestCase
+class PhpcrOdmResourceTest extends \PHPUnit_Framework_TestCase
 {
     private $document;
 
