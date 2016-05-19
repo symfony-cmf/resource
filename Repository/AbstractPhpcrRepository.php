@@ -15,7 +15,6 @@ use Puli\Repository\Api\ChangeStream\VersionList;
 use Puli\Repository\Api\NoVersionFoundException;
 use Puli\Repository\Api\ResourceNotFoundException;
 use Puli\Repository\Api\ResourceRepository;
-use Symfony\Cmf\Component\Resource\Repository\Resource\CmfResource;
 use Webmozart\PathUtil\Path;
 use Webmozart\Assert\Assert;
 use DTL\Glob\FinderInterface;
