@@ -14,13 +14,12 @@ namespace Symfony\Cmf\Component\Resource\Tests\Unit\Repository\Resource;
 use Prophecy\PhpUnit\ProphecyTestCase;
 use Symfony\Cmf\Component\Resource\Repository\Resource\PhpcrResource;
 
-class PhpcrResourceTest extends ProphecyTestCase
+class PhpcrResourceTest extends \PHPUnit_Framework_TestCase
 {
     private $node;
 
     public function setUp()
     {
-        parent::setUp();
         $this->node = $this->prophesize('PHPCR\NodeInterface');
         $this->childNode = $this->prophesize('PHPCR\NodeInterface');
         $this->resource = new PhpcrResource('/foo', $this->node->reveal());
