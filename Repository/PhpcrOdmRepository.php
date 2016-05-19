@@ -14,8 +14,6 @@ namespace Symfony\Cmf\Component\Resource\Repository;
 use Doctrine\Common\Persistence\ManagerRegistry;
 use DTL\Glob\Finder\PhpcrOdmTraversalFinder;
 use DTL\Glob\FinderInterface;
-use InvalidArgumentException;
-use Puli\Repository\Api\NoVersionFoundException;
 use Symfony\Cmf\Component\Resource\Repository\Resource\PhpcrOdmResource;
 use Puli\Repository\Resource\Collection\ArrayResourceCollection;
 use Puli\Repository\Api\ResourceNotFoundException;
