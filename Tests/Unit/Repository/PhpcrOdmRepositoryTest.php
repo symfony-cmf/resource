@@ -123,6 +123,21 @@ class PhpcrOdmRepositoryTest extends RepositoryTestCase
 
     public function testGetVersion()
     {
-        $this->assertEquals(new VersionList('some-path', [new CmfResource('some-path')]), $this->getRepository()->getVersions('some-path'));
+        $this->documentManager->find(null, '/test')->willReturn($this->object);
+
+        $this->assertInstanceOf(
+            '\Puli\Repository\Api\ChangeStream\VersionList',
+            $this->getRepository()->getVersions('/test')
+        );
+    }
+
+    /**
+     * @expectedException \Puli\Repository\Api\NoVersionFoundException
+     */
+    public function testGetVersionsWillThrow()
+    {
+        $this->documentManager->find(null, '/test')->willReturn(null);
+
+        $this->getRepository()->getVersions('/test');
     }
 }

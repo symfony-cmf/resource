@@ -12,6 +12,8 @@
 namespace Symfony\Cmf\Component\Resource\Repository;
 
 use Puli\Repository\Api\ChangeStream\VersionList;
+use Puli\Repository\Api\NoVersionFoundException;
+use Puli\Repository\Api\ResourceNotFoundException;
 use Puli\Repository\Api\ResourceRepository;
 use Symfony\Cmf\Component\Resource\Repository\Resource\CmfResource;
 use Webmozart\PathUtil\Path;
@@ -118,6 +120,10 @@ abstract class AbstractPhpcrRepository implements ResourceRepository
      */
     public function getVersions($path)
     {
-        return new VersionList($path, [new CmfResource($path)]);
+        try {
+            return new VersionList($path, [$this->get($path)]);
+        } catch (ResourceNotFoundException $e) {
+            throw NoVersionFoundException::forPath($path, $e);
+        }
     }
 }

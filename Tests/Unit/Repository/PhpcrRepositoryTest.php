@@ -115,6 +115,22 @@ class PhpcrRepositoryTest extends RepositoryTestCase
 
     public function testGetVersion()
     {
-        $this->assertEquals(new VersionList('some-path', [new CmfResource('some-path')]), $this->getRepository()->getVersions('some-path'));
+        $this->session->getNode('/test')->willReturn($this->node);
+        $this->node->getPath()->willReturn('/test');
+
+        $this->assertInstanceOf(
+            '\Puli\Repository\Api\ChangeStream\VersionList',
+            $this->getRepository()->getVersions('/test')
+        );
+    }
+
+    /**
+     * @expectedException \Puli\Repository\Api\NoVersionFoundException
+     */
+    public function testGetVersionsWillThrow()
+    {
+        $this->session->getNode('/test')->willThrow('\PHPCR\PathNotFoundException');
+
+        $this->getRepository()->getVersions('/test');
     }
 }
