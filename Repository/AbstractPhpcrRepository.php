@@ -11,7 +11,9 @@
 
 namespace Symfony\Cmf\Component\Resource\Repository;
 
+use Puli\Repository\Api\ChangeStream\VersionList;
 use Puli\Repository\Api\ResourceRepository;
+use Symfony\Cmf\Component\Resource\Repository\Resource\CmfResource;
 use Webmozart\PathUtil\Path;
 use Webmozart\Assert\Assert;
 use DTL\Glob\FinderInterface;
@@ -110,4 +112,12 @@ abstract class AbstractPhpcrRepository implements ResourceRepository
      * @return ArrayResourceCollection
      */
     abstract protected function buildCollection(array $nodes);
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getVersions($path)
+    {
+        return new VersionList($path, [new CmfResource($path)]);
+    }
 }

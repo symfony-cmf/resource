@@ -11,13 +11,14 @@
 
 namespace Symfony\Cmf\Component\Resource\Tests\Unit\Repository;
 
+use Puli\Repository\Api\ChangeStream\VersionList;
 use Symfony\Cmf\Component\Resource\Repository\PhpcrOdmRepository;
+use Symfony\Cmf\Component\Resource\Repository\Resource\CmfResource;
 
 class PhpcrOdmRepositoryTest extends RepositoryTestCase
 {
     public function setUp()
     {
-        parent::setUp();
         $this->documentManager = $this->prophesize('Doctrine\ODM\PHPCR\DocumentManager');
         $this->managerRegistry = $this->prophesize('Doctrine\Common\Persistence\ManagerRegistry');
         $this->childrenCollection = $this->prophesize('Doctrine\ODM\PHPCR\ChildrenCollection');
@@ -118,5 +119,10 @@ class PhpcrOdmRepositoryTest extends RepositoryTestCase
         $repository = new PhpcrOdmRepository($this->managerRegistry->reveal(), $path, $this->finder->reveal());
 
         return $repository;
+    }
+
+    public function testGetVersion()
+    {
+        $this->assertEquals(new VersionList('some-path', [new CmfResource('some-path')]), $this->getRepository()->getVersions('some-path'));
     }
 }
