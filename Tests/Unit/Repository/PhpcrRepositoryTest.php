@@ -11,9 +11,7 @@
 
 namespace Symfony\Cmf\Component\Resource\Tests\Unit\Repository;
 
-use Puli\Repository\Api\ChangeStream\VersionList;
 use Symfony\Cmf\Component\Resource\Repository\PhpcrRepository;
-use Symfony\Cmf\Component\Resource\Repository\Resource\CmfResource;
 
 class PhpcrRepositoryTest extends RepositoryTestCase
 {
