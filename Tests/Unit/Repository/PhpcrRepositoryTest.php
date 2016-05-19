@@ -115,7 +115,7 @@ class PhpcrRepositoryTest extends RepositoryTestCase
 
     public function testGetVersion()
     {
-q        $this->session->getNode('/test')->willReturn($this->node);
+        $this->session->getNode('/test')->willReturn($this->node);
         $this->node->getPath()->willReturn('/test');
 
         $this->assertInstanceOf(
