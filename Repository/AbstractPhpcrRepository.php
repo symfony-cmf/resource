@@ -12,9 +12,9 @@
 namespace Symfony\Cmf\Component\Resource\Repository;
 
 use Puli\Repository\Api\ChangeStream\VersionList;
-use Puli\Repository\Api\NoVersionFoundException;
-use Puli\Repository\Api\ResourceNotFoundException;
 use Puli\Repository\Api\ResourceRepository;
+use Puli\Repository\Api\UnsupportedLanguageException;
+use Puli\Repository\Resource\Collection\ArrayResourceCollection;
 use Webmozart\PathUtil\Path;
 use Webmozart\Assert\Assert;
 use DTL\Glob\FinderInterface;

@@ -11,6 +11,8 @@
 
 namespace Symfony\Cmf\Component\Resource\Tests\Unit\Repository;
 
+use Prophecy\PhpUnit\ProphecyTestCase;
+
 abstract class RepositoryTestCase extends \PHPUnit_Framework_TestCase
 {
     public function provideGet()
