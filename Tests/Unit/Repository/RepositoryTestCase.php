@@ -73,6 +73,6 @@ abstract class RepositoryTestCase extends \PHPUnit_Framework_TestCase
     abstract public function testFind();
 
     abstract public function testGet($basePath, $requestedPath, $canonicalPath, $evaluatedPath);
-    
+
     abstract public function testGetVersion();
 }
