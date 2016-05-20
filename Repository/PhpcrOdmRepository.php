@@ -21,6 +21,7 @@ use InvalidArgumentException;
 use IteratorAggregate;
 use PHPCR\NodeInterface;
 use PHPCR\Util\NodeHelper;
+use PHPCR\Util\PathHelper;
 use Puli\Repository\Api\ResourceCollection;
 use Symfony\Cmf\Component\Resource\Repository\Resource\CmfResource;
 use Symfony\Cmf\Component\Resource\Repository\Resource\PhpcrOdmResource;
@@ -139,9 +140,11 @@ class PhpcrOdmRepository extends AbstractPhpcrRepository
         Assert::startsWith($path, '/', 'Target path "%s" must be absolute.');
 
         $resolvedPath = $this->resolvePath($path);
-        $parentNode = NodeHelper::createPath($this->getManager()->getPhpcrSession(), $resolvedPath);
-        if (!$parentNode instanceof NodeInterface) {
-            throw new InvalidArgumentException('No parent node created for '.$path);
+        $parentPath = PathHelper::getParentPath($resolvedPath);
+        $parentDocument = $this->getManager()->find(null, $parentPath);
+
+        if (null === $parentDocument) {
+            throw new InvalidArgumentException(sprintf('Cannot locate parent document at "%s"', $parentPath));
         }
 
         /** @var PhpcrOdmResource[] $resources */
@@ -155,7 +158,7 @@ class PhpcrOdmRepository extends AbstractPhpcrRepository
             $document = $resource->getPayload();
             $document->setName($resource->getName());
             if ($document instanceof HierarchyInterface) {
-                $document->setParentDocument($parentNode);
+                $document->setParentDocument($parentDocument);
             }
             $this->getManager()->persist($document);
         }

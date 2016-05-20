@@ -149,17 +149,9 @@ class PhpcrOdmRepositoryTest extends RepositoryTestCase
      *
      * @expectedException \InvalidArgumentException
      */
-    public function testAddWillThrowForNonValidParameters($path, $resource, $noParentNode = false)
+    public function testAddWillThrowForNonValidParameters($path, $resource, $noParent = false)
     {
-        $this->documentManager->getPhpcrSession()->willReturn($this->session);
-
-        if ($noParentNode) {
-            $this->rootNode->hasNode('test')->willReturn(false);
-            $this->rootNode->addNode('test')->willReturn(null);
-        } else {
-            $this->rootNode->hasNode('test')->willReturn(true);
-            $this->rootNode->getNode('test')->willReturn($this->node);
-        }
+        $this->documentManager->find(null, '/')->willReturn($noParent ? null : $this->document);
 
         $this->getRepository()->add($path, $resource);
     }
@@ -168,11 +160,7 @@ class PhpcrOdmRepositoryTest extends RepositoryTestCase
     {
         $resource = new PhpcrOdmResource('/test', $this->document);
 
-        $this->documentManager->find(null, '/test')->willReturn(null);
-        $this->documentManager->getPhpcrSession()->willReturn($this->session);
-
-        $this->rootNode->hasNode('test')->willReturn(true);
-        $this->rootNode->getNode('test')->willReturn($this->node);
+        $this->documentManager->find(null, '/')->willReturn($this->object);
 
         $this->documentManager->persist($this->document)->shouldBeCalled();
         $this->documentManager->flush()->shouldBeCalled();
@@ -187,11 +175,7 @@ class PhpcrOdmRepositoryTest extends RepositoryTestCase
     {
         $resource = new PhpcrOdmResource('/test', $this->document);
 
-        $this->documentManager->find(null, '/test')->willReturn(null);
-        $this->documentManager->getPhpcrSession()->willReturn($this->session);
-
-        $this->rootNode->hasNode('test')->willReturn(true);
-        $this->rootNode->getNode('test')->willReturn($this->node);
+        $this->documentManager->find(null, '/')->willReturn($this->object);
 
         $this->documentManager->persist($this->document)->shouldBeCalled();
         $this->documentManager->flush()->shouldBeCalled();
