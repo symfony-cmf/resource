@@ -136,19 +136,20 @@ abstract class AbstractPhpcrRepository implements ResourceRepository, EditableRe
     {
         Assert::notEq('', trim($query, '/'), 'The root directory cannot be deleted.');
         Assert::startsWith($query, '/', 'The target path %s is not absolute.');
+        $deleted = 0;
 
         $resolvedPath = $this->resolvePath($query);
 
-        $this->removeResource($resolvedPath, $deleted);
-
-        return $deleted;
+        return $this->removeResource($resolvedPath, $deleted);
     }
 
     /**
-     * Will finaly remove the resource.
+     * Will finally remove the resource.
      *
      * @param string $sourcePath
      * @param int    $deleted
+     *
+     * @return int The new value for $deleted.
      */
-    abstract protected function removeResource($sourcePath, &$deleted);
+    abstract protected function removeResource($sourcePath, $deleted);
 }

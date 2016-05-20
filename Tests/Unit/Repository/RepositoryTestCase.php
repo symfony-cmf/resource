@@ -81,8 +81,10 @@ abstract class RepositoryTestCase extends \PHPUnit_Framework_TestCase
             ['/', null],
             ['', null],
             ['/test', null, true],
+            ['/test', new \stdClass(), true],
             ['/test', new CmfResource()],
             ['/test', new ArrayResourceCollection([new CmfResource()])],
+            ['/test', [new CmfResource()]],
         ];
     }
 

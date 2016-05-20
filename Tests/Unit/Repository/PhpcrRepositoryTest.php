@@ -135,7 +135,7 @@ class PhpcrRepositoryTest extends RepositoryTestCase
      *
      * @expectedException \InvalidArgumentException
      */
-    public function testAddWillThrowForNonValidPaths($path, $resource, $noParentNode = false)
+    public function testAddWillThrowForNonValidParameters($path, $resource, $noParentNode = false)
     {
         $this->session->getNode('/test')->willReturn($noParentNode ? null : $this->node);
 

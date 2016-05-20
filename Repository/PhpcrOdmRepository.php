@@ -12,11 +12,16 @@
 namespace Symfony\Cmf\Component\Resource\Repository;
 
 use Doctrine\Common\Persistence\ManagerRegistry;
+use Doctrine\Common\Persistence\ObjectManager;
+use Doctrine\ODM\PHPCR\DocumentManager;
+use Doctrine\ODM\PHPCR\HierarchyInterface;
 use DTL\Glob\Finder\PhpcrOdmTraversalFinder;
 use DTL\Glob\FinderInterface;
 use InvalidArgumentException;
+use IteratorAggregate;
 use PHPCR\NodeInterface;
 use PHPCR\Util\NodeHelper;
+use Puli\Repository\Api\ResourceCollection;
 use Symfony\Cmf\Component\Resource\Repository\Resource\CmfResource;
 use Symfony\Cmf\Component\Resource\Repository\Resource\PhpcrOdmResource;
 use Puli\Repository\Resource\Collection\ArrayResourceCollection;
@@ -37,6 +42,9 @@ class PhpcrOdmRepository extends AbstractPhpcrRepository
         $this->managerRegistry = $managerRegistry;
     }
 
+    /**
+     * @return ObjectManager|DocumentManager
+     */
     protected function getManager()
     {
         return $this->managerRegistry->getManager();
@@ -127,8 +135,8 @@ class PhpcrOdmRepository extends AbstractPhpcrRepository
      */
     public function add($path, $resource)
     {
-        Assert::notEq('', trim($path, '/'), 'The root directory cannot be created.');
-        Assert::startsWith($path, '/', 'The target path %s is not absolute.');
+        Assert::notEq('', trim($path, '/'), 'You cannot create a root node.');
+        Assert::startsWith($path, '/', 'Target path "%s" must be absolute.');
 
         $resolvedPath = $this->resolvePath($path);
         $parentNode = NodeHelper::createPath($this->getManager()->getPhpcrSession(), $resolvedPath);
@@ -136,21 +144,19 @@ class PhpcrOdmRepository extends AbstractPhpcrRepository
             throw new InvalidArgumentException('No parent node created for '.$path);
         }
 
-        if ($resource instanceof ArrayResourceCollection) {
-            /** @var PhpcrOdmResource[] $resource */
-            foreach ($resource as $item) {
-                Assert::notNull($item->getName(), 'The resource needs a name for the creation');
-                $document = $item->getPayload();
-                $document->setName($item->getName());
-                $document->setParent($parentNode);
-                $this->getManager()->persist($document);
-            }
-        } elseif ($resource instanceof CmfResource) {
-            Assert::notNull($resource->getName(), 'The resource needs a name for the creation');
+        /** @var PhpcrOdmResource[] $resources */
+        $resources = $resource instanceof IteratorAggregate ? $resource : new ArrayResourceCollection([ $resource ]);
+        Assert::isInstanceOf($resources, ResourceCollection::class, 'The list should be of instance "ResourceCollection".');
+
+        foreach ($resources as $resource) {
+            Assert::isInstanceOf($resource, CmfResource::class, 'The resource needs to of instance "CmfResource".');
+            Assert::notNull($resource->getName(), 'The resource needs a name for the creation.');
 
             $document = $resource->getPayload();
             $document->setName($resource->getName());
-            $document->setParent($parentNode);
+            if ($document instanceof HierarchyInterface) {
+                $document->setParentDocument($parentNode);
+            }
             $this->getManager()->persist($document);
         }
 
@@ -160,7 +166,7 @@ class PhpcrOdmRepository extends AbstractPhpcrRepository
     /**
      * {@inheritdoc}
      */
-    protected function removeResource($sourcePath, &$deleted)
+    protected function removeResource($sourcePath, $deleted)
     {
         $document = $this->getManager()->find(null, $sourcePath);
         $children = $this->getManager()->getChildren($document);
@@ -169,7 +175,7 @@ class PhpcrOdmRepository extends AbstractPhpcrRepository
         $this->getManager()->remove($document);
         $this->getManager()->flush();
 
-        ++$deleted;
+        return ++$deleted;
     }
 
     /**

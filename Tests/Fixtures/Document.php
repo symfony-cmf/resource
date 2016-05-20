@@ -11,10 +11,12 @@
 
 namespace Symfony\Cmf\Component\Resource\Tests\Fixtures;
 
+use Doctrine\ODM\PHPCR\HierarchyInterface;
+
 /**
  * @author Maximilian Berghoff <Maximilian.Berghoff@mayflower.de>
  */
-class Document
+class Document implements HierarchyInterface
 {
     protected $parent;
     private $name;
@@ -29,13 +31,35 @@ class Document
         return $this->name;
     }
 
-    public function setParent($parent)
+    /**
+     * {@inheritdoc}
+     */
+    public function getParentDocument()
+    {
+        return $this->parent;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setParentDocument($parent)
     {
         $this->parent = $parent;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getParent()
     {
-        return $this->parent;
+        // TODO: Implement getParent() method.
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setParent($parent)
+    {
+        // TODO: Implement setParent() method.
     }
 }

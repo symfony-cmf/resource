@@ -149,7 +149,7 @@ class PhpcrOdmRepositoryTest extends RepositoryTestCase
      *
      * @expectedException \InvalidArgumentException
      */
-    public function testAddWillThrowForNonValidPaths($path, $resource, $noParentNode = false)
+    public function testAddWillThrowForNonValidParameters($path, $resource, $noParentNode = false)
     {
         $this->documentManager->getPhpcrSession()->willReturn($this->session);
 
@@ -179,7 +179,7 @@ class PhpcrOdmRepositoryTest extends RepositoryTestCase
 
         $this->getRepository()->add('/test', $resource);
 
-        $this->assertNotNull($this->document->getParent());
+        $this->assertNotNull($this->document->getParentDocument());
         $this->assertEquals($resource->getName(), $this->document->getName());
     }
 
@@ -198,7 +198,7 @@ class PhpcrOdmRepositoryTest extends RepositoryTestCase
 
         $this->getRepository()->add('/test', new ArrayResourceCollection([$resource]));
 
-        $this->assertNotNull($this->document->getParent());
+        $this->assertNotNull($this->document->getParentDocument());
         $this->assertEquals($resource->getName(), $this->document->getName());
     }
 

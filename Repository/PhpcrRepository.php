@@ -12,10 +12,12 @@
 namespace Symfony\Cmf\Component\Resource\Repository;
 
 use InvalidArgumentException;
+use IteratorAggregate;
 use PHPCR\NodeInterface;
 use PHPCR\SessionInterface;
 use DTL\Glob\Finder\PhpcrTraversalFinder;
 use DTL\Glob\FinderInterface;
+use Puli\Repository\Api\ResourceCollection;
 use Symfony\Cmf\Component\Resource\Repository\Resource\CmfResource;
 use Symfony\Cmf\Component\Resource\Repository\Resource\PhpcrResource;
 use Puli\Repository\Resource\Collection\ArrayResourceCollection;
@@ -138,17 +140,16 @@ class PhpcrRepository extends AbstractPhpcrRepository
             throw new InvalidArgumentException('No parent node created for '.$path);
         }
 
-        if ($resource instanceof ArrayResourceCollection) {
-            /** @var PhpcrResource[] $resource */
-            foreach ($resource as $item) {
-                Assert::notNull($item->getName(), 'The resource needs a name for the creation');
-                Assert::notNull($item->getPayloadType(), 'The resource needs a type for the creation');
-                $parentNode->addNode($item->getName(), $item->getPayloadType());
-            }
-        } elseif ($resource instanceof CmfResource) {
-            Assert::notNull($resource->getName(), 'The resource needs a name for the creation');
+        /** @var PhpcrResource[] $resources */
+        $resources = $resource instanceof IteratorAggregate ? $resource : new ArrayResourceCollection([ $resource ]);
+        Assert::isInstanceOf($resources, ResourceCollection::class, 'The list should be of instance "ResourceCollection".');
+        
+        foreach ($resources as $resource) {
+            Assert::isInstanceOf($resource, CmfResource::class, 'The resource needs to of instance "CmfResource".');
+            Assert::notNull($resource->getName(), 'The resource needs a name for the creation.');
             Assert::notNull($resource->getPayloadType(), 'The resource needs a type for the creation');
-            $node = $parentNode->addNode($resource->getName(), $resource->getPayloadType());
+
+            $parentNode->addNode($resource->getName(), $resource->getPayloadType());
         }
 
         $this->session->save();
@@ -157,12 +158,14 @@ class PhpcrRepository extends AbstractPhpcrRepository
     /**
      * {@inheritdoc}
      */
-    protected function removeResource($sourcePath, &$deleted)
+    protected function removeResource($sourcePath, $deleted)
     {
         $deleted += count($this->session->getNodes($sourcePath));
 
         $this->session->removeItem($sourcePath);
         $this->session->save();
+
+        return $deleted;
     }
 
     /**
