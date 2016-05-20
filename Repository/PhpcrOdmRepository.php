@@ -19,8 +19,6 @@ use DTL\Glob\Finder\PhpcrOdmTraversalFinder;
 use DTL\Glob\FinderInterface;
 use InvalidArgumentException;
 use IteratorAggregate;
-use PHPCR\NodeInterface;
-use PHPCR\Util\NodeHelper;
 use PHPCR\Util\PathHelper;
 use Puli\Repository\Api\ResourceCollection;
 use Symfony\Cmf\Component\Resource\Repository\Resource\CmfResource;
