@@ -76,7 +76,7 @@ class PhpcrRepositoryTest extends RepositoryTestCase
     }
 
     /**
-     * @expectedException Puli\Repository\Api\ResourceNotFoundException
+     * @expectedException \Puli\Repository\Api\ResourceNotFoundException
      */
     public function testGetNotExisting()
     {

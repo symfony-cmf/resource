@@ -17,10 +17,6 @@ use DTL\Glob\FinderInterface;
 use InvalidArgumentException;
 use PHPCR\NodeInterface;
 use PHPCR\Util\NodeHelper;
-use Puli\Repository\Api\Resource\PuliResource;
-use Puli\Repository\Api\ResourceCollection;
-use Puli\Repository\Api\UnsupportedLanguageException;
-use Puli\Repository\Api\UnsupportedResourceException;
 use Symfony\Cmf\Component\Resource\Repository\Resource\CmfResource;
 use Symfony\Cmf\Component\Resource\Repository\Resource\PhpcrOdmResource;
 use Puli\Repository\Resource\Collection\ArrayResourceCollection;
@@ -160,7 +156,6 @@ class PhpcrOdmRepository extends AbstractPhpcrRepository
 
         $this->getManager()->flush();
     }
-
 
     /**
      * {@inheritdoc}
