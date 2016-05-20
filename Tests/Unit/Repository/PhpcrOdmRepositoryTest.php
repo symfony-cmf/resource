@@ -149,9 +149,8 @@ class PhpcrOdmRepositoryTest extends RepositoryTestCase
      *
      * @expectedException \InvalidArgumentException
      */
-    public function testAddWillThrowForNonValidPaths($path, $resource, $exists = false, $noParentNode = false)
+    public function testAddWillThrowForNonValidPaths($path, $resource, $noParentNode = false)
     {
-        $this->documentManager->find(null, '/test')->willReturn($exists ? $this->document : null);
         $this->documentManager->getPhpcrSession()->willReturn($this->session);
 
         if ($noParentNode) {

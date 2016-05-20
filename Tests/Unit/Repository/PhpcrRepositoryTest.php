@@ -129,4 +129,26 @@ class PhpcrRepositoryTest extends RepositoryTestCase
 
         $this->getRepository()->getVersions('/test');
     }
+
+    /**
+     * @dataProvider provideAddInvalid
+     *
+     * @expectedException \InvalidArgumentException
+     */
+    public function testAddWillThrowForNonValidPaths($path, $resource, $noParentNode = false)
+    {
+        $this->session->getNode('/test')->willReturn($noParentNode ? null : $this->node);
+
+        if ($noParentNode) {
+            $this->rootNode->hasNode('test')->willReturn(false);
+            $this->rootNode->addNode('test')->willReturn(null);
+        } else {
+            $this->rootNode->hasNode('test')->willReturn(true);
+            $this->rootNode->getNode('test')->willReturn($this->node);
+        }
+
+        $this->session->save()->shouldNotBeCalled();
+
+        $this->getRepository()->add($path, $resource);
+    }
 }

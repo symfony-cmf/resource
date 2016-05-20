@@ -21,6 +21,7 @@ use Puli\Repository\Api\Resource\PuliResource;
 use Puli\Repository\Api\ResourceCollection;
 use Puli\Repository\Api\UnsupportedLanguageException;
 use Puli\Repository\Api\UnsupportedResourceException;
+use Symfony\Cmf\Component\Resource\Repository\Resource\CmfResource;
 use Symfony\Cmf\Component\Resource\Repository\Resource\PhpcrOdmResource;
 use Puli\Repository\Resource\Collection\ArrayResourceCollection;
 use Puli\Repository\Api\ResourceNotFoundException;
@@ -126,18 +127,7 @@ class PhpcrOdmRepository extends AbstractPhpcrRepository
     }
 
     /**
-     * Adds a new resource to the repository.
-     *
-     * All resources passed to this method must implement {@link PuliResource}.
-     *
-     * @param string $path The path at which to add the resource.
-     * @param PuliResource|ResourceCollection $resource The resource(s) to add
-     *                                                  at that path.
-     *
-     * @throws InvalidArgumentException     If the path is invalid. The path
-     *                                      must be  a non-empty string starting
-     *                                      with "/".
-     * @throws UnsupportedResourceException If the resource is invalid.
+     * {@inheritdoc}
      */
     public function add($path, $resource)
     {
@@ -145,13 +135,7 @@ class PhpcrOdmRepository extends AbstractPhpcrRepository
         Assert::startsWith($path, '/', 'The target path %s is not absolute.');
 
         $resolvedPath = $this->resolvePath($path);
-        $document = $this->getManager()->find(null, $resolvedPath);
-
-        if (null !== $document) {
-            throw new InvalidArgumentException(sprintf('There still exists a resource in path %s', $path));
-        }
-
-        $parentNode = NodeHelper::createPath($this->getManager()->getPhpcrSession(), $path);
+        $parentNode = NodeHelper::createPath($this->getManager()->getPhpcrSession(), $resolvedPath);
         if (!$parentNode instanceof NodeInterface) {
             throw new InvalidArgumentException('No parent node created for ' . $path);
         }
@@ -165,7 +149,7 @@ class PhpcrOdmRepository extends AbstractPhpcrRepository
                 $document->setParent($parentNode);
                 $this->getManager()->persist($document);
             }
-        } elseif ($resource instanceof PhpcrOdmResource) {
+        } elseif ($resource instanceof CmfResource) {
             Assert::notNull($resource->getName(), 'The resource needs a name for the creation');
 
             $document = $resource->getPayload();

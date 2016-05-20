@@ -12,6 +12,7 @@
 namespace Symfony\Cmf\Component\Resource\Repository;
 
 use InvalidArgumentException;
+use PHPCR\NodeInterface;
 use PHPCR\SessionInterface;
 use DTL\Glob\Finder\PhpcrTraversalFinder;
 use DTL\Glob\FinderInterface;
@@ -19,9 +20,11 @@ use Puli\Repository\Api\Resource\PuliResource;
 use Puli\Repository\Api\ResourceCollection;
 use Puli\Repository\Api\UnsupportedLanguageException;
 use Puli\Repository\Api\UnsupportedResourceException;
+use Symfony\Cmf\Component\Resource\Repository\Resource\CmfResource;
 use Symfony\Cmf\Component\Resource\Repository\Resource\PhpcrResource;
 use Puli\Repository\Resource\Collection\ArrayResourceCollection;
 use Puli\Repository\Api\ResourceNotFoundException;
+use Webmozart\Assert\Assert;
 
 /**
  * Resource repository for PHPCR.
@@ -142,7 +145,29 @@ class PhpcrRepository extends AbstractPhpcrRepository
      */
     public function add($path, $resource)
     {
-        // TODO: Implement add() method.
+        Assert::notEq('', trim($path, '/'), 'The root directory cannot be created.');
+        Assert::startsWith($path, '/', 'The target path %s is not absolute.');
+
+        $resolvedPath = $this->resolvePath($path);
+        $parentNode = $this->session->getNode($resolvedPath);
+        if (!$parentNode instanceof NodeInterface) {
+            throw new InvalidArgumentException('No parent node created for ' . $path);
+        }
+
+        if ($resource instanceof ArrayResourceCollection) {
+            /** @var PhpcrResource[] $resource */
+            foreach ($resource as $item) {
+                Assert::notNull($item->getName(), 'The resource needs a name for the creation');
+                Assert::notNull($item->getPayloadType(), 'The resource needs a type for the creation');
+                $parentNode->addNode($item->getName(), $item->getPayloadType());
+            }
+        } elseif ($resource instanceof CmfResource) {
+            Assert::notNull($resource->getName(), 'The resource needs a name for the creation');
+            Assert::notNull($resource->getPayloadType(), 'The resource needs a type for the creation');
+            $parentNode->addNode($resource->getName(), $resource->getPayloadType());
+        }
+
+        $this->session->save();
     }
 
     /**
