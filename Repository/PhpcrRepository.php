@@ -17,6 +17,7 @@ use PHPCR\NodeInterface;
 use PHPCR\SessionInterface;
 use DTL\Glob\Finder\PhpcrTraversalFinder;
 use DTL\Glob\FinderInterface;
+use PHPCR\Util\PathHelper;
 use Puli\Repository\Api\ResourceCollection;
 use Symfony\Cmf\Component\Resource\Repository\Resource\CmfResource;
 use Symfony\Cmf\Component\Resource\Repository\Resource\PhpcrResource;
@@ -135,15 +136,15 @@ class PhpcrRepository extends AbstractPhpcrRepository
         Assert::startsWith($path, '/', 'The target path %s is not absolute.');
 
         $resolvedPath = $this->resolvePath($path);
-        $parentNode = $this->session->getNode($resolvedPath);
+        $parentNode = $this->session->getNode(PathHelper::getParentPath($resolvedPath));
         if (!$parentNode instanceof NodeInterface) {
             throw new InvalidArgumentException('No parent node created for '.$path);
         }
 
         /** @var PhpcrResource[] $resources */
-        $resources = $resource instanceof IteratorAggregate ? $resource : new ArrayResourceCollection([ $resource ]);
+        $resources = $resource instanceof IteratorAggregate ? $resource : new ArrayResourceCollection([$resource]);
         Assert::isInstanceOf($resources, ResourceCollection::class, 'The list should be of instance "ResourceCollection".');
-        
+
         foreach ($resources as $resource) {
             Assert::isInstanceOf($resource, CmfResource::class, 'The resource needs to of instance "CmfResource".');
             Assert::notNull($resource->getName(), 'The resource needs a name for the creation.');

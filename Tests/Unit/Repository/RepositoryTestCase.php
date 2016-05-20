@@ -35,6 +35,8 @@ abstract class RepositoryTestCase extends \PHPUnit_Framework_TestCase
         $this->session = $this->prophesize('PHPCR\SessionInterface');
         $this->finder = $this->prophesize('DTL\Glob\FinderInterface');
         $this->node = $this->prophesize('PHPCR\NodeInterface');
+        $this->node2 = $this->getMock('PHPCR\NodeInterface');
+        $this->node->willImplement('PHPCR\NodeInterface');
         $this->rootNode = $this->prophesize('PHPCR\NodeInterface');
         $this->session->getRootNode()->willReturn($this->rootNode);
     }

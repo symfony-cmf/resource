@@ -11,7 +11,9 @@
 
 namespace Symfony\Cmf\Component\Resource\Tests\Unit\Repository;
 
+use PHPCR\NodeType\NodeTypeInterface;
 use Symfony\Cmf\Component\Resource\Repository\PhpcrRepository;
+use Symfony\Cmf\Component\Resource\Repository\Resource\PhpcrResource;
 
 class PhpcrRepositoryTest extends RepositoryTestCase
 {
@@ -137,7 +139,7 @@ class PhpcrRepositoryTest extends RepositoryTestCase
      */
     public function testAddWillThrowForNonValidParameters($path, $resource, $noParentNode = false)
     {
-        $this->session->getNode('/test')->willReturn($noParentNode ? null : $this->node);
+        $this->session->getNode('/')->willReturn($noParentNode ? null : $this->node);
 
         if ($noParentNode) {
             $this->rootNode->hasNode('test')->willReturn(false);
@@ -150,6 +152,24 @@ class PhpcrRepositoryTest extends RepositoryTestCase
         $this->session->save()->shouldNotBeCalled();
 
         $this->getRepository()->add($path, $resource);
+    }
+
+    public function testAddWillPersist()
+    {
+        $resource = new PhpcrResource('/test', $this->node2);
+
+        $nodeType = $this->getMock(NodeTypeInterface::class);
+        $this->node2
+            ->expects($this->any())
+            ->method('getPrimaryNodeType')
+            ->will($this->returnValue($nodeType));
+        $nodeType->expects($this->any())->method('getName')->will($this->returnValue('class-name'));
+        $this->session->getNode('/')->willReturn($this->node);
+
+        $this->session->save()->shouldBeCalled();
+        $this->node->addNode('test', 'class-name')->shouldBeCalled();
+
+        $this->getRepository()->add('/test', $resource);
     }
 
     public function testRemove()

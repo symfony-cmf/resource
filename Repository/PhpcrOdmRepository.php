@@ -148,7 +148,7 @@ class PhpcrOdmRepository extends AbstractPhpcrRepository
         }
 
         /** @var PhpcrOdmResource[] $resources */
-        $resources = $resource instanceof IteratorAggregate ? $resource : new ArrayResourceCollection([ $resource ]);
+        $resources = $resource instanceof IteratorAggregate ? $resource : new ArrayResourceCollection([$resource]);
         Assert::isInstanceOf($resources, ResourceCollection::class, 'The list should be of instance "ResourceCollection".');
 
         foreach ($resources as $resource) {
