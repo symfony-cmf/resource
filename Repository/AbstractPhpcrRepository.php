@@ -128,4 +128,27 @@ abstract class AbstractPhpcrRepository implements ResourceRepository, EditableRe
             throw NoVersionFoundException::forPath($path, $e);
         }
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function remove($query, $language = 'glob')
+    {
+        Assert::notEq('', trim($query, '/'), 'The root directory cannot be deleted.');
+        Assert::startsWith($query, '/', 'The target path %s is not absolute.');
+        
+        $resolvedPath = $this->resolvePath($query);
+
+        $this->removeResource($resolvedPath, $deleted);
+
+        return $deleted;
+    }
+
+    /**
+     * Will finaly remove the resource.
+     *
+     * @param string $sourcePath
+     * @param int $deleted
+     */
+    abstract protected function removeResource($sourcePath, &$deleted);
 }

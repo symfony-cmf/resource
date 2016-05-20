@@ -164,27 +164,21 @@ class PhpcrRepository extends AbstractPhpcrRepository
         } elseif ($resource instanceof CmfResource) {
             Assert::notNull($resource->getName(), 'The resource needs a name for the creation');
             Assert::notNull($resource->getPayloadType(), 'The resource needs a type for the creation');
-            $parentNode->addNode($resource->getName(), $resource->getPayloadType());
+            $node = $parentNode->addNode($resource->getName(), $resource->getPayloadType());
         }
 
         $this->session->save();
     }
 
     /**
-     * Removes all resources matching the given query.
-     *
-     * @param string $query A resource query.
-     * @param string $language The language of the query. All implementations
-     *                         must support the language "glob".
-     *
-     * @return int The number of resources removed from the repository.
-     *
-     * @throws InvalidArgumentException     If the query is invalid.
-     * @throws UnsupportedLanguageException If the language is not supported.
+     * {@inheritdoc}
      */
-    public function remove($query, $language = 'glob')
+    protected function removeResource($sourcePath, &$deleted)
     {
-        // TODO: Implement remove() method.
+        $deleted += count($this->session->getNodes($sourcePath));
+
+        $this->session->removeItem($sourcePath);
+        $this->session->save();
     }
 
     /**

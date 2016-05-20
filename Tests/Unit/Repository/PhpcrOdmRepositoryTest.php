@@ -201,4 +201,20 @@ class PhpcrOdmRepositoryTest extends RepositoryTestCase
         $this->assertNotNull($this->document->getParent());
         $this->assertEquals($resource->getName(), $this->document->getName());
     }
+
+    public function testRemove()
+    {
+        $this->documentManager->find(null, '/test')->willReturn($this->document);
+
+        $this->childrenCollection->toArray()->willReturn(array(
+            $this->child1, $this->child2,
+        ));
+        $this->documentManager->getChildren($this->document)->willReturn($this->childrenCollection);
+
+        $this->documentManager->remove($this->document)->shouldBeCalled();
+        $this->documentManager->flush()->shouldBeCalled();
+
+        $deleted = $this->getRepository()->remove('/test', 'glob');
+        $this->assertEquals(3, $deleted);
+    }
 }

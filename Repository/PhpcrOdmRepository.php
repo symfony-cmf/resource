@@ -161,21 +161,20 @@ class PhpcrOdmRepository extends AbstractPhpcrRepository
         $this->getManager()->flush();
     }
 
+
     /**
-     * Removes all resources matching the given query.
-     *
-     * @param string $query A resource query.
-     * @param string $language The language of the query. All implementations
-     *                         must support the language "glob".
-     *
-     * @return int The number of resources removed from the repository.
-     *
-     * @throws InvalidArgumentException     If the query is invalid.
-     * @throws UnsupportedLanguageException If the language is not supported.
+     * {@inheritdoc}
      */
-    public function remove($query, $language = 'glob')
+    protected function removeResource($sourcePath, &$deleted)
     {
-        // TODO: Implement remove() method.
+        $document = $this->getManager()->find(null, $sourcePath);
+        $children = $this->getManager()->getChildren($document);
+        $deleted += count($children->toArray());
+
+        $this->getManager()->remove($document);
+        $this->getManager()->flush();
+
+        $deleted++;
     }
 
     /**

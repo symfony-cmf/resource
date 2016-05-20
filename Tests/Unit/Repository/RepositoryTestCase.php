@@ -86,6 +86,14 @@ abstract class RepositoryTestCase extends \PHPUnit_Framework_TestCase
         ];
     }
 
+    public function provideRemoveInvalid()
+    {
+        return [
+            ['/'],
+            [''],
+        ];
+    }
+
     abstract public function testGetNotExisting();
 
     /**
@@ -112,4 +120,18 @@ abstract class RepositoryTestCase extends \PHPUnit_Framework_TestCase
     abstract public function testGet($basePath, $requestedPath, $canonicalPath, $evaluatedPath);
 
     abstract public function testGetVersion();
+
+    /**
+     * @dataProvider provideRemoveInvalid
+     * @param $path
+     * @param string $language
+     *
+     * @expectedException \InvalidArgumentException
+     */
+    public function testRemovePathAssertThrows($path, $language = 'glob')
+    {
+        $this->getRepository()->remove($path, $language);
+    }
+
+    abstract public function testRemove();
 }

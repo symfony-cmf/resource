@@ -151,4 +151,14 @@ class PhpcrRepositoryTest extends RepositoryTestCase
 
         $this->getRepository()->add($path, $resource);
     }
+
+    public function testRemove()
+    {
+        $this->session->getNodes("/test")->willReturn([1, 2, 3]);
+        $this->session->removeItem('/test')->shouldBeCalled();
+        $this->session->save()->shouldBeCalled();
+
+        $deleted = $this->getRepository()->remove('/test', 'glob');
+        $this->assertEquals(3, $deleted);
+    }
 }
