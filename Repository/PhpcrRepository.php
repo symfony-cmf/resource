@@ -16,9 +16,6 @@ use PHPCR\NodeInterface;
 use PHPCR\SessionInterface;
 use DTL\Glob\Finder\PhpcrTraversalFinder;
 use DTL\Glob\FinderInterface;
-use Puli\Repository\Api\Resource\PuliResource;
-use Puli\Repository\Api\ResourceCollection;
-use Puli\Repository\Api\UnsupportedResourceException;
 use Symfony\Cmf\Component\Resource\Repository\Resource\CmfResource;
 use Symfony\Cmf\Component\Resource\Repository\Resource\PhpcrResource;
 use Puli\Repository\Resource\Collection\ArrayResourceCollection;
@@ -138,7 +135,7 @@ class PhpcrRepository extends AbstractPhpcrRepository
         $resolvedPath = $this->resolvePath($path);
         $parentNode = $this->session->getNode($resolvedPath);
         if (!$parentNode instanceof NodeInterface) {
-            throw new InvalidArgumentException('No parent node created for ' . $path);
+            throw new InvalidArgumentException('No parent node created for '.$path);
         }
 
         if ($resource instanceof ArrayResourceCollection) {
