@@ -11,9 +11,14 @@
 
 namespace Symfony\Cmf\Component\Resource\Repository;
 
+use InvalidArgumentException;
 use PHPCR\SessionInterface;
 use DTL\Glob\Finder\PhpcrTraversalFinder;
 use DTL\Glob\FinderInterface;
+use Puli\Repository\Api\Resource\PuliResource;
+use Puli\Repository\Api\ResourceCollection;
+use Puli\Repository\Api\UnsupportedLanguageException;
+use Puli\Repository\Api\UnsupportedResourceException;
 use Symfony\Cmf\Component\Resource\Repository\Resource\PhpcrResource;
 use Puli\Repository\Resource\Collection\ArrayResourceCollection;
 use Puli\Repository\Api\ResourceNotFoundException;
@@ -118,5 +123,52 @@ class PhpcrRepository extends AbstractPhpcrRepository
         }
 
         return $collection;
+    }
+
+    /**
+     * Adds a new resource to the repository.
+     *
+     * All resources passed to this method must implement {@link PuliResource}.
+     *
+     * @param string $path The path at which to
+     *                                                  add the resource.
+     * @param PuliResource|ResourceCollection $resource The resource(s) to add
+     *                                                  at that path.
+     *
+     * @throws InvalidArgumentException     If the path is invalid. The path
+     *                                      must be  a non-empty string starting
+     *                                      with "/".
+     * @throws UnsupportedResourceException If the resource is invalid.
+     */
+    public function add($path, $resource)
+    {
+        // TODO: Implement add() method.
+    }
+
+    /**
+     * Removes all resources matching the given query.
+     *
+     * @param string $query A resource query.
+     * @param string $language The language of the query. All implementations
+     *                         must support the language "glob".
+     *
+     * @return int The number of resources removed from the repository.
+     *
+     * @throws InvalidArgumentException     If the query is invalid.
+     * @throws UnsupportedLanguageException If the language is not supported.
+     */
+    public function remove($query, $language = 'glob')
+    {
+        // TODO: Implement remove() method.
+    }
+
+    /**
+     * Removes all resources from the repository.
+     *
+     * @return int The number of resources removed from the repository.
+     */
+    public function clear()
+    {
+        // TODO: Implement clear() method.
     }
 }

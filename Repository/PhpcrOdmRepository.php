@@ -14,9 +14,17 @@ namespace Symfony\Cmf\Component\Resource\Repository;
 use Doctrine\Common\Persistence\ManagerRegistry;
 use DTL\Glob\Finder\PhpcrOdmTraversalFinder;
 use DTL\Glob\FinderInterface;
+use InvalidArgumentException;
+use PHPCR\NodeInterface;
+use PHPCR\Util\NodeHelper;
+use Puli\Repository\Api\Resource\PuliResource;
+use Puli\Repository\Api\ResourceCollection;
+use Puli\Repository\Api\UnsupportedLanguageException;
+use Puli\Repository\Api\UnsupportedResourceException;
 use Symfony\Cmf\Component\Resource\Repository\Resource\PhpcrOdmResource;
 use Puli\Repository\Resource\Collection\ArrayResourceCollection;
 use Puli\Repository\Api\ResourceNotFoundException;
+use Webmozart\Assert\Assert;
 
 class PhpcrOdmRepository extends AbstractPhpcrRepository
 {
@@ -115,5 +123,84 @@ class PhpcrOdmRepository extends AbstractPhpcrRepository
         }
 
         return $collection;
+    }
+
+    /**
+     * Adds a new resource to the repository.
+     *
+     * All resources passed to this method must implement {@link PuliResource}.
+     *
+     * @param string $path The path at which to add the resource.
+     * @param PuliResource|ResourceCollection $resource The resource(s) to add
+     *                                                  at that path.
+     *
+     * @throws InvalidArgumentException     If the path is invalid. The path
+     *                                      must be  a non-empty string starting
+     *                                      with "/".
+     * @throws UnsupportedResourceException If the resource is invalid.
+     */
+    public function add($path, $resource)
+    {
+        Assert::notEq('', trim($path, '/'), 'The root directory cannot be created.');
+        Assert::startsWith($path, '/', 'The target path %s is not absolute.');
+
+        $resolvedPath = $this->resolvePath($path);
+        $document = $this->getManager()->find(null, $resolvedPath);
+
+        if (null !== $document) {
+            throw new InvalidArgumentException(sprintf('There still exists a resource in path %s', $path));
+        }
+
+        $parentNode = NodeHelper::createPath($this->getManager()->getPhpcrSession(), $path);
+        if (!$parentNode instanceof NodeInterface) {
+            throw new InvalidArgumentException('No parent node created for ' . $path);
+        }
+
+        if ($resource instanceof ArrayResourceCollection) {
+            /** @var PhpcrOdmResource[] $resource */
+            foreach ($resource as $item) {
+                Assert::notNull($item->getName(), 'The resource needs a name for the creation');
+                $document = $item->getPayload();
+                $document->setName($item->getName());
+                $document->setParent($parentNode);
+                $this->getManager()->persist($document);
+            }
+        } elseif ($resource instanceof PhpcrOdmResource) {
+            Assert::notNull($resource->getName(), 'The resource needs a name for the creation');
+
+            $document = $resource->getPayload();
+            $document->setName($resource->getName());
+            $document->setParent($parentNode);
+            $this->getManager()->persist($document);
+        }
+
+        $this->getManager()->flush();
+    }
+
+    /**
+     * Removes all resources matching the given query.
+     *
+     * @param string $query A resource query.
+     * @param string $language The language of the query. All implementations
+     *                         must support the language "glob".
+     *
+     * @return int The number of resources removed from the repository.
+     *
+     * @throws InvalidArgumentException     If the query is invalid.
+     * @throws UnsupportedLanguageException If the language is not supported.
+     */
+    public function remove($query, $language = 'glob')
+    {
+        // TODO: Implement remove() method.
+    }
+
+    /**
+     * Removes all resources from the repository.
+     *
+     * @return int The number of resources removed from the repository.
+     */
+    public function clear()
+    {
+        // TODO: Implement clear() method.
     }
 }

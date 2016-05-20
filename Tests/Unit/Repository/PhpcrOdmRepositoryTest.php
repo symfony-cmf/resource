@@ -11,7 +11,10 @@
 
 namespace Symfony\Cmf\Component\Resource\Tests\Unit\Repository;
 
+use Puli\Repository\Resource\Collection\ArrayResourceCollection;
 use Symfony\Cmf\Component\Resource\Repository\PhpcrOdmRepository;
+use Symfony\Cmf\Component\Resource\Repository\Resource\PhpcrOdmResource;
+use Symfony\Cmf\Component\Resource\Tests\Fixtures\Document;
 
 class PhpcrOdmRepositoryTest extends RepositoryTestCase
 {
@@ -21,9 +24,8 @@ class PhpcrOdmRepositoryTest extends RepositoryTestCase
         $this->documentManager = $this->prophesize('Doctrine\ODM\PHPCR\DocumentManager');
         $this->managerRegistry = $this->prophesize('Doctrine\Common\Persistence\ManagerRegistry');
         $this->childrenCollection = $this->prophesize('Doctrine\ODM\PHPCR\ChildrenCollection');
-        $this->finder = $this->prophesize('DTL\Glob\FinderInterface');
         $this->uow = $this->prophesize('Doctrine\ODM\PHPCR\UnitOfWork');
-        $this->document = new \stdClass();
+        $this->document = new Document();
         $this->child1 = new \stdClass();
         $this->child2 = new \stdClass();
 
@@ -31,6 +33,8 @@ class PhpcrOdmRepositoryTest extends RepositoryTestCase
         $this->documentManager->getUnitOfWork()->willReturn($this->uow->reveal());
 
         $this->object = new \stdClass();
+
+        $this->resource = $this->prophesize('\Symfony\Cmf\Component\Resource\Repository\Resource\PhpcrOdmResource');
     }
 
     /**
@@ -138,5 +142,64 @@ class PhpcrOdmRepositoryTest extends RepositoryTestCase
         $this->documentManager->find(null, '/test')->willReturn(null);
 
         $this->getRepository()->getVersions('/test');
+    }
+
+    /**
+     * @dataProvider provideAddInvalid
+     *
+     * @expectedException \InvalidArgumentException
+     */
+    public function testAddWillThrowForNonValidPaths($path, $resource, $exists = false, $noParentNode = false)
+    {
+        $this->documentManager->find(null, '/test')->willReturn($exists ? $this->document : null);
+        $this->documentManager->getPhpcrSession()->willReturn($this->session);
+
+        if ($noParentNode) {
+            $this->rootNode->hasNode('test')->willReturn(false);
+            $this->rootNode->addNode('test')->willReturn(null);
+        } else {
+            $this->rootNode->hasNode('test')->willReturn(true);
+            $this->rootNode->getNode('test')->willReturn($this->node);
+        }
+
+        $this->getRepository()->add($path, $resource);
+    }
+
+    public function testAddWillPersistResource()
+    {
+        $resource = new PhpcrOdmResource('/test', $this->document);
+
+        $this->documentManager->find(null, '/test')->willReturn(null);
+        $this->documentManager->getPhpcrSession()->willReturn($this->session);
+
+        $this->rootNode->hasNode('test')->willReturn(true);
+        $this->rootNode->getNode('test')->willReturn($this->node);
+
+        $this->documentManager->persist($this->document)->shouldBeCalled();
+        $this->documentManager->flush()->shouldBeCalled();
+
+        $this->getRepository()->add('/test', $resource);
+
+        $this->assertNotNull($this->document->getParent());
+        $this->assertEquals($resource->getName(), $this->document->getName());
+    }
+
+    public function testAddWillPersistResourceCollection()
+    {
+        $resource = new PhpcrOdmResource('/test', $this->document);
+
+        $this->documentManager->find(null, '/test')->willReturn(null);
+        $this->documentManager->getPhpcrSession()->willReturn($this->session);
+
+        $this->rootNode->hasNode('test')->willReturn(true);
+        $this->rootNode->getNode('test')->willReturn($this->node);
+
+        $this->documentManager->persist($this->document)->shouldBeCalled();
+        $this->documentManager->flush()->shouldBeCalled();
+
+        $this->getRepository()->add('/test', new ArrayResourceCollection([$resource]));
+
+        $this->assertNotNull($this->document->getParent());
+        $this->assertEquals($resource->getName(), $this->document->getName());
     }
 }

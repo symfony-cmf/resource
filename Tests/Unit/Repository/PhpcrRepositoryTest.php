@@ -17,9 +17,7 @@ class PhpcrRepositoryTest extends RepositoryTestCase
 {
     public function setUp()
     {
-        $this->session = $this->prophesize('PHPCR\SessionInterface');
-        $this->finder = $this->prophesize('DTL\Glob\FinderInterface');
-        $this->node = $this->prophesize('PHPCR\NodeInterface');
+        parent::setUp();
         $this->child1 = $this->prophesize('PHPCR\NodeInterface');
         $this->child2 = $this->prophesize('PHPCR\NodeInterface');
     }
