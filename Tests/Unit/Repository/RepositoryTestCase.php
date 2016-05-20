@@ -104,6 +104,7 @@ abstract class RepositoryTestCase extends \PHPUnit_Framework_TestCase
 
     /**
      * @dataProvider provideRemoveInvalid
+     *
      * @param $path
      * @param string $language
      *

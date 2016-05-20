@@ -133,7 +133,7 @@ class PhpcrOdmRepository extends AbstractPhpcrRepository
         $resolvedPath = $this->resolvePath($path);
         $parentNode = NodeHelper::createPath($this->getManager()->getPhpcrSession(), $resolvedPath);
         if (!$parentNode instanceof NodeInterface) {
-            throw new InvalidArgumentException('No parent node created for ' . $path);
+            throw new InvalidArgumentException('No parent node created for '.$path);
         }
 
         if ($resource instanceof ArrayResourceCollection) {
@@ -169,13 +169,11 @@ class PhpcrOdmRepository extends AbstractPhpcrRepository
         $this->getManager()->remove($document);
         $this->getManager()->flush();
 
-        $deleted++;
+        ++$deleted;
     }
 
     /**
-     * Removes all resources from the repository.
-     *
-     * @return int The number of resources removed from the repository.
+     * {@inheritdoc}
      */
     public function clear()
     {

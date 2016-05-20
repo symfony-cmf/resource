@@ -154,7 +154,7 @@ class PhpcrRepositoryTest extends RepositoryTestCase
 
     public function testRemove()
     {
-        $this->session->getNodes("/test")->willReturn([1, 2, 3]);
+        $this->session->getNodes('/test')->willReturn([1, 2, 3]);
         $this->session->removeItem('/test')->shouldBeCalled();
         $this->session->save()->shouldBeCalled();
 

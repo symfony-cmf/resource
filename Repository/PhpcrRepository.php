@@ -128,19 +128,7 @@ class PhpcrRepository extends AbstractPhpcrRepository
     }
 
     /**
-     * Adds a new resource to the repository.
-     *
-     * All resources passed to this method must implement {@link PuliResource}.
-     *
-     * @param string $path The path at which to
-     *                                                  add the resource.
-     * @param PuliResource|ResourceCollection $resource The resource(s) to add
-     *                                                  at that path.
-     *
-     * @throws InvalidArgumentException     If the path is invalid. The path
-     *                                      must be  a non-empty string starting
-     *                                      with "/".
-     * @throws UnsupportedResourceException If the resource is invalid.
+     * {@inheritdoc}
      */
     public function add($path, $resource)
     {
@@ -181,9 +169,7 @@ class PhpcrRepository extends AbstractPhpcrRepository
     }
 
     /**
-     * Removes all resources from the repository.
-     *
-     * @return int The number of resources removed from the repository.
+     * {@inheritdoc}
      */
     public function clear()
     {
