@@ -191,7 +191,6 @@ class PhpcrRepositoryTest extends RepositoryTestCase
         $this->getRepository()->move('/source', '/test');
     }
 
-
     /**
      * @expectedException \InvalidArgumentException
      */

@@ -193,7 +193,7 @@ class PhpcrRepository extends AbstractPhpcrRepository
     {
         throw new \Exception('Clear currently not supported');
     }
-    
+
     /**
      * {@inheritdoc}
      */
