@@ -196,19 +196,19 @@ class PhpcrOdmRepository extends AbstractPhpcrRepository
 
             $this->getManager()->persist($document);
             $this->getManager()->flush();
-            
+
             return 1;
         }
 
         return 0;
     }
-
+    
     /**
      * {@inheritdoc}
      */
     public function clear()
     {
-        // TODO: Implement clear() method.
+        throw new \Exception('Clear currently not supported');
     }
 
     /**

@@ -189,6 +189,14 @@ class PhpcrRepository extends AbstractPhpcrRepository
     /**
      * {@inheritdoc}
      */
+    public function clear()
+    {
+        throw new \Exception('Clear currently not supported');
+    }
+    
+    /**
+     * {@inheritdoc}
+     */
     protected function removeResource($sourcePath, $deleted)
     {
         $deleted += count($this->session->getNodes($sourcePath));
@@ -197,13 +205,5 @@ class PhpcrRepository extends AbstractPhpcrRepository
         $this->session->save();
 
         return $deleted;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function clear()
-    {
-        // TODO: Implement clear() method.
     }
 }

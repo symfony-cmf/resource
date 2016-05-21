@@ -145,6 +145,14 @@ abstract class RepositoryTestCase extends \PHPUnit_Framework_TestCase
         $this->getRepository()->move($sourcePath, $targetPath, $language);
     }
 
+    /**
+     * @expectedException \Exception
+     */
+    public function testClearShouldThrow()
+    {
+        $this->getRepository()->clear();
+    }
+
     abstract public function testGetNotExisting();
 
     /**
