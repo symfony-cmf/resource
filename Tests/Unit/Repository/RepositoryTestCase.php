@@ -96,13 +96,15 @@ abstract class RepositoryTestCase extends \PHPUnit_Framework_TestCase
         ];
     }
 
-    abstract public function testGetNotExisting();
-
-    /**
-     * @param int  $nbChildren  Number of children expected
-     * @param bool $hasChildren Expected result
-     */
-    abstract public function testHasChildren($nbChildren, $hasChildren);
+    public function provideInvalidMove()
+    {
+        return [
+            ['', ''],
+            ['', '/'],
+            ['/', ''],
+            ['/', '/'],
+        ];
+    }
 
     /**
      * @dataProvider provideRemoveInvalid
@@ -124,6 +126,33 @@ abstract class RepositoryTestCase extends \PHPUnit_Framework_TestCase
     {
         $this->getRepository()->remove('/test', 'some-other');
     }
+
+    /**
+     * @expectedException \Puli\Repository\Api\UnsupportedLanguageException
+     */
+    public function testMoveFailsOnNotSupportedGlob()
+    {
+        $this->getRepository()->move('/test', '/test', 'some-other');
+    }
+
+    /**
+     * @dataProvider provideInvalidMove
+     *
+     * @expectedException \InvalidArgumentException
+     */
+    public function testFailingMoveWillThrow($sourcePath, $targetPath, $language = 'glob')
+    {
+        $this->getRepository()->move($sourcePath, $targetPath, $language);
+    }
+
+    abstract public function testGetNotExisting();
+
+    /**
+     * @param int  $nbChildren  Number of children expected
+     * @param bool $hasChildren Expected result
+     */
+    abstract public function testHasChildren($nbChildren, $hasChildren);
+
     /**
      * @param string $path
      */

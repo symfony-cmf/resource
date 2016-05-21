@@ -201,4 +201,47 @@ class PhpcrOdmRepositoryTest extends RepositoryTestCase
         $deleted = $this->getRepository()->remove('/test', 'glob');
         $this->assertEquals(3, $deleted);
     }
+
+    /**
+     * @expectedException \InvalidArgumentException
+     */
+    public function testFailingMoveOnSourceNotFound()
+    {
+        $this->documentManager->find(null, '/source')->willReturn(null);
+        $this->getRepository()->move('/source', '/target');
+    }
+
+    /**
+     * @expectedException \InvalidArgumentException
+     */
+    public function testFailingMoveOnParentNotFound()
+    {
+        $this->documentManager->find(null, '/source')->willReturn($this->document);
+        $this->documentManager->find(null, '/target')->willReturn(null);
+        $this->getRepository()->move('/source', '/target');
+    }
+
+    public function testNoHierarchyNoMove()
+    {
+        $this->documentManager->find(null, '/source')->willReturn($this->object);
+        $this->documentManager->find(null, '/target')->willReturn($this->document);
+
+        $actualMoved = $this->getRepository()->move('/source', '/target');
+
+        $this->assertEquals(0, $actualMoved);
+    }
+
+    public function testSuccessfulMove()
+    {
+        $this->documentManager->find(null, '/source')->willReturn($this->document);
+        $this->documentManager->find(null, '/target')->willReturn($this->object);
+
+        $this->documentManager->persist($this->document)->shouldBeCalled();
+        $this->documentManager->flush()->shouldBeCalled();
+
+        $actualMoved = $this->getRepository()->move('/source', '/target');
+
+        $this->assertEquals($this->object, $this->document->getParentDocument());
+        $this->assertEquals(1, $actualMoved);
+    }
 }

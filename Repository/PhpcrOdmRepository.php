@@ -26,6 +26,7 @@ use Symfony\Cmf\Component\Resource\Repository\Resource\PhpcrOdmResource;
 use Puli\Repository\Resource\Collection\ArrayResourceCollection;
 use Puli\Repository\Api\ResourceNotFoundException;
 use Webmozart\Assert\Assert;
+use Webmozart\PathUtil\Path;
 
 class PhpcrOdmRepository extends AbstractPhpcrRepository
 {
@@ -165,6 +166,52 @@ class PhpcrOdmRepository extends AbstractPhpcrRepository
     }
 
     /**
+     * Moves a resource inside the repository.
+     *
+     * @param string $sourceQuery The Path of the current document.
+     * @param string $targetPath  The parent path of the destination.
+     * @param string $language
+     *
+     * @return int
+     */
+    public function move($sourceQuery, $targetPath, $language = 'glob')
+    {
+        $this->failUnlessGlob($language);
+        Assert::notEq('', trim($sourceQuery, '/'), 'The root directory cannot be moved.');
+
+        $targetPath = $this->resolvePath($targetPath);
+        $sourcePath = $this->resolvePath($sourceQuery);
+
+        $document = $this->getManager()->find(null, $sourcePath);
+        if (null === $document) {
+            throw new \InvalidArgumentException('No document found for source path '.$sourcePath);
+        }
+        $targetParentDocument = $this->getManager()->find(null, $targetPath);
+        if (null === $targetParentDocument) {
+            throw new \InvalidArgumentException('No parent document found for target path '.$targetPath);
+        }
+
+        if ($document instanceof HierarchyInterface) {
+            $document->setParentDocument($targetParentDocument);
+
+            $this->getManager()->persist($document);
+            $this->getManager()->flush();
+            
+            return 1;
+        }
+
+        return 0;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function clear()
+    {
+        // TODO: Implement clear() method.
+    }
+
+    /**
      * {@inheritdoc}
      */
     protected function removeResource($sourcePath, $deleted)
@@ -177,13 +224,5 @@ class PhpcrOdmRepository extends AbstractPhpcrRepository
         $this->getManager()->flush();
 
         return ++$deleted;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function clear()
-    {
-        // TODO: Implement clear() method.
     }
 }

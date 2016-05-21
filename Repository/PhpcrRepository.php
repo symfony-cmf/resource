@@ -14,6 +14,8 @@ namespace Symfony\Cmf\Component\Resource\Repository;
 use InvalidArgumentException;
 use IteratorAggregate;
 use PHPCR\NodeInterface;
+use PHPCR\NodeType\ConstraintViolationException;
+use PHPCR\PathNotFoundException;
 use PHPCR\SessionInterface;
 use DTL\Glob\Finder\PhpcrTraversalFinder;
 use DTL\Glob\FinderInterface;
@@ -154,6 +156,34 @@ class PhpcrRepository extends AbstractPhpcrRepository
         }
 
         $this->session->save();
+    }
+
+    /**
+     * Moves a resource inside the repository.
+     *
+     * @param string $sourceQuery The Path of the current document.
+     * @param string $targetPath  The parent path of the destination.
+     * @param string $language
+     *
+     * @return int
+     */
+    public function move($sourceQuery, $targetPath, $language = 'glob')
+    {
+        $this->failUnlessGlob($language);
+        Assert::notEq('', trim($sourceQuery, '/'), 'The root directory cannot be moved.');
+
+        $targetPath = $this->resolvePath($targetPath);
+        $sourcePath = $this->resolvePath($sourceQuery);
+
+        try {
+            $this->session->move($sourcePath, $targetPath);
+
+            return 1;
+        } catch (PathNotFoundException $e) {
+            throw new \InvalidArgumentException($e->getMessage(), $e->getCode(), $e);
+        } catch (ConstraintViolationException $e) {
+            throw new \InvalidArgumentException($e->getMessage(), $e->getCode(), $e);
+        }
     }
 
     /**
