@@ -156,14 +156,11 @@ class PhpcrRepositoryTest extends RepositoryTestCase
 
     public function testAddWillPersist()
     {
-        $resource = new PhpcrResource('/test', $this->node2);
+        $resource = new PhpcrResource('/test', $this->node->reveal());
 
-        $nodeType = $this->getMock(NodeTypeInterface::class);
-        $this->node2
-            ->expects($this->any())
-            ->method('getPrimaryNodeType')
-            ->will($this->returnValue($nodeType));
-        $nodeType->expects($this->any())->method('getName')->will($this->returnValue('class-name'));
+        $nodeType = $this->prophesize(NodeTypeInterface::class);
+        $this->node->getPrimaryNodeType()->willReturn($nodeType);
+        $nodeType->getName()->willReturn('class-name');
         $this->session->getNode('/')->willReturn($this->node);
 
         $this->session->save()->shouldBeCalled();
