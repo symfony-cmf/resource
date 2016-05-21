@@ -120,6 +120,13 @@ abstract class RepositoryTestCase extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * @expectedException \Puli\Repository\Api\UnsupportedLanguageException
+     */
+    public function testRemoveFailsOnNotSupportedGlob()
+    {
+        $this->getRepository()->remove('/test', 'some-other');
+    }
+    /**
      * @param string $path
      */
     abstract protected function getRepository($path = null);

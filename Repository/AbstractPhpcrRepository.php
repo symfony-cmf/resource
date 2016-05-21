@@ -134,6 +134,8 @@ abstract class AbstractPhpcrRepository implements ResourceRepository, EditableRe
      */
     public function remove($query, $language = 'glob')
     {
+        $this->failUnlessGlob($language);
+
         Assert::notEq('', trim($query, '/'), 'The root directory cannot be deleted.');
         Assert::startsWith($query, '/', 'The target path %s is not absolute.');
         $deleted = 0;
@@ -141,6 +143,18 @@ abstract class AbstractPhpcrRepository implements ResourceRepository, EditableRe
         $resolvedPath = $this->resolvePath($query);
 
         return $this->removeResource($resolvedPath, $deleted);
+    }
+
+    /**
+     * Validate a language is usable to search in repositories.
+     *
+     * @param string $language
+     */
+    protected function failUnlessGlob($language)
+    {
+        if ('glob' !== $language) {
+            throw UnsupportedLanguageException::forLanguage($language);
+        }
     }
 
     /**
