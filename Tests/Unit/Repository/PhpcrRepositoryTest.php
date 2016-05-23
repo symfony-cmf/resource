@@ -141,14 +141,10 @@ class PhpcrRepositoryTest extends RepositoryTestCase
      */
     public function testAddWillThrowForNonValidParameters($path, $resource, $noParentNode = false)
     {
-        $this->session->getNode('/')->willReturn($noParentNode ? null : $this->node);
-
         if ($noParentNode) {
-            $this->rootNode->hasNode('test')->willReturn(false);
-            $this->rootNode->addNode('test')->willReturn(null);
+            $this->session->getNode('/')->willThrow(PathNotFoundException::class);
         } else {
-            $this->rootNode->hasNode('test')->willReturn(true);
-            $this->rootNode->getNode('test')->willReturn($this->node);
+            $this->session->getNode('/')->willReturn($noParentNode ? null : $this->node);
         }
 
         $this->session->save()->shouldNotBeCalled();
@@ -191,21 +187,11 @@ class PhpcrRepositoryTest extends RepositoryTestCase
         $this->getRepository()->move('/source', '/test');
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     */
-    public function testFailingMoveOnContraintIssues()
-    {
-        $this->session->move('/source', '/test')->willThrow(ConstraintViolationException::class);
-
-        $this->getRepository()->move('/source', '/test');
-    }
-
     public function testSuccessfullyMove()
     {
         $this->session->move('/source', '/test')->shouldBeCalled();
 
-        $moved = $this->getRepository()->move('/source', '/test');
+        $moved = $this->getRepositorKy()->move('/source', '/test');
 
         $this->assertEquals(1, $moved);
     }

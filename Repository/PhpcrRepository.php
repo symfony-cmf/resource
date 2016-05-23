@@ -138,9 +138,10 @@ class PhpcrRepository extends AbstractPhpcrRepository
         Assert::startsWith($path, '/', 'The target path %s is not absolute.');
 
         $resolvedPath = $this->resolvePath($path);
-        $parentNode = $this->session->getNode(PathHelper::getParentPath($resolvedPath));
-        if (!$parentNode instanceof NodeInterface) {
-            throw new InvalidArgumentException('No parent node created for '.$path);
+        try {
+            $parentNode = $this->session->getNode(PathHelper::getParentPath($resolvedPath));
+        } catch (PathNotFoundException $e) {
+            throw new InvalidArgumentException('No parent node created for '.$path, $e->getCode(), $e);
         }
 
         /** @var PhpcrResource[] $resources */
@@ -180,8 +181,6 @@ class PhpcrRepository extends AbstractPhpcrRepository
 
             return 1;
         } catch (PathNotFoundException $e) {
-            throw new \InvalidArgumentException($e->getMessage(), $e->getCode(), $e);
-        } catch (ConstraintViolationException $e) {
             throw new \InvalidArgumentException($e->getMessage(), $e->getCode(), $e);
         }
     }
