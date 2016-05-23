@@ -166,9 +166,6 @@ class PhpcrOdmRepositoryTest extends RepositoryTestCase
         $this->documentManager->flush()->shouldBeCalled();
 
         $this->getRepository()->add('/test', $resource);
-
-        $this->assertNotNull($this->document->getParentDocument());
-        $this->assertEquals($resource->getName(), $this->document->getName());
     }
 
     public function testAddWillPersistResourceCollection()
@@ -181,9 +178,6 @@ class PhpcrOdmRepositoryTest extends RepositoryTestCase
         $this->documentManager->flush()->shouldBeCalled();
 
         $this->getRepository()->add('/test', new ArrayResourceCollection([$resource]));
-
-        $this->assertNotNull($this->document->getParentDocument());
-        $this->assertEquals($resource->getName(), $this->document->getName());
     }
 
     public function testRemove()

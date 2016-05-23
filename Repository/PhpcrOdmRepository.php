@@ -152,14 +152,8 @@ class PhpcrOdmRepository extends AbstractPhpcrRepository
 
         foreach ($resources as $resource) {
             Assert::isInstanceOf($resource, CmfResource::class, 'The resource needs to of instance "CmfResource".');
-            Assert::notNull($resource->getName(), 'The resource needs a name for the creation.');
 
-            $document = $resource->getPayload();
-            $document->setName($resource->getName());
-            if ($document instanceof HierarchyInterface) {
-                $document->setParentDocument($parentDocument);
-            }
-            $this->getManager()->persist($document);
+            $this->getManager()->persist($resource->getPayload());
         }
 
         $this->getManager()->flush();
@@ -202,7 +196,7 @@ class PhpcrOdmRepository extends AbstractPhpcrRepository
 
         return 0;
     }
-    
+
     /**
      * {@inheritdoc}
      */
