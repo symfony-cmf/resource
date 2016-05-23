@@ -19,14 +19,12 @@ use DTL\Glob\Finder\PhpcrOdmTraversalFinder;
 use DTL\Glob\FinderInterface;
 use InvalidArgumentException;
 use IteratorAggregate;
-use PHPCR\Util\PathHelper;
 use Puli\Repository\Api\ResourceCollection;
 use Symfony\Cmf\Component\Resource\Repository\Resource\CmfResource;
 use Symfony\Cmf\Component\Resource\Repository\Resource\PhpcrOdmResource;
 use Puli\Repository\Resource\Collection\ArrayResourceCollection;
 use Puli\Repository\Api\ResourceNotFoundException;
 use Webmozart\Assert\Assert;
-use Webmozart\PathUtil\Path;
 
 class PhpcrOdmRepository extends AbstractPhpcrRepository
 {
@@ -139,11 +137,10 @@ class PhpcrOdmRepository extends AbstractPhpcrRepository
         Assert::startsWith($path, '/', 'Target path "%s" must be absolute.');
 
         $resolvedPath = $this->resolvePath($path);
-        $parentPath = PathHelper::getParentPath($resolvedPath);
-        $parentDocument = $this->getManager()->find(null, $parentPath);
+        $parentDocument = $this->getManager()->find(null, $resolvedPath);
 
         if (null === $parentDocument) {
-            throw new InvalidArgumentException(sprintf('Cannot locate parent document at "%s"', $parentPath));
+            throw new InvalidArgumentException(sprintf('Cannot locate parent document at "%s"', $resolvedPath));
         }
 
         /** @var PhpcrOdmResource[] $resources */

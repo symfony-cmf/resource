@@ -17,7 +17,6 @@ use PHPCR\PathNotFoundException;
 use PHPCR\SessionInterface;
 use DTL\Glob\Finder\PhpcrTraversalFinder;
 use DTL\Glob\FinderInterface;
-use PHPCR\Util\PathHelper;
 use Puli\Repository\Api\ResourceCollection;
 use Symfony\Cmf\Component\Resource\Repository\Resource\CmfResource;
 use Symfony\Cmf\Component\Resource\Repository\Resource\PhpcrResource;
@@ -137,7 +136,7 @@ class PhpcrRepository extends AbstractPhpcrRepository
 
         $resolvedPath = $this->resolvePath($path);
         try {
-            $parentNode = $this->session->getNode(PathHelper::getParentPath($resolvedPath));
+            $parentNode = $this->session->getNode($resolvedPath);
         } catch (PathNotFoundException $e) {
             throw new InvalidArgumentException('No parent node created for '.$path, $e->getCode(), $e);
         }

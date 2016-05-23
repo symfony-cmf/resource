@@ -151,7 +151,7 @@ class PhpcrOdmRepositoryTest extends RepositoryTestCase
      */
     public function testAddWillThrowForNonValidParameters($path, $resource, $noParent = false)
     {
-        $this->documentManager->find(null, '/')->willReturn($noParent ? null : $this->document);
+        $this->documentManager->find(null, '/test')->willReturn($noParent ? null : $this->document);
 
         $this->getRepository()->add($path, $resource);
     }
@@ -160,7 +160,7 @@ class PhpcrOdmRepositoryTest extends RepositoryTestCase
     {
         $resource = new PhpcrOdmResource('/test', $this->document);
 
-        $this->documentManager->find(null, '/')->willReturn($this->object);
+        $this->documentManager->find(null, '/test')->willReturn($this->object);
 
         $this->documentManager->persist($this->document)->shouldBeCalled();
         $this->documentManager->flush()->shouldBeCalled();
@@ -172,7 +172,7 @@ class PhpcrOdmRepositoryTest extends RepositoryTestCase
     {
         $resource = new PhpcrOdmResource('/test', $this->document);
 
-        $this->documentManager->find(null, '/')->willReturn($this->object);
+        $this->documentManager->find(null, '/test')->willReturn($this->object);
 
         $this->documentManager->persist($this->document)->shouldBeCalled();
         $this->documentManager->flush()->shouldBeCalled();

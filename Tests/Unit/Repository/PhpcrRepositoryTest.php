@@ -141,9 +141,9 @@ class PhpcrRepositoryTest extends RepositoryTestCase
     public function testAddWillThrowForNonValidParameters($path, $resource, $noParentNode = false)
     {
         if ($noParentNode) {
-            $this->session->getNode('/')->willThrow(PathNotFoundException::class);
+            $this->session->getNode('/test')->willThrow(PathNotFoundException::class);
         } else {
-            $this->session->getNode('/')->willReturn($noParentNode ? null : $this->node);
+            $this->session->getNode('/test')->willReturn($noParentNode ? null : $this->node);
         }
 
         $this->session->save()->shouldNotBeCalled();
@@ -158,7 +158,7 @@ class PhpcrRepositoryTest extends RepositoryTestCase
         $nodeType = $this->prophesize(NodeTypeInterface::class);
         $this->node->getPrimaryNodeType()->willReturn($nodeType);
         $nodeType->getName()->willReturn('class-name');
-        $this->session->getNode('/')->willReturn($this->node);
+        $this->session->getNode('/test')->willReturn($this->node);
 
         $this->session->save()->shouldBeCalled();
         $this->node->addNode('test', 'class-name')->shouldBeCalled();
