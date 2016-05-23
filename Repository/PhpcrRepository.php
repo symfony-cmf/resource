@@ -13,8 +13,6 @@ namespace Symfony\Cmf\Component\Resource\Repository;
 
 use InvalidArgumentException;
 use IteratorAggregate;
-use PHPCR\NodeInterface;
-use PHPCR\NodeType\ConstraintViolationException;
 use PHPCR\PathNotFoundException;
 use PHPCR\SessionInterface;
 use DTL\Glob\Finder\PhpcrTraversalFinder;
@@ -200,7 +198,11 @@ class PhpcrRepository extends AbstractPhpcrRepository
     {
         $deleted += count($this->session->getNodes($sourcePath));
 
-        $this->session->removeItem($sourcePath);
+        try {
+            $this->session->removeItem($sourcePath);
+        } catch (PathNotFoundException $e) {
+            throw new \InvalidArgumentException($e->getMessage(), $e->getCode(), $e);
+        }
         $this->session->save();
 
         return $deleted;

@@ -11,7 +11,6 @@
 
 namespace Symfony\Cmf\Component\Resource\Tests\Unit\Repository;
 
-use Puli\Repository\Resource\Collection\ArrayResourceCollection;
 use Symfony\Cmf\Component\Resource\Repository\Resource\CmfResource;
 
 abstract class RepositoryTestCase extends \PHPUnit_Framework_TestCase

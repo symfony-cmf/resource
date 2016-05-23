@@ -11,7 +11,6 @@
 
 namespace Symfony\Cmf\Component\Resource\Tests\Unit\Repository;
 
-use PHPCR\NodeType\ConstraintViolationException;
 use PHPCR\NodeType\NodeTypeInterface;
 use PHPCR\PathNotFoundException;
 use Symfony\Cmf\Component\Resource\Repository\PhpcrRepository;
@@ -167,6 +166,18 @@ class PhpcrRepositoryTest extends RepositoryTestCase
         $this->getRepository()->add('/test', $resource);
     }
 
+
+    /**
+     * @expectedException \InvalidArgumentException
+     */
+    public function testRemoveThrowsWhenSessionThrows()
+    {
+        $this->session->removeItem('/test')->willThrow(PathNotFoundException::class);
+        $this->session->getNodes('/test')->willReturn(0);
+
+        $this->getRepository()->remove('/test');
+    }
+
     public function testRemove()
     {
         $this->session->getNodes('/test')->willReturn([1, 2, 3]);
@@ -191,7 +202,7 @@ class PhpcrRepositoryTest extends RepositoryTestCase
     {
         $this->session->move('/source', '/test')->shouldBeCalled();
 
-        $moved = $this->getRepositorKy()->move('/source', '/test');
+        $moved = $this->getRepository()->move('/source', '/test');
 
         $this->assertEquals(1, $moved);
     }
