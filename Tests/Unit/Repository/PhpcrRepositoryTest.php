@@ -166,7 +166,6 @@ class PhpcrRepositoryTest extends RepositoryTestCase
         $this->getRepository()->add('/test', $resource);
     }
 
-
     /**
      * @expectedException \InvalidArgumentException
      */
