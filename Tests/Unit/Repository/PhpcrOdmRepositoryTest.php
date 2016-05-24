@@ -156,6 +156,17 @@ class PhpcrOdmRepositoryTest extends RepositoryTestCase
         $this->getRepository()->add($path, $resource);
     }
 
+    /**
+     * @expectedException \InvalidArgumentException
+     */
+    public function testAddResourceNotMatchingParentPath()
+    {
+        $this->documentManager->find(null, '/test')->willReturn($this->document);
+        $this->resource->getPath()->willReturn('/bla/blub');
+
+        $this->getRepository()->add('/test', $this->resource);
+    }
+
     public function testAddWillPersistResource()
     {
         $resource = new PhpcrOdmResource('/test', $this->document);

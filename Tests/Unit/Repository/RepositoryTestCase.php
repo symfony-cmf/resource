@@ -77,7 +77,6 @@ abstract class RepositoryTestCase extends \PHPUnit_Framework_TestCase
     public function provideAddInvalid()
     {
         return [
-            ['/', null],
             ['', null],
             ['/test', null, true],
             ['/test', new \stdClass(), true],

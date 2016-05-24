@@ -132,7 +132,6 @@ class PhpcrOdmRepository extends AbstractPhpcrRepository
      */
     public function add($path, $resource)
     {
-        Assert::notEq('', trim($path, '/'), 'You cannot create a root node.');
         Assert::startsWith($path, '/', 'Target path "%s" must be absolute.');
 
         $resolvedPath = $this->resolvePath($path);
@@ -148,6 +147,7 @@ class PhpcrOdmRepository extends AbstractPhpcrRepository
 
         foreach ($resources as $resource) {
             Assert::isInstanceOf($resource, CmfResource::class, 'The resource needs to of instance "CmfResource".');
+            Assert::same($resolvedPath, $this->resolvePath($resource->getPath()));
 
             $this->getManager()->persist($resource->getPayload());
         }
