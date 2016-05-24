@@ -205,16 +205,6 @@ class PhpcrOdmRepositoryTest extends RepositoryTestCase
         $this->getRepository()->move('/source', '/target');
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     */
-    public function testFailingMoveOnParentNotFound()
-    {
-        $this->documentManager->find(null, '/source')->willReturn($this->document);
-        $this->documentManager->find(null, '/target')->willReturn(null);
-        $this->getRepository()->move('/source', '/target');
-    }
-
     public function testNoHierarchyNoMove()
     {
         $this->documentManager->find(null, '/source')->willReturn($this->object);
@@ -228,14 +218,12 @@ class PhpcrOdmRepositoryTest extends RepositoryTestCase
     public function testSuccessfulMove()
     {
         $this->documentManager->find(null, '/source')->willReturn($this->document);
-        $this->documentManager->find(null, '/target')->willReturn($this->object);
 
-        $this->documentManager->persist($this->document)->shouldBeCalled();
+        $this->documentManager->move($this->document, '/target')->shouldBeCalled();
         $this->documentManager->flush()->shouldBeCalled();
 
         $actualMoved = $this->getRepository()->move('/source', '/target');
 
-        $this->assertEquals($this->object, $this->document->getParentDocument());
         $this->assertEquals(1, $actualMoved);
     }
 }

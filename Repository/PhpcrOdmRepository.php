@@ -14,16 +14,15 @@ namespace Symfony\Cmf\Component\Resource\Repository;
 use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\ODM\PHPCR\DocumentManager;
-use Doctrine\ODM\PHPCR\HierarchyInterface;
 use DTL\Glob\Finder\PhpcrOdmTraversalFinder;
 use DTL\Glob\FinderInterface;
 use InvalidArgumentException;
 use IteratorAggregate;
 use Puli\Repository\Api\ResourceCollection;
+use Puli\Repository\Api\ResourceNotFoundException;
+use Puli\Repository\Resource\Collection\ArrayResourceCollection;
 use Symfony\Cmf\Component\Resource\Repository\Resource\CmfResource;
 use Symfony\Cmf\Component\Resource\Repository\Resource\PhpcrOdmResource;
-use Puli\Repository\Resource\Collection\ArrayResourceCollection;
-use Puli\Repository\Api\ResourceNotFoundException;
 use Webmozart\Assert\Assert;
 
 class PhpcrOdmRepository extends AbstractPhpcrRepository
@@ -177,21 +176,15 @@ class PhpcrOdmRepository extends AbstractPhpcrRepository
         if (null === $document) {
             throw new \InvalidArgumentException('No document found for source path '.$sourcePath);
         }
-        $targetParentDocument = $this->getManager()->find(null, $targetPath);
-        if (null === $targetParentDocument) {
-            throw new \InvalidArgumentException('No parent document found for target path '.$targetPath);
-        }
 
-        if ($document instanceof HierarchyInterface) {
-            $document->setParentDocument($targetParentDocument);
-
-            $this->getManager()->persist($document);
+        try {
+            $this->getManager()->move($document, $targetPath);
             $this->getManager()->flush();
 
             return 1;
+        } catch (\Exception $e) {
+            return 0;
         }
-
-        return 0;
     }
 
     /**
