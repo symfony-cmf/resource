@@ -11,37 +11,38 @@
 
 namespace Symfony\Cmf\Component\Resource\Description;
 
-use Symfony\Cmf\Component\Resource\Repository\Resource\CmfResource;
+use Puli\Repository\Api\Resource\PuliResource;
 
 class DescriptionFactory
 {
-    private $enrichers = [];
+    /**
+     * @var DescriptionEnhancerInterface[]
+     */
+    private $enhancers = [];
 
     /**
-     * @param array $enrichers
+     * @param array $enhancers
      */
-    public function __construct(array $enrichers)
+    public function __construct(array $enhancers)
     {
-        $this->enrichers = $enrichers;
+        $this->enhancers = $enhancers;
     }
 
     /**
      * Return a description of the given (CMF) Resource.
      *
-     * @param CmfResource $resource
+     * @param PuliResource $resource
      */
-    public function getPayloadDescriptionFor(CmfResource $resource)
+    public function getPayloadDescriptionFor(PuliResource $resource)
     {
-        $type = $resource->getPayloadType();
-        $payload = $resource->getPayload();
-        $description = new Description($type);
+        $description = new Description($resource);
 
-        foreach ($this->enrichers as $enricher) {
-            if (false === $enricher->supports($resource)) {
+        foreach ($this->enhancers as $enhancer) {
+            if (false === $enhancer->supports($resource)) {
                 continue;
             }
 
-            $enricher->enrich($description, $payload);
+            $enhancer->enhance($description);
         }
 
         return $description;

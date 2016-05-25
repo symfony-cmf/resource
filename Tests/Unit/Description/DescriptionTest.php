@@ -13,6 +13,7 @@ namespace Symfony\Cmf\Component\Resource\Tests\Unit\Repository;
 
 use Symfony\Cmf\Component\Resource\Description\Description;
 use Symfony\Cmf\Component\Resource\Description\Descriptor;
+use Puli\Repository\Api\Resource\PuliResource;
 
 class DescriptionTest extends \PHPUnit_Framework_TestCase
 {
@@ -21,9 +22,15 @@ class DescriptionTest extends \PHPUnit_Framework_TestCase
      */
     private $description;
 
+    /**
+     * @var PuliResource
+     */
+    private $resource;
+
     public function setUp()
     {
-        $this->description = new Description('some-type');
+        $this->resource = $this->prophesize(PuliResource::class);
+        $this->description = new Description($this->resource->reveal());
     }
 
     /**
@@ -42,12 +49,21 @@ class DescriptionTest extends \PHPUnit_Framework_TestCase
      * It should throw an exception when requesting an unsupported descriptor.
      *
      * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage Descriptor "not there" not supported for payload type "some-type". Supported descriptors: "foo", "bar"
+     * @expectedExceptionMessage Supported descriptors: "foo", "bar"
      */
     public function testGetUnsupported()
     {
         $this->description->set('foo', 'bar');
         $this->description->set('bar', 'foo');
         $this->description->get('not there');
+    }
+
+    /**
+     * It should return the resource that it describes.
+     */
+    public function testGetResource()
+    {
+        $resource = $this->description->getResource();
+        $this->assertSame($this->resource->reveal(), $resource);
     }
 }

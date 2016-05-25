@@ -12,51 +12,46 @@
 namespace Symfony\Cmf\Component\Resource\Tests\Unit\Repository;
 
 use Symfony\Cmf\Component\Resource\Description\Description;
-use Symfony\Cmf\Component\Resource\Description\DescriptionEnricherInterface;
+use Symfony\Cmf\Component\Resource\Description\DescriptionEnhancerInterface;
 use Prophecy\Argument;
 use Symfony\Cmf\Component\Resource\Description\DescriptionFactory;
-use Symfony\Cmf\Component\Resource\Repository\Resource\CmfResource;
+use Puli\Repository\Api\Resource\PuliResource;
 
 class DescriptionFactoryTest extends \PHPUnit_Framework_TestCase
 {
     private $factory;
-    private $enricher1;
-    private $enricher2;
-    private $payload;
+    private $enhanceer1;
+    private $enhanceer2;
     private $resource;
 
     public function setUp()
     {
-        $this->enricher1 = $this->prophesize(DescriptionEnricherInterface::class);
-        $this->enricher2 = $this->prophesize(DescriptionEnricherInterface::class);
-        $this->resource = $this->prophesize(CmfResource::class);
-
-        $this->payload = new \stdClass();
-        $this->resource->getPayload()->willReturn($this->payload);
-        $this->resource->getPayloadType()->willReturn('payload-type');
+        $this->enhanceer1 = $this->prophesize(DescriptionEnhancerInterface::class);
+        $this->enhanceer2 = $this->prophesize(DescriptionEnhancerInterface::class);
+        $this->resource = $this->prophesize(PuliResource::class);
     }
 
     /**
-     * It should return an enriched description.
+     * It should return an enhanceed description.
      */
-    public function testGetPayloadDescription()
+    public function testGetResourceDescription()
     {
-        $this->enricher1->enrich(Argument::type(Description::class), $this->payload)
+        $this->enhanceer1->enhance(Argument::type(Description::class))
             ->will(function ($args) {
                 $description = $args[0];
                 $description->set('foobar', 'barfoo');
             });
-        $this->enricher1->supports($this->resource->reveal())->willReturn(true);
-        $this->enricher2->enrich(Argument::type(Description::class), $this->payload)
+        $this->enhanceer1->supports($this->resource->reveal())->willReturn(true);
+        $this->enhanceer2->enhance(Argument::type(Description::class))
             ->will(function ($args) {
                 $description = $args[0];
                 $description->set('barfoo', 'foobar');
             });
-        $this->enricher2->supports($this->resource->reveal())->willReturn(true);
+        $this->enhanceer2->supports($this->resource->reveal())->willReturn(true);
 
         $description = $this->createFactory([
-            $this->enricher1->reveal(),
-            $this->enricher2->reveal(),
+            $this->enhanceer1->reveal(),
+            $this->enhanceer2->reveal(),
         ])->getPayloadDescriptionFor($this->resource->reveal());
 
         $this->assertInstanceOf(Description::class, $description);
@@ -65,33 +60,33 @@ class DescriptionFactoryTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * It should ignore providers that do not support the payload type.
+     * It should ignore providers that do not support the resource.
      */
     public function testIgnoreNonSupporters()
     {
-        $this->enricher1->enrich(Argument::cetera())->shouldNotBeCalled();
-        $this->enricher1->supports($this->resource->reveal())->willReturn(false);
+        $this->enhanceer1->enhance(Argument::cetera())->shouldNotBeCalled();
+        $this->enhanceer1->supports($this->resource->reveal())->willReturn(false);
 
-        $this->enricher2->enrich(Argument::cetera())->shouldBeCalled();
-        $this->enricher2->supports($this->resource->reveal())->willReturn(true);
+        $this->enhanceer2->enhance(Argument::cetera())->shouldBeCalled();
+        $this->enhanceer2->supports($this->resource->reveal())->willReturn(true);
 
         $this->createFactory([
-            $this->enricher1->reveal(),
-            $this->enricher2->reveal(),
+            $this->enhanceer1->reveal(),
+            $this->enhanceer2->reveal(),
         ])->getPayloadDescriptionFor($this->resource->reveal());
     }
 
     /**
-     * It should work when no enrichers are given.
+     * It should work when no enhancers are given.
      */
-    public function testNoEnrichers()
+    public function testNoEnhancers()
     {
         $description = $this->createFactory([])->getPayloadDescriptionFor($this->resource->reveal());
         $this->assertInstanceOf(Description::class, $description);
     }
 
-    private function createFactory(array $enrichers)
+    private function createFactory(array $enhancers)
     {
-        return new DescriptionFactory($enrichers);
+        return new DescriptionFactory($enhancers);
     }
 }

@@ -11,19 +11,18 @@
 
 namespace Symfony\Cmf\Component\Resource\Description;
 
-use Symfony\Cmf\Component\Resource\Repository\Resource\CmfResource;
+use Puli\Repository\Api\Resource\PuliResource;
 
-interface DescriptionEnricherInterface
+interface DescriptionEnhancerInterface
 {
     /**
      * Enrich the payload description.
      *
      * @param Description $description
-     * @param object      $payload
      *
      * @return Description
      */
-    public function enrich(Description $description, $payload);
+    public function enhance(Description $description);
 
     /**
      * Return true if the provider supports the given type.
@@ -32,5 +31,5 @@ interface DescriptionEnricherInterface
      *
      * @return bool
      */
-    public function supports(CmfResource $resource);
+    public function supports(PuliResource $resource);
 }

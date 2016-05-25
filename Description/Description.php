@@ -11,20 +11,33 @@
 
 namespace Symfony\Cmf\Component\Resource\Description;
 
+use Puli\Repository\Api\Resource\PuliResource;
+
+/**
+ * Descriptive metadata for resources.
+ */
 class Description
 {
+    /**
+     * @var array
+     */
     private $descriptors = [];
-    private $payloadType;
 
-    public function __construct($payloadType)
+    /**
+     * @var PuliResource
+     */
+    private $resource;
+
+    /**
+     * @param PuliResource $resource
+     */
+    public function __construct(PuliResource $resource)
     {
-        $this->payloadType = $payloadType;
+        $this->resource = $resource;
     }
 
     /**
      * Return the descriptors value for the given key.
-     *
-     * The key should be one of the constants defined in this class.
      *
      * @param string $key
      *
@@ -34,9 +47,10 @@ class Description
     {
         if (!isset($this->descriptors[$key])) {
             throw new \InvalidArgumentException(sprintf(
-                'Descriptor "%s" not supported for payload type "%s". Supported descriptors: "%s"',
+                'Descriptor "%s" not supported for resource "%s" of class "%s". Supported descriptors: "%s"',
                 $key,
-                $this->payloadType,
+                $this->resource->getPath(),
+                get_class($this->resource),
                 implode('", "', array_keys($this->descriptors))
             ));
         }
@@ -47,11 +61,12 @@ class Description
     /**
      * Set value for descriptors key.
      *
+     * Note that:
+     *
      * - It is possible to overwrite existing keys.
      *
-     * - To help ensure interoperability, where possible, the key should be the
-     *   value of one of the appropriate constants defined in the MetadescriptorsKey
-     *   class.
+     * - Where possible the key should be the value of one of the constants
+     *   defined in the Descriptor class.
      *
      * @param string $key
      * @param mixed  $value
@@ -59,5 +74,15 @@ class Description
     public function set($key, $value)
     {
         $this->descriptors[$key] = $value;
+    }
+
+    /**
+     * Return the resource for which this is the description.
+     *
+     * @return PuliResource
+     */
+    public function getResource()
+    {
+        return $this->resource;
     }
 }

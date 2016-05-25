@@ -12,8 +12,8 @@
 namespace Symfony\Cmf\Component\Resource\Description;
 
 /**
- * Class containing standard description keys which should be used when appropriate
- * by enrichers in order to provide a level of interoperability.
+ * Class containing standard descriptors which should be used when appropriate
+ * by enhancers in order to provide a level of interoperability.
  */
 final class Descriptor
 {
@@ -33,7 +33,7 @@ final class Descriptor
     const PAYLOAD_TITLE = 'title';
 
     /**
-     * Keys to be used to store link values for HTML.
+     * Descriptors for HTML links.
      */
     const LINK_EDIT_HTML = 'link.edit.html';
     const LINK_CREATE_HTML = 'link.create.html';
@@ -42,7 +42,7 @@ final class Descriptor
     const LINK_SHOW_HTML = 'link.show.html';
 
     /**
-     * Keys to be used to store link values for REST.
+     * Descriptors for REST links.
      */
     const LINK_EDIT_REST = 'link.edit.rest';
     const LINK_CREATE_REST = 'link.create.rest';
