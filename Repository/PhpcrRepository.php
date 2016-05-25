@@ -11,17 +11,17 @@
 
 namespace Symfony\Cmf\Component\Resource\Repository;
 
+use DTL\Glob\Finder\PhpcrTraversalFinder;
+use DTL\Glob\FinderInterface;
 use InvalidArgumentException;
 use IteratorAggregate;
 use PHPCR\PathNotFoundException;
 use PHPCR\SessionInterface;
-use DTL\Glob\Finder\PhpcrTraversalFinder;
-use DTL\Glob\FinderInterface;
 use Puli\Repository\Api\ResourceCollection;
+use Puli\Repository\Api\ResourceNotFoundException;
+use Puli\Repository\Resource\Collection\ArrayResourceCollection;
 use Symfony\Cmf\Component\Resource\Repository\Resource\CmfResource;
 use Symfony\Cmf\Component\Resource\Repository\Resource\PhpcrResource;
-use Puli\Repository\Resource\Collection\ArrayResourceCollection;
-use Puli\Repository\Api\ResourceNotFoundException;
 use Webmozart\Assert\Assert;
 
 /**
@@ -195,7 +195,7 @@ class PhpcrRepository extends AbstractPhpcrRepository
      */
     protected function removeResource($sourcePath, $deleted)
     {
-        $deleted += count($this->session->getNodes($sourcePath));
+        $deleted += count($this->session->getNode($sourcePath)->getNodes()) + 1;
 
         try {
             $this->session->removeItem($sourcePath);
