@@ -32,6 +32,8 @@ class DescriptionFactory
      * Return a description of the given (CMF) Resource.
      *
      * @param PuliResource $resource
+     *
+     * @return Description
      */
     public function getPayloadDescriptionFor(PuliResource $resource)
     {

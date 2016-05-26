@@ -12,8 +12,8 @@
 namespace Symfony\Cmf\Component\Resource\Description;
 
 /**
- * Class containing standard descriptors which should be used when appropriate
- * by enhancers in order to provide a level of interoperability.
+ * Class containing recommended descriptors for use by enhancers in order to
+ * provide a level of interoperability.
  */
 final class Descriptor
 {
@@ -40,6 +40,7 @@ final class Descriptor
     const LINK_UPDATE_HTML = 'link.update.html';
     const LINK_REMOVE_HTML = 'link.remove.html';
     const LINK_SHOW_HTML = 'link.show.html';
+    const LINK_LIST_HTML = 'link.list.html';
 
     /**
      * Descriptors for REST links.
@@ -49,4 +50,5 @@ final class Descriptor
     const LINK_UPDATE_REST = 'link.update.rest';
     const LINK_REMOVE_REST = 'link.remove.rest';
     const LINK_SHOW_REST = 'link.show.rest';
+    const LINK_LIST_REST = 'link.show.rest';
 }
