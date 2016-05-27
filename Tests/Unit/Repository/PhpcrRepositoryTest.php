@@ -172,14 +172,15 @@ class PhpcrRepositoryTest extends RepositoryTestCase
     public function testRemoveThrowsWhenSessionThrows()
     {
         $this->session->removeItem('/test')->willThrow(PathNotFoundException::class);
-        $this->session->getNodes('/test')->willReturn(0);
+        $this->session->getNode('/test')->willReturn($this->node);
 
         $this->getRepository()->remove('/test');
     }
 
     public function testRemove()
     {
-        $this->session->getNodes('/test')->willReturn([1, 2, 3]);
+        $this->session->getNode('/test')->willReturn($this->node);
+        $this->node->getNodes()->willReturn(['1', '2']);
         $this->session->removeItem('/test')->shouldBeCalled();
         $this->session->save()->shouldBeCalled();
 
