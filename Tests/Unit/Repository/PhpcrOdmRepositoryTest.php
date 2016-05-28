@@ -14,7 +14,6 @@ namespace Symfony\Cmf\Component\Resource\Tests\Unit\Repository;
 use Puli\Repository\Resource\Collection\ArrayResourceCollection;
 use Symfony\Cmf\Component\Resource\Repository\PhpcrOdmRepository;
 use Symfony\Cmf\Component\Resource\Repository\Resource\PhpcrOdmResource;
-use Symfony\Cmf\Component\Resource\Tests\Fixtures\Document;
 
 class PhpcrOdmRepositoryTest extends RepositoryTestCase
 {
@@ -25,7 +24,7 @@ class PhpcrOdmRepositoryTest extends RepositoryTestCase
         $this->managerRegistry = $this->prophesize('Doctrine\Common\Persistence\ManagerRegistry');
         $this->childrenCollection = $this->prophesize('Doctrine\ODM\PHPCR\ChildrenCollection');
         $this->uow = $this->prophesize('Doctrine\ODM\PHPCR\UnitOfWork');
-        $this->document = new Document();
+        $this->document = $this->prophesize('PHPCR\DocumentInterface');
         $this->child1 = new \stdClass();
         $this->child2 = new \stdClass();
 
@@ -65,7 +64,7 @@ class PhpcrOdmRepositoryTest extends RepositoryTestCase
         $this->assertInstanceOf('Puli\Repository\Resource\Collection\ArrayResourceCollection', $res);
         $this->assertCount(1, $res);
         $documentResource = $res->offsetGet(0);
-        $this->assertSame($this->document, $documentResource->getPayload());
+        $this->assertSame($this->document->reveal(), $documentResource->getPayload());
     }
 
     /**
@@ -146,25 +145,13 @@ class PhpcrOdmRepositoryTest extends RepositoryTestCase
 
     /**
      * @dataProvider provideAddInvalid
-     *
-     * @expectedException \InvalidArgumentException
      */
-    public function testAddWillThrowForNonValidParameters($path, $resource, $noParent = false)
+    public function testAddWillThrowForNonValidParameters($path, $resource, $expectedExceptionMessage, $noParent = false)
     {
         $this->documentManager->find(null, '/test')->willReturn($noParent ? null : $this->document);
+        $this->setExpectedException(\InvalidArgumentException::class, $expectedExceptionMessage);
 
         $this->getRepository()->add($path, $resource);
-    }
-
-    /**
-     * @expectedException \InvalidArgumentException
-     */
-    public function testAddResourceNotMatchingParentPath()
-    {
-        $this->documentManager->find(null, '/test')->willReturn($this->document);
-        $this->resource->getPath()->willReturn('/bla/blub');
-
-        $this->getRepository()->add('/test', $this->resource);
     }
 
     public function testAddWillPersistResource()
@@ -209,21 +196,12 @@ class PhpcrOdmRepositoryTest extends RepositoryTestCase
 
     /**
      * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage No document found at /source
      */
     public function testFailingMoveOnSourceNotFound()
     {
         $this->documentManager->find(null, '/source')->willReturn(null);
         $this->getRepository()->move('/source', '/target');
-    }
-
-    public function testNoHierarchyNoMove()
-    {
-        $this->documentManager->find(null, '/source')->willReturn($this->object);
-        $this->documentManager->find(null, '/target')->willReturn($this->document);
-
-        $actualMoved = $this->getRepository()->move('/source', '/target');
-
-        $this->assertEquals(0, $actualMoved);
     }
 
     public function testSuccessfulMove()

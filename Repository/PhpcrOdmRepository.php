@@ -21,7 +21,6 @@ use IteratorAggregate;
 use Puli\Repository\Api\ResourceCollection;
 use Puli\Repository\Api\ResourceNotFoundException;
 use Puli\Repository\Resource\Collection\ArrayResourceCollection;
-use Symfony\Cmf\Component\Resource\Repository\Resource\CmfResource;
 use Symfony\Cmf\Component\Resource\Repository\Resource\PhpcrOdmResource;
 use Webmozart\Assert\Assert;
 
@@ -132,21 +131,20 @@ class PhpcrOdmRepository extends AbstractPhpcrRepository
      */
     public function add($path, $resource)
     {
-        Assert::startsWith($path, '/', 'Target path "%s" must be absolute.');
+        Assert::startsWith($path, '/', 'Target path %s must be absolute.');
 
         $resolvedPath = $this->resolvePath($path);
-        $parentDocument = $this->getManager()->find(null, $resolvedPath);
-
-        if (null === $parentDocument) {
-            throw new InvalidArgumentException(sprintf('Cannot locate parent document at "%s"', $resolvedPath));
-        }
 
         /** @var PhpcrOdmResource[] $resources */
         $resources = $resource instanceof IteratorAggregate ? $resource : new ArrayResourceCollection([$resource]);
         Assert::isInstanceOf($resources, ResourceCollection::class, 'The list should be of instance "ResourceCollection".');
 
         foreach ($resources as $resource) {
-            Assert::isInstanceOf($resource, CmfResource::class, 'The resource needs to of instance "CmfResource".');
+            Assert::isInstanceOf(
+                $resource,
+                PhpcrOdmResource::class,
+                sprintf('The resource needs to of instance "%s".', PhpcrOdmResource::class)
+            );
             Assert::same($resolvedPath, $this->resolvePath($resource->getPath()));
 
             $this->getManager()->persist($resource->getPayload());
@@ -174,7 +172,7 @@ class PhpcrOdmRepository extends AbstractPhpcrRepository
 
         $document = $this->getManager()->find(null, $sourcePath);
         if (null === $document) {
-            throw new \InvalidArgumentException('No document found for source path '.$sourcePath);
+            throw new \InvalidArgumentException(sprintf('No document found at %s ', $sourcePath));
         }
 
         try {
@@ -192,17 +190,17 @@ class PhpcrOdmRepository extends AbstractPhpcrRepository
      */
     public function clear()
     {
-        throw new \Exception('Clear currently not supported');
+        throw new \BadMethodCallException('Clear currently not supported');
     }
 
     /**
      * {@inheritdoc}
      */
-    protected function removeResource($sourcePath, $deleted)
+    protected function removeResource($sourcePath)
     {
         $document = $this->getManager()->find(null, $sourcePath);
         $children = $this->getManager()->getChildren($document);
-        $deleted += count($children->toArray());
+        $deleted = count($children->toArray());
 
         $this->getManager()->remove($document);
         $this->getManager()->flush();

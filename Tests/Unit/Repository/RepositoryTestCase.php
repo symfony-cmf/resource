@@ -11,7 +11,8 @@
 
 namespace Symfony\Cmf\Component\Resource\Tests\Unit\Repository;
 
-use Symfony\Cmf\Component\Resource\Repository\Resource\CmfResource;
+use Puli\Repository\Resource\Collection\ArrayResourceCollection;
+use Symfony\Cmf\Component\Resource\Tests\Fixtures\FalsyResource;
 
 abstract class RepositoryTestCase extends \PHPUnit_Framework_TestCase
 {
@@ -77,18 +78,18 @@ abstract class RepositoryTestCase extends \PHPUnit_Framework_TestCase
     public function provideAddInvalid()
     {
         return [
-            ['', null],
-            ['/test', null, true],
-            ['/test', new \stdClass(), true],
-            ['/test', [new CmfResource()]],
+            ['', null, 'Target path "" must be absolute.'],
+            ['/test', null, 'Expected an instance of', true],
+            ['/test', new FalsyResource(), 'The resource needs to of instance', true],
+            ['/test', new ArrayResourceCollection([new FalsyResource()]), 'The resource needs to of instance'],
         ];
     }
 
     public function provideRemoveInvalid()
     {
         return [
-            ['/'],
-            [''],
+            ['/', 'The root directory cannot be deleted.'],
+            ['', 'The target path "" is not absolute.'],
         ];
     }
 
@@ -104,14 +105,11 @@ abstract class RepositoryTestCase extends \PHPUnit_Framework_TestCase
 
     /**
      * @dataProvider provideRemoveInvalid
-     *
-     * @param $path
-     * @param string $language
-     *
-     * @expectedException \InvalidArgumentException
      */
-    public function testRemovePathAssertThrows($path, $language = 'glob')
+    public function testRemovePathAssertThrows($path, $expectedExceptionMessage, $language = 'glob')
     {
+        $this->setExpectedException(\InvalidArgumentException::class, $expectedExceptionMessage);
+
         $this->getRepository()->remove($path, $language);
     }
 

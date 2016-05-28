@@ -11,6 +11,7 @@
 
 namespace Symfony\Cmf\Component\Resource\Repository;
 
+use DTL\Glob\FinderInterface;
 use Puli\Repository\Api\ChangeStream\VersionList;
 use Puli\Repository\Api\EditableRepository;
 use Puli\Repository\Api\NoVersionFoundException;
@@ -18,9 +19,8 @@ use Puli\Repository\Api\ResourceNotFoundException;
 use Puli\Repository\Api\ResourceRepository;
 use Puli\Repository\Api\UnsupportedLanguageException;
 use Puli\Repository\Resource\Collection\ArrayResourceCollection;
-use Webmozart\PathUtil\Path;
 use Webmozart\Assert\Assert;
-use DTL\Glob\FinderInterface;
+use Webmozart\PathUtil\Path;
 
 /**
  * Abstract repository for both PHPCR and PHPCR-ODM repositories.
@@ -136,13 +136,11 @@ abstract class AbstractPhpcrRepository implements ResourceRepository, EditableRe
     {
         $this->failUnlessGlob($language);
 
-        Assert::notEq('', trim($query, '/'), 'The root directory cannot be deleted.');
         Assert::startsWith($query, '/', 'The target path %s is not absolute.');
-        $deleted = 0;
-
+        Assert::notEq('', trim($query, '/'), 'The root directory cannot be deleted.');
         $resolvedPath = $this->resolvePath($query);
 
-        return $this->removeResource($resolvedPath, $deleted);
+        return $this->removeResource($resolvedPath);
     }
 
     /**
@@ -161,9 +159,8 @@ abstract class AbstractPhpcrRepository implements ResourceRepository, EditableRe
      * Will finally remove the resource.
      *
      * @param string $sourcePath
-     * @param int    $deleted
      *
-     * @return int The new value for $deleted.
+     * @return int
      */
-    abstract protected function removeResource($sourcePath, $deleted);
+    abstract protected function removeResource($sourcePath);
 }

@@ -131,8 +131,8 @@ class PhpcrRepository extends AbstractPhpcrRepository
      */
     public function add($path, $resource)
     {
+        Assert::startsWith($path, '/', 'Target path %s must be absolute.');
         Assert::notEq('', trim($path, '/'), 'The root directory cannot be created.');
-        Assert::startsWith($path, '/', 'The target path %s is not absolute.');
 
         $resolvedPath = $this->resolvePath($path);
         try {
@@ -187,20 +187,24 @@ class PhpcrRepository extends AbstractPhpcrRepository
      */
     public function clear()
     {
-        throw new \Exception('Clear currently not supported');
+        throw new \BadMethodCallException('Clear currently not supported');
     }
 
     /**
      * {@inheritdoc}
      */
-    protected function removeResource($sourcePath, $deleted)
+    protected function removeResource($sourcePath)
     {
-        $deleted += count($this->session->getNode($sourcePath)->getNodes()) + 1;
+        $deleted = count($this->session->getNode($sourcePath)->getNodes()) + 1;
 
         try {
             $this->session->removeItem($sourcePath);
         } catch (PathNotFoundException $e) {
-            throw new \InvalidArgumentException($e->getMessage(), $e->getCode(), $e);
+            throw new \InvalidArgumentException(
+                sprintf('Could not remove PHPCR resource at "%s"', $sourcePath),
+                $e->getCode(),
+                $e
+            );
         }
         $this->session->save();
 

@@ -135,15 +135,17 @@ class PhpcrRepositoryTest extends RepositoryTestCase
 
     /**
      * @dataProvider provideAddInvalid
-     *
-     * @expectedException \InvalidArgumentException
      */
-    public function testAddWillThrowForNonValidParameters($path, $resource, $noParentNode = false)
+    public function testAddWillThrowForNonValidParameters($path, $resource, $expectedExceptionMessage, $noParentNode = false)
     {
+        $this->setExpectedException(\InvalidArgumentException::class, $expectedExceptionMessage);
+
         if ($noParentNode) {
             $this->session->getNode('/test')->willThrow(PathNotFoundException::class);
+            $this->setExpectedException(\InvalidArgumentException::class, 'No parent node created for');
         } else {
-            $this->session->getNode('/test')->willReturn($noParentNode ? null : $this->node);
+            $this->setExpectedException(\InvalidArgumentException::class, $expectedExceptionMessage);
+            $this->session->getNode('/test')->willReturn($this->node);
         }
 
         $this->session->save()->shouldNotBeCalled();
@@ -168,6 +170,7 @@ class PhpcrRepositoryTest extends RepositoryTestCase
 
     /**
      * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage Could not remove PHPCR resource at "/test"
      */
     public function testRemoveThrowsWhenSessionThrows()
     {
