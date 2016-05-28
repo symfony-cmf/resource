@@ -12,11 +12,15 @@
 namespace Symfony\Cmf\Component\Resource\Repository;
 
 use Doctrine\Common\Persistence\ManagerRegistry;
+use Doctrine\ODM\PHPCR\DocumentManagerInterface;
 use DTL\Glob\Finder\PhpcrOdmTraversalFinder;
 use DTL\Glob\FinderInterface;
-use Symfony\Cmf\Component\Resource\Repository\Resource\PhpcrOdmResource;
-use Puli\Repository\Resource\Collection\ArrayResourceCollection;
+use IteratorAggregate;
+use Puli\Repository\Api\ResourceCollection;
 use Puli\Repository\Api\ResourceNotFoundException;
+use Puli\Repository\Resource\Collection\ArrayResourceCollection;
+use Symfony\Cmf\Component\Resource\Repository\Resource\PhpcrOdmResource;
+use Webmozart\Assert\Assert;
 
 class PhpcrOdmRepository extends AbstractPhpcrRepository
 {
@@ -32,6 +36,9 @@ class PhpcrOdmRepository extends AbstractPhpcrRepository
         $this->managerRegistry = $managerRegistry;
     }
 
+    /**
+     * @return DocumentManagerInterface
+     */
     protected function getManager()
     {
         return $this->managerRegistry->getManager();
@@ -115,5 +122,66 @@ class PhpcrOdmRepository extends AbstractPhpcrRepository
         }
 
         return $collection;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function add($path, $resource)
+    {
+        Assert::startsWith($path, '/', 'Target path %s must be absolute.');
+
+        $resolvedPath = $this->resolvePath($path);
+
+        /** @var PhpcrOdmResource[] $resources */
+        $resources = $resource instanceof IteratorAggregate ? $resource : new ArrayResourceCollection([$resource]);
+        Assert::isInstanceOf($resources, ResourceCollection::class, 'The list should be of instance "ResourceCollection".');
+
+        foreach ($resources as $resource) {
+            Assert::isInstanceOf($resource, PhpcrOdmResource::class);
+            Assert::same($resolvedPath, $this->resolvePath($resource->getPath()));
+
+            $this->getManager()->persist($resource->getPayload());
+        }
+
+        $this->getManager()->flush();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function move($sourceQuery, $targetPath, $language = 'glob')
+    {
+        $this->failUnlessGlob($language);
+        Assert::notEq('', trim($sourceQuery, '/'), 'The root directory cannot be moved.');
+
+        $targetPath = $this->resolvePath($targetPath);
+        $sourcePath = $this->resolvePath($sourceQuery);
+
+        $document = $this->getManager()->find(null, $sourcePath);
+        if (null === $document) {
+            throw new \InvalidArgumentException(sprintf('No document found at %s ', $sourcePath));
+        }
+
+        $this->getManager()->move($document, $targetPath);
+        $this->getManager()->flush();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function clear()
+    {
+        throw new \BadMethodCallException('Clear currently not supported');
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function removeResource($sourcePath)
+    {
+        $document = $this->getManager()->find(null, $sourcePath);
+        $this->getManager()->remove($document);
+        $this->getManager()->flush();
     }
 }
