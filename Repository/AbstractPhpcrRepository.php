@@ -13,7 +13,6 @@ namespace Symfony\Cmf\Component\Resource\Repository;
 
 use DTL\Glob\FinderInterface;
 use Puli\Repository\Api\ChangeStream\VersionList;
-use Puli\Repository\Api\EditableRepository;
 use Puli\Repository\Api\NoVersionFoundException;
 use Puli\Repository\Api\ResourceNotFoundException;
 use Puli\Repository\Api\ResourceRepository;
@@ -27,7 +26,7 @@ use Webmozart\PathUtil\Path;
  *
  * @author Daniel Leech <daniel@dantleech.com>
  */
-abstract class AbstractPhpcrRepository implements ResourceRepository, EditableRepository
+abstract class AbstractPhpcrRepository implements ResourceRepository, CmfEditableRepository
 {
     /**
      * Base path from which to serve nodes / nodes.

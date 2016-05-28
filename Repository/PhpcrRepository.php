@@ -137,7 +137,7 @@ class PhpcrRepository extends AbstractPhpcrRepository
         try {
             $parentNode = $this->session->getNode($resolvedPath);
         } catch (PathNotFoundException $e) {
-            throw new InvalidArgumentException('No parent node created for '.$path, $e->getCode(), $e);
+            throw new InvalidArgumentException(sprintf('Parent node for "%s" does not exist', $path), null, $e);
         }
 
         /** @var PhpcrResource[] $resources */
@@ -153,13 +153,7 @@ class PhpcrRepository extends AbstractPhpcrRepository
     }
 
     /**
-     * Moves a resource inside the repository.
-     *
-     * @param string $sourceQuery The Path of the current document.
-     * @param string $targetPath  The parent path of the destination.
-     * @param string $language
-     *
-     * @return int
+     * {@inheritdoc}
      */
     public function move($sourceQuery, $targetPath, $language = 'glob')
     {

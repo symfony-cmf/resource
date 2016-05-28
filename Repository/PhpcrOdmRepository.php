@@ -150,13 +150,7 @@ class PhpcrOdmRepository extends AbstractPhpcrRepository
     }
 
     /**
-     * Moves a resource inside the repository.
-     *
-     * @param string $sourceQuery The Path of the current document.
-     * @param string $targetPath  The parent path of the destination.
-     * @param string $language
-     *
-     * @return int
+     * {@inheritdoc}
      */
     public function move($sourceQuery, $targetPath, $language = 'glob')
     {

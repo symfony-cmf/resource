@@ -142,7 +142,7 @@ class PhpcrRepositoryTest extends RepositoryTestCase
 
         if ($noParentNode) {
             $this->session->getNode('/test')->willThrow(PathNotFoundException::class);
-            $this->setExpectedException(\InvalidArgumentException::class, 'No parent node created for');
+            $this->setExpectedException(\InvalidArgumentException::class, 'Parent node for "/test" does not exist');
         } else {
             $this->setExpectedException(\InvalidArgumentException::class, $expectedExceptionMessage);
             $this->session->getNode('/test')->willReturn($this->node);
