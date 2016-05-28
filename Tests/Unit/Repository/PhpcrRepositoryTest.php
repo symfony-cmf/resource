@@ -184,15 +184,16 @@ class PhpcrRepositoryTest extends RepositoryTestCase
     {
         $this->session->getNode('/test')->willReturn($this->node);
         $this->node->getNodes()->willReturn(['1', '2']);
+
         $this->session->removeItem('/test')->shouldBeCalled();
         $this->session->save()->shouldBeCalled();
 
-        $deleted = $this->getRepository()->remove('/test', 'glob');
-        $this->assertEquals(3, $deleted);
+        $this->getRepository()->remove('/test', 'glob');
     }
 
     /**
      * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage Could not move PHPCR resource
      */
     public function testFailingMoveOnPathNotFound()
     {
@@ -205,8 +206,6 @@ class PhpcrRepositoryTest extends RepositoryTestCase
     {
         $this->session->move('/source', '/test')->shouldBeCalled();
 
-        $moved = $this->getRepository()->move('/source', '/test');
-
-        $this->assertEquals(1, $moved);
+        $this->getRepository()->move('/source', '/test');
     }
 }

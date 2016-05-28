@@ -80,8 +80,8 @@ abstract class RepositoryTestCase extends \PHPUnit_Framework_TestCase
         return [
             ['', null, 'Target path "" must be absolute.'],
             ['/test', null, 'Expected an instance of', true],
-            ['/test', new FalsyResource(), 'The resource needs to of instance', true],
-            ['/test', new ArrayResourceCollection([new FalsyResource()]), 'The resource needs to of instance'],
+            ['/test', new FalsyResource(), 'Expected an instance of', true],
+            ['/test', new ArrayResourceCollection([new FalsyResource()]), 'Expected an instance of '],
         ];
     }
 

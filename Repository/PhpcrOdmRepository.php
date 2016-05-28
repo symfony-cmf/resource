@@ -140,11 +140,7 @@ class PhpcrOdmRepository extends AbstractPhpcrRepository
         Assert::isInstanceOf($resources, ResourceCollection::class, 'The list should be of instance "ResourceCollection".');
 
         foreach ($resources as $resource) {
-            Assert::isInstanceOf(
-                $resource,
-                PhpcrOdmResource::class,
-                sprintf('The resource needs to of instance "%s".', PhpcrOdmResource::class)
-            );
+            Assert::isInstanceOf($resource, PhpcrOdmResource::class);
             Assert::same($resolvedPath, $this->resolvePath($resource->getPath()));
 
             $this->getManager()->persist($resource->getPayload());
@@ -175,14 +171,8 @@ class PhpcrOdmRepository extends AbstractPhpcrRepository
             throw new \InvalidArgumentException(sprintf('No document found at %s ', $sourcePath));
         }
 
-        try {
-            $this->getManager()->move($document, $targetPath);
-            $this->getManager()->flush();
-
-            return 1;
-        } catch (\Exception $e) {
-            return 0;
-        }
+        $this->getManager()->move($document, $targetPath);
+        $this->getManager()->flush();
     }
 
     /**
@@ -199,12 +189,7 @@ class PhpcrOdmRepository extends AbstractPhpcrRepository
     protected function removeResource($sourcePath)
     {
         $document = $this->getManager()->find(null, $sourcePath);
-        $children = $this->getManager()->getChildren($document);
-        $deleted = count($children->toArray());
-
         $this->getManager()->remove($document);
         $this->getManager()->flush();
-
-        return ++$deleted;
     }
 }

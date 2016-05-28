@@ -20,7 +20,6 @@ use PHPCR\SessionInterface;
 use Puli\Repository\Api\ResourceCollection;
 use Puli\Repository\Api\ResourceNotFoundException;
 use Puli\Repository\Resource\Collection\ArrayResourceCollection;
-use Symfony\Cmf\Component\Resource\Repository\Resource\CmfResource;
 use Symfony\Cmf\Component\Resource\Repository\Resource\PhpcrResource;
 use Webmozart\Assert\Assert;
 
@@ -146,10 +145,7 @@ class PhpcrRepository extends AbstractPhpcrRepository
         Assert::isInstanceOf($resources, ResourceCollection::class, 'The list should be of instance "ResourceCollection".');
 
         foreach ($resources as $resource) {
-            Assert::isInstanceOf($resource, CmfResource::class, 'The resource needs to of instance "CmfResource".');
-            Assert::notNull($resource->getName(), 'The resource needs a name for the creation.');
-            Assert::notNull($resource->getPayloadType(), 'The resource needs a type for the creation');
-
+            Assert::isInstanceOf($resource, PhpcrResource::class);
             $parentNode->addNode($resource->getName(), $resource->getPayloadType());
         }
 
@@ -175,10 +171,12 @@ class PhpcrRepository extends AbstractPhpcrRepository
 
         try {
             $this->session->move($sourcePath, $targetPath);
-
-            return 1;
         } catch (PathNotFoundException $e) {
-            throw new \InvalidArgumentException($e->getMessage(), $e->getCode(), $e);
+            throw new \InvalidArgumentException(
+                sprintf('Could not move PHPCR resource from "%s" to "%s"', $sourcePath, $targetPath),
+                null,
+                $e
+            );
         }
     }
 
@@ -195,19 +193,15 @@ class PhpcrRepository extends AbstractPhpcrRepository
      */
     protected function removeResource($sourcePath)
     {
-        $deleted = count($this->session->getNode($sourcePath)->getNodes()) + 1;
-
         try {
             $this->session->removeItem($sourcePath);
         } catch (PathNotFoundException $e) {
             throw new \InvalidArgumentException(
                 sprintf('Could not remove PHPCR resource at "%s"', $sourcePath),
-                $e->getCode(),
+                null,
                 $e
             );
         }
         $this->session->save();
-
-        return $deleted;
     }
 }

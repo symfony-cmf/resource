@@ -190,8 +190,7 @@ class PhpcrOdmRepositoryTest extends RepositoryTestCase
         $this->documentManager->remove($this->document)->shouldBeCalled();
         $this->documentManager->flush()->shouldBeCalled();
 
-        $deleted = $this->getRepository()->remove('/test', 'glob');
-        $this->assertEquals(3, $deleted);
+        $this->getRepository()->remove('/test', 'glob');
     }
 
     /**
@@ -211,8 +210,6 @@ class PhpcrOdmRepositoryTest extends RepositoryTestCase
         $this->documentManager->move($this->document, '/target')->shouldBeCalled();
         $this->documentManager->flush()->shouldBeCalled();
 
-        $actualMoved = $this->getRepository()->move('/source', '/target');
-
-        $this->assertEquals(1, $actualMoved);
+        $this->getRepository()->move('/source', '/target');
     }
 }
