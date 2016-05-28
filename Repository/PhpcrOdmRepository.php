@@ -15,7 +15,6 @@ use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\ODM\PHPCR\DocumentManagerInterface;
 use DTL\Glob\Finder\PhpcrOdmTraversalFinder;
 use DTL\Glob\FinderInterface;
-use InvalidArgumentException;
 use IteratorAggregate;
 use Puli\Repository\Api\ResourceCollection;
 use Puli\Repository\Api\ResourceNotFoundException;
