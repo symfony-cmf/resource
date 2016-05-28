@@ -18,9 +18,12 @@ use Symfony\Cmf\Component\Resource\Repository\Resource\PhpcrResource;
 
 class PhpcrRepositoryTest extends RepositoryTestCase
 {
+    protected $node;
+    
     public function setUp()
     {
         parent::setUp();
+        $this->node = $this->prophesize('PHPCR\NodeInterface');
         $this->child1 = $this->prophesize('PHPCR\NodeInterface');
         $this->child2 = $this->prophesize('PHPCR\NodeInterface');
     }

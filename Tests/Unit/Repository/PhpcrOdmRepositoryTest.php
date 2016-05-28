@@ -17,6 +17,13 @@ use Symfony\Cmf\Component\Resource\Repository\Resource\PhpcrOdmResource;
 
 class PhpcrOdmRepositoryTest extends RepositoryTestCase
 {
+    protected $documentManager;
+    protected $managerRegistry;
+    protected $childrenCollection;
+    protected $uow;
+    protected $document;
+    protected $object;
+
     public function setUp()
     {
         parent::setUp();
@@ -27,13 +34,10 @@ class PhpcrOdmRepositoryTest extends RepositoryTestCase
         $this->document = $this->prophesize('PHPCR\DocumentInterface');
         $this->child1 = new \stdClass();
         $this->child2 = new \stdClass();
+        $this->object = new \stdClass();
 
         $this->managerRegistry->getManager()->willReturn($this->documentManager);
         $this->documentManager->getUnitOfWork()->willReturn($this->uow->reveal());
-
-        $this->object = new \stdClass();
-
-        $this->resource = $this->prophesize('\Symfony\Cmf\Component\Resource\Repository\Resource\PhpcrOdmResource');
     }
 
     /**

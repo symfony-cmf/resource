@@ -12,8 +12,7 @@
 namespace Symfony\Cmf\Component\Resource\Repository;
 
 use Doctrine\Common\Persistence\ManagerRegistry;
-use Doctrine\Common\Persistence\ObjectManager;
-use Doctrine\ODM\PHPCR\DocumentManager;
+use Doctrine\ODM\PHPCR\DocumentManagerInterface;
 use DTL\Glob\Finder\PhpcrOdmTraversalFinder;
 use DTL\Glob\FinderInterface;
 use InvalidArgumentException;
@@ -39,7 +38,7 @@ class PhpcrOdmRepository extends AbstractPhpcrRepository
     }
 
     /**
-     * @return ObjectManager|DocumentManager
+     * @return DocumentManagerInterface
      */
     protected function getManager()
     {

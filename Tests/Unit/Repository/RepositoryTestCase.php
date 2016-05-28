@@ -16,27 +16,15 @@ use Symfony\Cmf\Component\Resource\Tests\Fixtures\FalsyResource;
 
 abstract class RepositoryTestCase extends \PHPUnit_Framework_TestCase
 {
-    protected $documentManager;
-    protected $managerRegistry;
-    protected $childrenCollection;
     protected $finder;
-    protected $uow;
-    protected $document;
+    protected $session;
     protected $child1;
     protected $child2;
-    protected $object;
-    protected $resource;
-    protected $session;
-    protected $node;
-    protected $rootNode;
 
     public function setUp()
     {
         $this->session = $this->prophesize('PHPCR\SessionInterface');
         $this->finder = $this->prophesize('DTL\Glob\FinderInterface');
-        $this->node = $this->prophesize('PHPCR\NodeInterface');
-        $this->rootNode = $this->prophesize('PHPCR\NodeInterface');
-        $this->session->getRootNode()->willReturn($this->rootNode);
     }
 
     public function provideGet()
