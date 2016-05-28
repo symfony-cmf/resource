@@ -18,8 +18,6 @@ abstract class RepositoryTestCase extends \PHPUnit_Framework_TestCase
 {
     protected $finder;
     protected $session;
-    protected $child1;
-    protected $child2;
 
     public function setUp()
     {

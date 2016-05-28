@@ -23,6 +23,8 @@ class PhpcrOdmRepositoryTest extends RepositoryTestCase
     protected $uow;
     protected $document;
     protected $object;
+    protected $child1;
+    protected $child2;
 
     public function setUp()
     {

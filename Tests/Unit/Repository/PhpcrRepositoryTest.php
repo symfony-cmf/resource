@@ -19,6 +19,8 @@ use Symfony\Cmf\Component\Resource\Repository\Resource\PhpcrResource;
 class PhpcrRepositoryTest extends RepositoryTestCase
 {
     protected $node;
+    protected $child1;
+    protected $child2;
     
     public function setUp()
     {
