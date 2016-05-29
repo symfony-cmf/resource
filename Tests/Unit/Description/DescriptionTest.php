@@ -43,6 +43,26 @@ class DescriptionTest extends \PHPUnit_Framework_TestCase
         $this->description->set('custom.key', 'Hello');
 
         $this->assertEquals('page', $this->description->get(Descriptor::TYPE_ALIAS));
+
+        $this->assertTrue($this->description->has(Descriptor::TYPE_ALIAS));
+        $this->assertFalse($this->description->has('hello'));
+        $this->assertEquals([
+            Descriptor::TYPE_ALIAS => 'page',
+            Descriptor::LINK_EDIT_HTML => '/path/to/edit',
+            'custom.key' => 'Hello',
+
+        ], $this->description->all());
+    }
+
+    /**
+     * It should throw an exception if a non-scalar value is set.
+     *
+     * @expectedException InvalidArgumentException
+     * @expectedExceptionMessage Only scalar values are allowed as descriptor values, got "array" when setting descriptor "hello"
+     */
+    public function testSetNonScalar()
+    {
+        $this->description->set('hello', array('foo'));
     }
 
     /**

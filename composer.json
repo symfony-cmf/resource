@@ -21,7 +21,7 @@
         "doctrine/phpcr-odm": "~1.2",
         "jackalope/jackalope-fs": "dev-master",
         "sonata-project/admin-bundle": "^3.1",
-        "sylius/resource": "0.18"
+        "sylius/resource-bundle": "0.18"
     },
     "suggest": {
         "doctrine/phpcr-odm": "To enable support for the PHPCR ODM documents",

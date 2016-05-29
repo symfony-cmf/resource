@@ -37,43 +37,72 @@ class Description
     }
 
     /**
-     * Return the descriptors value for the given key.
+     * Return the descriptors value for the given descriptor.
      *
-     * @param string $key
+     * @param string $descriptor
      *
      * @return mixed
      */
-    public function get($key)
+    public function get($descriptor)
     {
-        if (!isset($this->descriptors[$key])) {
+        if (!isset($this->descriptors[$descriptor])) {
             throw new \InvalidArgumentException(sprintf(
                 'Descriptor "%s" not supported for resource "%s" of class "%s". Supported descriptors: "%s"',
-                $key,
+                $descriptor,
                 $this->resource->getPath(),
                 get_class($this->resource),
                 implode('", "', array_keys($this->descriptors))
             ));
         }
 
-        return $this->descriptors[$key];
+        return $this->descriptors[$descriptor];
     }
 
     /**
-     * Set value for descriptors key.
+     * Return true if the given descriptor has been set.
+     *
+     * @param string $descriptor
+     *
+     * @return bool
+     */
+    public function has($descriptor)
+    {
+        return isset($this->descriptors[$descriptor]);
+    }
+
+    /**
+     * Return all of the descriptors.
+     *
+     * @return array
+     */
+    public function all()
+    {
+        return $this->descriptors;
+    }
+
+    /**
+     * Set value for descriptors descriptor.
      *
      * Note that:
      *
-     * - It is possible to overwrite existing keys.
+     * - It is possible to overwrite existing descriptors.
      *
-     * - Where possible the key should be the value of one of the constants
+     * - Where possible the descriptor should be the value of one of the constants
      *   defined in the Descriptor class.
      *
-     * @param string $key
+     * @param string $descriptor
      * @param mixed  $value
      */
-    public function set($key, $value)
+    public function set($descriptor, $value)
     {
-        $this->descriptors[$key] = $value;
+        if (null !== $value && !is_scalar($value)) {
+            throw new \InvalidArgumentException(sprintf(
+                'Only scalar values are allowed as descriptor values, got "%s" when setting descriptor "%s"',
+                gettype($value), $descriptor
+            ));
+        }
+
+        $this->descriptors[$descriptor] = $value;
     }
 
     /**

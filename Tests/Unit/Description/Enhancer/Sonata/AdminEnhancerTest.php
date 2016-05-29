@@ -17,12 +17,12 @@ use Symfony\Cmf\Component\Resource\Description\Description;
 use Symfony\Cmf\Component\Resource\Repository\Resource\CmfResource;
 use Sonata\AdminBundle\Admin\Pool;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Cmf\Component\Resource\Description\Enhancer\SonataAdminEnhancer;
 use Sonata\AdminBundle\Model\AuditManagerInterface;
 use Sonata\AdminBundle\Route\PathInfoBuilder;
 use Sonata\AdminBundle\Model\ModelManagerInterface;
 use Prophecy\Argument;
 use Symfony\Cmf\Component\Resource\Description\Descriptor;
+use Symfony\Cmf\Component\Resource\Description\Enhancer\Sonata\AdminEnhancer;
 
 class SonataAdminEnhancerTest extends \PHPUnit_Framework_TestCAse
 {
@@ -48,7 +48,9 @@ class SonataAdminEnhancerTest extends \PHPUnit_Framework_TestCAse
         $this->resource = $this->prophesize(CmfResource::class);
 
         $this->modelManager = $this->prophesize(ModelManagerInterface::class);
-        $this->modelManager->getUrlsafeIdentifier(Argument::cetera())->will(function ($args) { return $args[0]; });
+        $this->modelManager->getUrlsafeIdentifier(Argument::cetera())->will(function ($args) {
+            return $args[0];
+        });
         $this->routeBuilder = new PathInfoBuilder($this->prophesize(AuditManagerInterface::class)->reveal());
         $this->admin->setRouteBuilder($this->routeBuilder);
         $this->admin->setModelManager($this->modelManager->reveal());
@@ -67,7 +69,7 @@ class SonataAdminEnhancerTest extends \PHPUnit_Framework_TestCAse
         });
 
         $description = new Description($this->resource->reveal());
-        $enhancer = new SonataAdminEnhancer($this->pool, $this->generator->reveal());
+        $enhancer = new AdminEnhancer($this->pool, $this->generator->reveal());
         $enhancer->enhance($description);
 
         $this->assertEquals('/std_class_edit', $description->get(Descriptor::LINK_EDIT_HTML));
