@@ -21,7 +21,7 @@ class PhpcrRepositoryTest extends RepositoryTestCase
     protected $node;
     protected $child1;
     protected $child2;
-    
+
     public function setUp()
     {
         parent::setUp();

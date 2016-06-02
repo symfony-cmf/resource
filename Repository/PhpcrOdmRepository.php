@@ -15,12 +15,9 @@ use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\ODM\PHPCR\DocumentManagerInterface;
 use DTL\Glob\Finder\PhpcrOdmTraversalFinder;
 use DTL\Glob\FinderInterface;
-use IteratorAggregate;
-use Puli\Repository\Api\ResourceCollection;
 use Puli\Repository\Api\ResourceNotFoundException;
 use Puli\Repository\Resource\Collection\ArrayResourceCollection;
 use Symfony\Cmf\Component\Resource\Repository\Resource\PhpcrOdmResource;
-use Webmozart\Assert\Assert;
 
 class PhpcrOdmRepository extends AbstractPhpcrRepository
 {
@@ -89,7 +86,7 @@ class PhpcrOdmRepository extends AbstractPhpcrRepository
      */
     public function findByTag($tag)
     {
-        throw new \Exception('Get by tag not currently supported');
+        throw new \Exception('Find by tag not supported');
     }
 
     /**
@@ -127,61 +124,41 @@ class PhpcrOdmRepository extends AbstractPhpcrRepository
     /**
      * {@inheritdoc}
      */
-    public function add($path, $resource)
+    protected function removeNodes($nodes)
     {
-        Assert::startsWith($path, '/', 'Target path %s must be absolute.');
-
-        $resolvedPath = $this->resolvePath($path);
-
-        /** @var PhpcrOdmResource[] $resources */
-        $resources = $resource instanceof IteratorAggregate ? $resource : new ArrayResourceCollection([$resource]);
-        Assert::isInstanceOf($resources, ResourceCollection::class, 'The list should be of instance "ResourceCollection".');
-
-        foreach ($resources as $resource) {
-            Assert::isInstanceOf($resource, PhpcrOdmResource::class);
-            Assert::same($resolvedPath, $this->resolvePath($resource->getPath()));
-
-            $this->getManager()->persist($resource->getPayload());
+        foreach ($nodes as $node) {
+            $document = $this->getDocumentForNode($node);
+            $this->getManager()->remove($document);
         }
 
         $this->getManager()->flush();
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function move($sourceQuery, $targetPath, $language = 'glob')
+    protected function moveNodes($nodes, $sourceQuery, $targetPath)
     {
-        $this->failUnlessGlob($language);
-        Assert::notEq('', trim($sourceQuery, '/'), 'The root directory cannot be moved.');
+        $this->doMoveNodes($nodes, $sourceQuery, $targetPath);
+        $this->getManager()->flush();
+    }
 
-        $targetPath = $this->resolvePath($targetPath);
-        $sourcePath = $this->resolvePath($sourceQuery);
+    private function doMoveNodes($nodes, $sourceQuery, $targetPath)
+    {
+        if (1 === count($nodes) && current($nodes)->getPath() === $sourceQuery) {
+            $document = $this->getDocumentForNode(current($nodes));
 
-        $document = $this->getManager()->find(null, $sourcePath);
-        if (null === $document) {
-            throw new \InvalidArgumentException(sprintf('No document found at %s ', $sourcePath));
+            return $this->getManager()->move($document, $targetPath);
         }
 
-        $this->getManager()->move($document, $targetPath);
-        $this->getManager()->flush();
+        foreach ($nodes as $node) {
+            $document = $this->getDocumentForNode($node);
+            $this->getManager()->move($document, $targetPath.'/'.$node->getName());
+        }
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function clear()
+    private function getDocumentForNode(NodeInterface $node)
     {
-        throw new \BadMethodCallException('Clear currently not supported');
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function removeResource($sourcePath)
-    {
-        $document = $this->getManager()->find(null, $sourcePath);
-        $this->getManager()->remove($document);
-        $this->getManager()->flush();
+        // the PHPCR node is already loaded so the document should always
+        // be found, even if it is unmanaged (it will be a
+        // GenericDocument).
+        return $this->getManager()->find(null, $node->getPath());
     }
 }

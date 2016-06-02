@@ -13,15 +13,10 @@ namespace Symfony\Cmf\Component\Resource\Repository;
 
 use DTL\Glob\Finder\PhpcrTraversalFinder;
 use DTL\Glob\FinderInterface;
-use InvalidArgumentException;
-use IteratorAggregate;
-use PHPCR\PathNotFoundException;
 use PHPCR\SessionInterface;
-use Puli\Repository\Api\ResourceCollection;
 use Puli\Repository\Api\ResourceNotFoundException;
 use Puli\Repository\Resource\Collection\ArrayResourceCollection;
 use Symfony\Cmf\Component\Resource\Repository\Resource\PhpcrResource;
-use Webmozart\Assert\Assert;
 
 /**
  * Resource repository for PHPCR.
@@ -31,14 +26,14 @@ use Webmozart\Assert\Assert;
 class PhpcrRepository extends AbstractPhpcrRepository
 {
     /**
-     * @var ManagerRegistry
+     * @var SessionInterface
      */
     private $session;
 
     /**
      * @param SessionInterface $session
-     * @param FinderInterface  $finder
      * @param string           $basePath
+     * @param FinderInterface  $finder
      */
     public function __construct(SessionInterface $session, $basePath = null, FinderInterface $finder = null)
     {
@@ -128,25 +123,10 @@ class PhpcrRepository extends AbstractPhpcrRepository
     /**
      * {@inheritdoc}
      */
-    public function add($path, $resource)
+    protected function removeNodes($nodes)
     {
-        Assert::startsWith($path, '/', 'Target path %s must be absolute.');
-        Assert::notEq('', trim($path, '/'), 'The root directory cannot be created.');
-
-        $resolvedPath = $this->resolvePath($path);
-        try {
-            $parentNode = $this->session->getNode($resolvedPath);
-        } catch (PathNotFoundException $e) {
-            throw new InvalidArgumentException(sprintf('Parent node for "%s" does not exist', $path), null, $e);
-        }
-
-        /** @var PhpcrResource[] $resources */
-        $resources = $resource instanceof IteratorAggregate ? $resource : new ArrayResourceCollection([$resource]);
-        Assert::isInstanceOf($resources, ResourceCollection::class, 'The list should be of instance "ResourceCollection".');
-
-        foreach ($resources as $resource) {
-            Assert::isInstanceOf($resource, PhpcrResource::class);
-            $parentNode->addNode($resource->getName(), $resource->getPayloadType());
+        foreach ($nodes as $node) {
+            $node->remove();
         }
 
         $this->session->save();
@@ -155,47 +135,20 @@ class PhpcrRepository extends AbstractPhpcrRepository
     /**
      * {@inheritdoc}
      */
-    public function move($sourceQuery, $targetPath, $language = 'glob')
+    protected function moveNodes($nodes, $sourceQuery, $targetPath)
     {
-        $this->failUnlessGlob($language);
-        Assert::notEq('', trim($sourceQuery, '/'), 'The root directory cannot be moved.');
-
-        $targetPath = $this->resolvePath($targetPath);
-        $sourcePath = $this->resolvePath($sourceQuery);
-
-        try {
-            $this->session->move($sourcePath, $targetPath);
-        } catch (PathNotFoundException $e) {
-            throw new \InvalidArgumentException(
-                sprintf('Could not move PHPCR resource from "%s" to "%s"', $sourcePath, $targetPath),
-                null,
-                $e
-            );
-        }
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function clear()
-    {
-        throw new \BadMethodCallException('Clear currently not supported');
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function removeResource($sourcePath)
-    {
-        try {
-            $this->session->removeItem($sourcePath);
-        } catch (PathNotFoundException $e) {
-            throw new \InvalidArgumentException(
-                sprintf('Could not remove PHPCR resource at "%s"', $sourcePath),
-                null,
-                $e
-            );
-        }
+        $this->doMoveNodes($nodes, $sourceQuery, $targetPath);
         $this->session->save();
+    }
+
+    private function doMoveNodes($nodes, $sourceQuery, $targetPath)
+    {
+        if (count($nodes) === 1 && current($nodes)->getPath() === $sourceQuery) {
+            return $this->session->move(current($nodes)->getPath(), $targetPath);
+        }
+
+        foreach ($nodes as $node) {
+            $this->session->move($node->getPath(), $targetPath.'/'.$node->getName());
+        }
     }
 }

@@ -9,30 +9,28 @@
  * file that was distributed with this source code.
  */
 
-namespace Symfony\Cmf\Component\Resource\Repository;
+namespace Symfony\Cmf\Component\Resource\Repository\Api;
 
 use InvalidArgumentException;
 use Puli\Repository\Api\EditableRepository;
 use Puli\Repository\Api\UnsupportedLanguageException;
 
 /**
- * CMF own interface to add the move() method.
+ * Extends the Puli editable repository to implement the as-of-yet not
+ * implemented features.
  *
  * @author Maximilian Berghoff <Maximilian.Berghoff@mayflower.de>
  */
-interface CmfEditableRepository extends EditableRepository
+interface EditableRepository extends EditableRepository
 {
     /**
-     * Moves a resource inside the repository.
+     * Move all resources found by $sourceQuery to the target (parent) path.
      *
-     * @param string $sourceQuery The Path of the current document.
-     * @param string $targetPath  The parent path of the destination.
+     * @param string $sourceQuery
+     * @param string $targetPath
      * @param string $language
      *
-     * @return int
-     *
      * @throws InvalidArgumentException     If the sourceQuery is invalid.
-     * @throws InvalidArgumentException     If the resource can not be moved to the targetPath.
      * @throws UnsupportedLanguageException If the language is not supported.
      */
     public function move($sourceQuery, $targetPath, $language = 'glob');

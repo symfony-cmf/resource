@@ -12,21 +12,20 @@
 namespace Symfony\Cmf\Component\Resource\Repository;
 
 use DTL\Glob\FinderInterface;
-use Puli\Repository\Api\ChangeStream\VersionList;
-use Puli\Repository\Api\NoVersionFoundException;
-use Puli\Repository\Api\ResourceNotFoundException;
 use Puli\Repository\Api\ResourceRepository;
 use Puli\Repository\Api\UnsupportedLanguageException;
 use Puli\Repository\Resource\Collection\ArrayResourceCollection;
 use Webmozart\Assert\Assert;
 use Webmozart\PathUtil\Path;
+use Puli\Repository\AbstractRepository;
+use Symfony\Cmf\Component\Resource\Repository\Api\EditableRepository;
 
 /**
  * Abstract repository for both PHPCR and PHPCR-ODM repositories.
  *
  * @author Daniel Leech <daniel@dantleech.com>
  */
-abstract class AbstractPhpcrRepository implements ResourceRepository, CmfEditableRepository
+abstract class AbstractPhpcrRepository extends AbstractRepository implements ResourceRepository, EditableRepository
 {
     /**
      * Base path from which to serve nodes / nodes.
@@ -74,6 +73,39 @@ abstract class AbstractPhpcrRepository implements ResourceRepository, CmfEditabl
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public function remove($query, $language = 'glob')
+    {
+        $this->failUnlessGlob($language);
+        Assert::notEq('', trim($query, '/'), 'The root directory cannot be deleted.');
+        $nodes = $this->finder->find($this->resolvePath($query));
+
+        // delegate remove nodes to the implementation
+        $this->removeNodes($nodes);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function move($sourceQuery, $targetPath, $language = 'glob')
+    {
+        $this->failUnlessGlob($language);
+        Assert::notEq('', trim($sourceQuery, '/'), 'The root directory cannot be moved.');
+        $nodes = $this->finder->find($this->resolvePath($query));
+
+        $this->moveNodes($nodes, $sourceQuery, $targetPath);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function clear()
+    {
+        throw new \BadMethodCallException('Clear not supported');
+    }
+
+    /**
      * Return the path with the basePath prefix
      * if it has been set.
      *
@@ -83,8 +115,7 @@ abstract class AbstractPhpcrRepository implements ResourceRepository, CmfEditabl
      */
     protected function resolvePath($path)
     {
-        Assert::stringNotEmpty($path, 'The path must be a non-empty string. Got: %s');
-        Assert::startsWith($path, '/', 'The path %s is not absolute.');
+        $path = $this->sanitizePath($path);
 
         if ($this->basePath) {
             $path = $this->basePath.$path;
@@ -117,49 +148,16 @@ abstract class AbstractPhpcrRepository implements ResourceRepository, CmfEditabl
     abstract protected function buildCollection(array $nodes);
 
     /**
-     * {@inheritdoc}
+     * Rmeove the given nodes.
+     *
+     * @param NodeInterface[]
      */
-    public function getVersions($path)
-    {
-        try {
-            return new VersionList($path, [$this->get($path)]);
-        } catch (ResourceNotFoundException $e) {
-            throw NoVersionFoundException::forPath($path, $e);
-        }
-    }
+    abstract protected function removeNodes($nodes);
 
     /**
-     * {@inheritdoc}
-     */
-    public function remove($query, $language = 'glob')
-    {
-        $this->failUnlessGlob($language);
-
-        Assert::startsWith($query, '/', 'The target path %s is not absolute.');
-        Assert::notEq('', trim($query, '/'), 'The root directory cannot be deleted.');
-        $resolvedPath = $this->resolvePath($query);
-
-        return $this->removeResource($resolvedPath);
-    }
-
-    /**
-     * Validate a language is usable to search in repositories.
+     * Move the given nodes.
      *
-     * @param string $language
+     * @param NodeInterface[]
      */
-    protected function failUnlessGlob($language)
-    {
-        if ('glob' !== $language) {
-            throw UnsupportedLanguageException::forLanguage($language);
-        }
-    }
-
-    /**
-     * Will finally remove the resource.
-     *
-     * @param string $sourcePath
-     *
-     * @return int
-     */
-    abstract protected function removeResource($sourcePath);
+    abstract protected function moveNodes($nodes, $sourceQuery, $targetPath);
 }
