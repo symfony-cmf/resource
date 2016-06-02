@@ -18,6 +18,7 @@ use Puli\Repository\Resource\Collection\ArrayResourceCollection;
 use Webmozart\PathUtil\Path;
 use Puli\Repository\AbstractRepository;
 use Symfony\Cmf\Component\Resource\Repository\Api\EditableRepository;
+use DTL\Glob\GlobHelper;
 
 /**
  * Abstract repository for both PHPCR and PHPCR-ODM repositories.
@@ -39,12 +40,18 @@ abstract class AbstractPhpcrRepository extends AbstractRepository implements Res
     private $finder;
 
     /**
+     * @var GlobHelper
+     */
+    private $globHelper;
+
+    /**
      * @param string $basePath
      */
     public function __construct(FinderInterface $finder, $basePath = null)
     {
         $this->finder = $finder;
         $this->basePath = $basePath;
+        $this->globHelper = new GlobHelper();
     }
 
     /**
@@ -108,6 +115,8 @@ abstract class AbstractPhpcrRepository extends AbstractRepository implements Res
             return 0;
         }
 
+        $targetPath = $this->resolvePath($targetPath);
+
         try {
             // delegate moving to the implementation
             $this->moveNodes($nodes, $query, $targetPath);
@@ -170,6 +179,11 @@ abstract class AbstractPhpcrRepository extends AbstractRepository implements Res
         $path = substr($path, strlen($this->basePath));
 
         return $path;
+    }
+
+    protected function isGlobbed($string)
+    {
+        return $this->globHelper->isGlobbed($string);
     }
 
     /**

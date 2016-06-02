@@ -33,7 +33,6 @@ class PhpcrOdmRepository extends AbstractPhpcrRepository
         $finder = $finder ?: new PhpcrOdmTraversalFinder($managerRegistry);
         parent::__construct($finder, $basePath);
         $this->managerRegistry = $managerRegistry;
-        $this->globHelper = new GlobHelper();
     }
 
     /**
@@ -139,15 +138,15 @@ class PhpcrOdmRepository extends AbstractPhpcrRepository
     /**
      * {@inheritdoc}
      */
-    protected function moveNodes(array $nodes, $sourceQuery, $targetPath)
+    protected function moveNodes(array $documents, $sourceQuery, $targetPath)
     {
-        $this->doMoveNodes($nodes, $sourceQuery, $targetPath);
+        $this->doMoveNodes($documents, $sourceQuery, $targetPath);
         $this->getManager()->flush();
     }
 
     private function doMoveNodes(array $documents, $sourceQuery, $targetPath)
     {
-        if (false === $this->globHelper->isGlobbed($sourceQuery)) {
+        if (false === $this->isGlobbed($sourceQuery)) {
             return $this->getManager()->move(current($documents), $targetPath);
         }
 
