@@ -12,7 +12,7 @@
 namespace Symfony\Cmf\Component\Resource\Repository\Api;
 
 use InvalidArgumentException;
-use Puli\Repository\Api\EditableRepository;
+use Puli\Repository\Api\EditableRepository as PuliEditableRepository;
 use Puli\Repository\Api\UnsupportedLanguageException;
 
 /**
@@ -21,7 +21,7 @@ use Puli\Repository\Api\UnsupportedLanguageException;
  *
  * @author Maximilian Berghoff <Maximilian.Berghoff@mayflower.de>
  */
-interface EditableRepository extends EditableRepository
+interface EditableRepository extends PuliEditableRepository
 {
     /**
      * Move all resources and their subgraphs found by $sourceQuery to the

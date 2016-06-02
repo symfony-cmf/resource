@@ -17,6 +17,7 @@ use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\ODM\PHPCR\ChildrenCollection;
 use Doctrine\ODM\PHPCR\UnitOfWork;
 use PHPCR\NodeInterface;
+use Prophecy\Argument;
 
 class PhpcrOdmRepositoryTest extends AbstractPhpcrRepositoryTestCase
 {
@@ -25,7 +26,6 @@ class PhpcrOdmRepositoryTest extends AbstractPhpcrRepositoryTestCase
     private $childrenCollection;
     private $uow;
     private $document;
-    private $object;
     private $child1;
     private $child2;
     private $node1;
@@ -39,8 +39,11 @@ class PhpcrOdmRepositoryTest extends AbstractPhpcrRepositoryTestCase
         $this->childrenCollection = $this->prophesize(ChildrenCollection::class);
         $this->uow = $this->prophesize(UnitOfWork::class);
         $this->document = new \stdClass();
+
         $this->child1 = new \stdClass();
-        $this->child2 = new \stdClass();
+
+        // because Prophecy doesn't care much about object IDs...
+        $this->child2 = new stdClass2();
 
         $this->node1 = $this->prophesize(NodeInterface::class);
         $this->node2 = $this->prophesize(NodeInterface::class);
@@ -105,7 +108,7 @@ class PhpcrOdmRepositoryTest extends AbstractPhpcrRepositoryTestCase
         $this->assertInstanceOf('Puli\Repository\Resource\Collection\ArrayResourceCollection', $res);
         $this->assertCount(2, $res);
         $this->assertInstanceOf('Symfony\Cmf\Component\Resource\Repository\Resource\PhpcrOdmResource', $res[0]);
-        $this->assertEquals($canonicalPath.'/child2', $res[0]->getPath());
+        $this->assertEquals($canonicalPath.'/child1', $res[0]->getPath());
     }
 
     /**
@@ -207,13 +210,13 @@ class PhpcrOdmRepositoryTest extends AbstractPhpcrRepositoryTestCase
             $this->child2,
         ]);
 
-        $this->documentManager->getNodeForDocument($this->child1)->willReturn($this->node1->reveal());
-        $this->documentManager->getNodeForDocument($this->child2)->willReturn($this->node2->reveal());
+        $this->documentManager->getNodeForDocument(Argument::exact($this->child1))->willReturn($this->node1->reveal());
+        $this->documentManager->getNodeForDocument(Argument::exact($this->child2))->willReturn($this->node2->reveal());
         $this->node1->getName()->willReturn('path1');
         $this->node2->getName()->willReturn('path2');
 
-        $this->documentManager->move($this->child1, '/foo/path1')->shouldBeCalled();
-        $this->documentManager->move($this->child2, '/foo/path2')->shouldBeCalled();
+        $this->documentManager->move(Argument::exact($this->child1), '/foo/path1')->shouldBeCalled();
+        $this->documentManager->move(Argument::exact($this->child2), '/foo/path2')->shouldBeCalled();
         $this->documentManager->flush()->shouldBeCalled();
 
         $number = $this->getRepository()->move('/test/*', '/foo');
@@ -227,7 +230,7 @@ class PhpcrOdmRepositoryTest extends AbstractPhpcrRepositoryTestCase
     public function testMoveException()
     {
         $this->finder->find('/test/path1')->willReturn([
-            $this->document
+            $this->document,
         ]);
         $this->documentManager->move($this->document, '/test/path2')->willThrow(new \InvalidArgumentException('test'));
 
@@ -250,4 +253,8 @@ class PhpcrOdmRepositoryTest extends AbstractPhpcrRepositoryTestCase
 
         return $repository;
     }
+}
+
+class stdClass2 extends \stdClass
+{
 }

@@ -18,8 +18,6 @@ use DTL\Glob\FinderInterface;
 use Puli\Repository\Api\ResourceNotFoundException;
 use Puli\Repository\Resource\Collection\ArrayResourceCollection;
 use Symfony\Cmf\Component\Resource\Repository\Resource\PhpcrOdmResource;
-use PHPCR\NodeInterface;
-use DTL\Glob\GlobHelper;
 
 class PhpcrOdmRepository extends AbstractPhpcrRepository
 {
