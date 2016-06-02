@@ -68,6 +68,9 @@ class PhpcrRepository extends AbstractPhpcrRepository
         return $resource;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function listChildren($path)
     {
         $resource = $this->get($path);
@@ -123,7 +126,7 @@ class PhpcrRepository extends AbstractPhpcrRepository
     /**
      * {@inheritdoc}
      */
-    protected function removeNodes($nodes)
+    protected function removeNodes(array $nodes)
     {
         foreach ($nodes as $node) {
             $node->remove();
@@ -135,13 +138,13 @@ class PhpcrRepository extends AbstractPhpcrRepository
     /**
      * {@inheritdoc}
      */
-    protected function moveNodes($nodes, $sourceQuery, $targetPath)
+    protected function moveNodes(array $nodes, $sourceQuery, $targetPath)
     {
         $this->doMoveNodes($nodes, $sourceQuery, $targetPath);
         $this->session->save();
     }
 
-    private function doMoveNodes($nodes, $sourceQuery, $targetPath)
+    private function doMoveNodes(array $nodes, $sourceQuery, $targetPath)
     {
         if (count($nodes) === 1 && current($nodes)->getPath() === $sourceQuery) {
             return $this->session->move(current($nodes)->getPath(), $targetPath);

@@ -18,6 +18,8 @@ use DTL\Glob\FinderInterface;
 use Puli\Repository\Api\ResourceNotFoundException;
 use Puli\Repository\Resource\Collection\ArrayResourceCollection;
 use Symfony\Cmf\Component\Resource\Repository\Resource\PhpcrOdmResource;
+use PHPCR\NodeInterface;
+use DTL\Glob\GlobHelper;
 
 class PhpcrOdmRepository extends AbstractPhpcrRepository
 {
@@ -31,6 +33,7 @@ class PhpcrOdmRepository extends AbstractPhpcrRepository
         $finder = $finder ?: new PhpcrOdmTraversalFinder($managerRegistry);
         parent::__construct($finder, $basePath);
         $this->managerRegistry = $managerRegistry;
+        $this->globHelper = new GlobHelper();
     }
 
     /**
@@ -124,41 +127,33 @@ class PhpcrOdmRepository extends AbstractPhpcrRepository
     /**
      * {@inheritdoc}
      */
-    protected function removeNodes($nodes)
+    protected function removeNodes(array $documents)
     {
-        foreach ($nodes as $node) {
-            $document = $this->getDocumentForNode($node);
+        foreach ($documents as $document) {
             $this->getManager()->remove($document);
         }
 
         $this->getManager()->flush();
     }
 
-    protected function moveNodes($nodes, $sourceQuery, $targetPath)
+    /**
+     * {@inheritdoc}
+     */
+    protected function moveNodes(array $nodes, $sourceQuery, $targetPath)
     {
         $this->doMoveNodes($nodes, $sourceQuery, $targetPath);
         $this->getManager()->flush();
     }
 
-    private function doMoveNodes($nodes, $sourceQuery, $targetPath)
+    private function doMoveNodes(array $documents, $sourceQuery, $targetPath)
     {
-        if (1 === count($nodes) && current($nodes)->getPath() === $sourceQuery) {
-            $document = $this->getDocumentForNode(current($nodes));
-
-            return $this->getManager()->move($document, $targetPath);
+        if (false === $this->globHelper->isGlobbed($sourceQuery)) {
+            return $this->getManager()->move(current($documents), $targetPath);
         }
 
-        foreach ($nodes as $node) {
-            $document = $this->getDocumentForNode($node);
+        foreach ($documents as $document) {
+            $node = $this->getManager()->getNodeForDocument($document);
             $this->getManager()->move($document, $targetPath.'/'.$node->getName());
         }
-    }
-
-    private function getDocumentForNode(NodeInterface $node)
-    {
-        // the PHPCR node is already loaded so the document should always
-        // be found, even if it is unmanaged (it will be a
-        // GenericDocument).
-        return $this->getManager()->find(null, $node->getPath());
     }
 }

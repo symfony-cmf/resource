@@ -24,11 +24,16 @@ use Puli\Repository\Api\UnsupportedLanguageException;
 interface EditableRepository extends EditableRepository
 {
     /**
-     * Move all resources found by $sourceQuery to the target (parent) path.
+     * Move all resources and their subgraphs found by $sourceQuery to the
+     * target (parent) path and returns the number of nodes that have been
+     * *explicitly* moved (i.e. the number of resources found by the query, NOT
+     * the total number of nodes affected).
      *
      * @param string $sourceQuery
      * @param string $targetPath
      * @param string $language
+     *
+     * @return int
      *
      * @throws InvalidArgumentException     If the sourceQuery is invalid.
      * @throws UnsupportedLanguageException If the language is not supported.

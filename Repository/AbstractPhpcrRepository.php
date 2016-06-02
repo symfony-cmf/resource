@@ -15,7 +15,6 @@ use DTL\Glob\FinderInterface;
 use Puli\Repository\Api\ResourceRepository;
 use Puli\Repository\Api\UnsupportedLanguageException;
 use Puli\Repository\Resource\Collection\ArrayResourceCollection;
-use Webmozart\Assert\Assert;
 use Webmozart\PathUtil\Path;
 use Puli\Repository\AbstractRepository;
 use Symfony\Cmf\Component\Resource\Repository\Api\EditableRepository;
@@ -78,23 +77,48 @@ abstract class AbstractPhpcrRepository extends AbstractRepository implements Res
     public function remove($query, $language = 'glob')
     {
         $this->failUnlessGlob($language);
-        Assert::notEq('', trim($query, '/'), 'The root directory cannot be deleted.');
         $nodes = $this->finder->find($this->resolvePath($query));
 
-        // delegate remove nodes to the implementation
-        $this->removeNodes($nodes);
+        if (0 === count($nodes)) {
+            return 0;
+        }
+
+        try {
+            // delegate remove nodes to the implementation
+            $this->removeNodes($nodes);
+        } catch (\Exception $e) {
+            throw new \RuntimeException(sprintf(
+                'Error encountered when removing resource(s) using query "%s"',
+                $query
+            ), null, $e);
+        }
+
+        return count($nodes);
     }
 
     /**
      * {@inheritdoc}
      */
-    public function move($sourceQuery, $targetPath, $language = 'glob')
+    public function move($query, $targetPath, $language = 'glob')
     {
         $this->failUnlessGlob($language);
-        Assert::notEq('', trim($sourceQuery, '/'), 'The root directory cannot be moved.');
         $nodes = $this->finder->find($this->resolvePath($query));
 
-        $this->moveNodes($nodes, $sourceQuery, $targetPath);
+        if (0 === count($nodes)) {
+            return 0;
+        }
+
+        try {
+            // delegate moving to the implementation
+            $this->moveNodes($nodes, $query, $targetPath);
+        } catch (\Exception $e) {
+            throw new \RuntimeException(sprintf(
+                'Error encountered when moving resource(s) using query "%s"',
+                $query
+            ), null, $e);
+        }
+
+        return count($nodes);
     }
 
     /**
@@ -103,6 +127,14 @@ abstract class AbstractPhpcrRepository extends AbstractRepository implements Res
     public function clear()
     {
         throw new \BadMethodCallException('Clear not supported');
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function add($path, $resource)
+    {
+        throw new \BadMethodCallException('Add not supported');
     }
 
     /**
@@ -152,12 +184,12 @@ abstract class AbstractPhpcrRepository extends AbstractRepository implements Res
      *
      * @param NodeInterface[]
      */
-    abstract protected function removeNodes($nodes);
+    abstract protected function removeNodes(array $nodes);
 
     /**
      * Move the given nodes.
      *
      * @param NodeInterface[]
      */
-    abstract protected function moveNodes($nodes, $sourceQuery, $targetPath);
+    abstract protected function moveNodes(array $nodes, $query, $targetPath);
 }
