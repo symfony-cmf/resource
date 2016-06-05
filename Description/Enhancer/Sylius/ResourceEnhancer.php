@@ -101,16 +101,11 @@ class ResourceEnhancer implements DescriptionEnhancerInterface
         }
 
         try {
-            $metadata = $this->registry->getByClass($resource->getPayloadType());
+            $this->registry->getByClass($resource->getPayloadType());
         } catch (\InvalidArgumentException $e) {
             return false;
         }
 
         return true;
-    }
-
-    private function getRouteName(Metadata $metadata, $action)
-    {
-        return sprintf('%s_%s_%s', $metadata->getApplicationName(), $metadata->getName(), $action);
     }
 }

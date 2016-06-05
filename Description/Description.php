@@ -95,9 +95,9 @@ class Description
      */
     public function set($descriptor, $value)
     {
-        if (null !== $value && !is_scalar($value)) {
+        if (null !== $value && !is_scalar($value) && !is_array($value)) {
             throw new \InvalidArgumentException(sprintf(
-                'Only scalar values are allowed as descriptor values, got "%s" when setting descriptor "%s"',
+                'Only scalar and array values are allowed as descriptor values, got "%s" when setting descriptor "%s"',
                 gettype($value), $descriptor
             ));
         }

@@ -27,7 +27,7 @@ interface DescriptionEnhancerInterface
     /**
      * Return true if the provider supports the given type.
      *
-     * @param CmfResource $resource
+     * @param PuliResource $resource
      *
      * @return bool
      */

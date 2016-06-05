@@ -58,11 +58,11 @@ class DescriptionTest extends \PHPUnit_Framework_TestCase
      * It should throw an exception if a non-scalar value is set.
      *
      * @expectedException InvalidArgumentException
-     * @expectedExceptionMessage Only scalar values are allowed as descriptor values, got "array" when setting descriptor "hello"
+     * @expectedExceptionMessage Only scalar and array values are allowed as descriptor values, got "object" when setting descriptor "hello"
      */
     public function testSetNonScalar()
     {
-        $this->description->set('hello', array('foo'));
+        $this->description->set('hello', new \stdClass());
     }
 
     /**

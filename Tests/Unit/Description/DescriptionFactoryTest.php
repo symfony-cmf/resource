@@ -20,14 +20,14 @@ use Puli\Repository\Api\Resource\PuliResource;
 class DescriptionFactoryTest extends \PHPUnit_Framework_TestCase
 {
     private $factory;
-    private $enhanceer1;
-    private $enhanceer2;
+    private $enhancer1;
+    private $enhancer2;
     private $resource;
 
     public function setUp()
     {
-        $this->enhanceer1 = $this->prophesize(DescriptionEnhancerInterface::class);
-        $this->enhanceer2 = $this->prophesize(DescriptionEnhancerInterface::class);
+        $this->enhancer1 = $this->prophesize(DescriptionEnhancerInterface::class);
+        $this->enhancer2 = $this->prophesize(DescriptionEnhancerInterface::class);
         $this->resource = $this->prophesize(PuliResource::class);
     }
 
@@ -36,22 +36,22 @@ class DescriptionFactoryTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetResourceDescription()
     {
-        $this->enhanceer1->enhance(Argument::type(Description::class))
+        $this->enhancer1->enhance(Argument::type(Description::class))
             ->will(function ($args) {
                 $description = $args[0];
                 $description->set('foobar', 'barfoo');
             });
-        $this->enhanceer1->supports($this->resource->reveal())->willReturn(true);
-        $this->enhanceer2->enhance(Argument::type(Description::class))
+        $this->enhancer1->supports($this->resource->reveal())->willReturn(true);
+        $this->enhancer2->enhance(Argument::type(Description::class))
             ->will(function ($args) {
                 $description = $args[0];
                 $description->set('barfoo', 'foobar');
             });
-        $this->enhanceer2->supports($this->resource->reveal())->willReturn(true);
+        $this->enhancer2->supports($this->resource->reveal())->willReturn(true);
 
         $description = $this->createFactory([
-            $this->enhanceer1->reveal(),
-            $this->enhanceer2->reveal(),
+            $this->enhancer1->reveal(),
+            $this->enhancer2->reveal(),
         ])->getPayloadDescriptionFor($this->resource->reveal());
 
         $this->assertInstanceOf(Description::class, $description);
@@ -64,20 +64,20 @@ class DescriptionFactoryTest extends \PHPUnit_Framework_TestCase
      */
     public function testIgnoreNonSupporters()
     {
-        $this->enhanceer1->enhance(Argument::cetera())->shouldNotBeCalled();
-        $this->enhanceer1->supports($this->resource->reveal())->willReturn(false);
+        $this->enhancer1->enhance(Argument::cetera())->shouldNotBeCalled();
+        $this->enhancer1->supports($this->resource->reveal())->willReturn(false);
 
-        $this->enhanceer2->enhance(Argument::cetera())->shouldBeCalled();
-        $this->enhanceer2->supports($this->resource->reveal())->willReturn(true);
+        $this->enhancer2->enhance(Argument::cetera())->shouldBeCalled();
+        $this->enhancer2->supports($this->resource->reveal())->willReturn(true);
 
         $this->createFactory([
-            $this->enhanceer1->reveal(),
-            $this->enhanceer2->reveal(),
+            $this->enhancer1->reveal(),
+            $this->enhancer2->reveal(),
         ])->getPayloadDescriptionFor($this->resource->reveal());
     }
 
     /**
-     * It should work when no enhancers are given.
+     * It should work when no enhancers are provided.
      */
     public function testNoEnhancers()
     {
