@@ -11,12 +11,12 @@
 
 namespace Symfony\Cmf\Component\Resource\Repository;
 
-use PHPCR\SessionInterface;
 use DTL\Glob\Finder\PhpcrTraversalFinder;
 use DTL\Glob\FinderInterface;
-use Symfony\Cmf\Component\Resource\Repository\Resource\PhpcrResource;
-use Puli\Repository\Resource\Collection\ArrayResourceCollection;
+use PHPCR\SessionInterface;
 use Puli\Repository\Api\ResourceNotFoundException;
+use Puli\Repository\Resource\Collection\ArrayResourceCollection;
+use Symfony\Cmf\Component\Resource\Repository\Resource\PhpcrResource;
 
 /**
  * Resource repository for PHPCR.
@@ -26,14 +26,14 @@ use Puli\Repository\Api\ResourceNotFoundException;
 class PhpcrRepository extends AbstractPhpcrRepository
 {
     /**
-     * @var ManagerRegistry
+     * @var SessionInterface
      */
     private $session;
 
     /**
      * @param SessionInterface $session
-     * @param FinderInterface  $finder
      * @param string           $basePath
+     * @param FinderInterface  $finder
      */
     public function __construct(SessionInterface $session, $basePath = null, FinderInterface $finder = null)
     {
@@ -68,6 +68,9 @@ class PhpcrRepository extends AbstractPhpcrRepository
         return $resource;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function listChildren($path)
     {
         $resource = $this->get($path);
@@ -118,5 +121,37 @@ class PhpcrRepository extends AbstractPhpcrRepository
         }
 
         return $collection;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function removeNodes(array $nodes)
+    {
+        foreach ($nodes as $node) {
+            $node->remove();
+        }
+
+        $this->session->save();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function moveNodes(array $nodes, $sourceQuery, $targetPath)
+    {
+        $this->doMoveNodes($nodes, $sourceQuery, $targetPath);
+        $this->session->save();
+    }
+
+    private function doMoveNodes(array $nodes, $sourceQuery, $targetPath)
+    {
+        if (false === $this->isGlobbed($sourceQuery)) {
+            return $this->session->move(current($nodes)->getPath(), $targetPath);
+        }
+
+        foreach ($nodes as $node) {
+            $this->session->move($node->getPath(), $targetPath.'/'.$node->getName());
+        }
     }
 }

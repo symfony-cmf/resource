@@ -12,40 +12,65 @@
 namespace Symfony\Cmf\Component\Resource\Tests\Unit\Repository;
 
 use Symfony\Cmf\Component\Resource\Repository\PhpcrOdmRepository;
+use Doctrine\ODM\PHPCR\DocumentManagerInterface;
+use Doctrine\Common\Persistence\ManagerRegistry;
+use Doctrine\ODM\PHPCR\ChildrenCollection;
+use Doctrine\ODM\PHPCR\UnitOfWork;
+use PHPCR\NodeInterface;
+use Prophecy\Argument;
 
-class PhpcrOdmRepositoryTest extends RepositoryTestCase
+class PhpcrOdmRepositoryTest extends AbstractPhpcrRepositoryTestCase
 {
+    private $documentManager;
+    private $managerRegistry;
+    private $childrenCollection;
+    private $uow;
+    private $document;
+    private $child1;
+    private $child2;
+    private $node1;
+    private $node2;
+
     public function setUp()
     {
-        $this->documentManager = $this->prophesize('Doctrine\ODM\PHPCR\DocumentManager');
-        $this->managerRegistry = $this->prophesize('Doctrine\Common\Persistence\ManagerRegistry');
-        $this->childrenCollection = $this->prophesize('Doctrine\ODM\PHPCR\ChildrenCollection');
-        $this->finder = $this->prophesize('DTL\Glob\FinderInterface');
-        $this->uow = $this->prophesize('Doctrine\ODM\PHPCR\UnitOfWork');
+        parent::setUp();
+        $this->documentManager = $this->prophesize(DocumentManagerInterface::class);
+        $this->managerRegistry = $this->prophesize(ManagerRegistry::class);
+        $this->childrenCollection = $this->prophesize(ChildrenCollection::class);
+        $this->uow = $this->prophesize(UnitOfWork::class);
         $this->document = new \stdClass();
+
         $this->child1 = new \stdClass();
-        $this->child2 = new \stdClass();
+
+        // because Prophecy doesn't care much about object IDs...
+        $this->child2 = new stdClass2();
+
+        $this->node1 = $this->prophesize(NodeInterface::class);
+        $this->node2 = $this->prophesize(NodeInterface::class);
 
         $this->managerRegistry->getManager()->willReturn($this->documentManager);
         $this->documentManager->getUnitOfWork()->willReturn($this->uow->reveal());
-
-        $this->object = new \stdClass();
     }
 
     /**
+     * {@inheritdoc}
+     *
      * @dataProvider provideGet
      */
     public function testGet($basePath, $requestedPath, $canonicalPath, $evaluatedPath)
     {
-        $this->documentManager->find(null, $evaluatedPath)->willReturn($this->object);
+        $this->documentManager->find(null, $evaluatedPath)->willReturn($this->document);
 
         $res = $this->getRepository($basePath)->get($requestedPath);
 
         $this->assertInstanceOf('Symfony\Cmf\Component\Resource\Repository\Resource\PhpcrOdmResource', $res);
-        $this->assertSame($this->object, $res->getPayload());
+        $this->assertSame($this->document, $res->getPayload());
         $this->assertTrue($res->isAttached());
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function testFind()
     {
         $this->documentManager->find(null, '/base/path/cmf/foobar')->willReturn($this->document);
@@ -64,6 +89,8 @@ class PhpcrOdmRepositoryTest extends RepositoryTestCase
     }
 
     /**
+     * {@inheritdoc}
+     *
      * @dataProvider provideGet
      */
     public function testListChildren($basePath, $requestedPath, $canonicalPath, $absPath)
@@ -81,10 +108,12 @@ class PhpcrOdmRepositoryTest extends RepositoryTestCase
         $this->assertInstanceOf('Puli\Repository\Resource\Collection\ArrayResourceCollection', $res);
         $this->assertCount(2, $res);
         $this->assertInstanceOf('Symfony\Cmf\Component\Resource\Repository\Resource\PhpcrOdmResource', $res[0]);
-        $this->assertEquals($canonicalPath.'/child2', $res[0]->getPath());
+        $this->assertEquals($canonicalPath.'/child1', $res[0]->getPath());
     }
 
     /**
+     * {@inheritdoc}
+     *
      * @dataProvider provideHasChildren
      */
     public function testHasChildren($nbChildren, $hasChildren)
@@ -104,6 +133,8 @@ class PhpcrOdmRepositoryTest extends RepositoryTestCase
     }
 
     /**
+     * {@inheritdoc}
+     *
      * @expectedException Puli\Repository\Api\ResourceNotFoundException
      */
     public function testGetNotExisting()
@@ -112,30 +143,118 @@ class PhpcrOdmRepositoryTest extends RepositoryTestCase
         $this->getRepository()->get('/test');
     }
 
+    /**
+     * {@inheritdoc}
+     */
+    public function testRemove()
+    {
+        $this->finder->find('/test/*')->willReturn([
+            $this->child1,
+            $this->child2,
+        ]);
+
+        $this->documentManager->remove($this->child1)->shouldBeCalled();
+        $this->documentManager->remove($this->child2)->shouldBeCalled();
+        $this->documentManager->flush()->shouldBeCalled();
+
+        $number = $this->getRepository()->remove('/test/*', 'glob');
+        $this->assertEquals(2, $number);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function testRemoveException()
+    {
+        $this->finder->find('/test/path1')->willReturn([
+            $this->document,
+        ]);
+        $this->documentManager->remove($this->document)->willThrow(new \InvalidArgumentException('test'));
+
+        try {
+            $this->getRepository()->remove('/test/path1');
+        } catch (\Exception $e) {
+            $this->assertWrappedException(
+                \RuntimeException::class,
+                'Error encountered when removing resource(s) using query "/test/path1"',
+                \InvalidArgumentException::class,
+                'test',
+                $e
+            );
+        }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function testMove()
+    {
+        $this->finder->find('/test/path1')->willReturn([
+            $this->document,
+        ]);
+        $this->documentManager->move($this->document, '/foo/bar')->shouldBeCalled();
+        $this->documentManager->flush()->shouldBeCalled();
+
+        $number = $this->getRepository()->move('/test/path1', '/foo/bar');
+
+        $this->assertEquals(1, $number);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function testMoveMultiple()
+    {
+        $this->finder->find('/test/*')->willReturn([
+            $this->child1,
+            $this->child2,
+        ]);
+
+        $this->documentManager->getNodeForDocument(Argument::exact($this->child1))->willReturn($this->node1->reveal());
+        $this->documentManager->getNodeForDocument(Argument::exact($this->child2))->willReturn($this->node2->reveal());
+        $this->node1->getName()->willReturn('path1');
+        $this->node2->getName()->willReturn('path2');
+
+        $this->documentManager->move(Argument::exact($this->child1), '/foo/path1')->shouldBeCalled();
+        $this->documentManager->move(Argument::exact($this->child2), '/foo/path2')->shouldBeCalled();
+        $this->documentManager->flush()->shouldBeCalled();
+
+        $number = $this->getRepository()->move('/test/*', '/foo');
+
+        $this->assertEquals(2, $number);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function testMoveException()
+    {
+        $this->finder->find('/test/path1')->willReturn([
+            $this->document,
+        ]);
+        $this->documentManager->move($this->document, '/test/path2')->willThrow(new \InvalidArgumentException('test'));
+
+        try {
+            $this->getRepository()->move('/test/path1', '/test/path2');
+        } catch (\Exception $e) {
+            $this->assertWrappedException(
+                \RuntimeException::class,
+                'Error encountered when moving resource(s) using query "/test/path1"',
+                \InvalidArgumentException::class,
+                'test',
+                $e
+            );
+        }
+    }
+
     protected function getRepository($path = null)
     {
         $repository = new PhpcrOdmRepository($this->managerRegistry->reveal(), $path, $this->finder->reveal());
 
         return $repository;
     }
+}
 
-    public function testGetVersion()
-    {
-        $this->documentManager->find(null, '/test')->willReturn($this->object);
-
-        $this->assertInstanceOf(
-            '\Puli\Repository\Api\ChangeStream\VersionList',
-            $this->getRepository()->getVersions('/test')
-        );
-    }
-
-    /**
-     * @expectedException \Puli\Repository\Api\NoVersionFoundException
-     */
-    public function testGetVersionsWillThrow()
-    {
-        $this->documentManager->find(null, '/test')->willReturn(null);
-
-        $this->getRepository()->getVersions('/test');
-    }
+class stdClass2 extends \stdClass
+{
 }

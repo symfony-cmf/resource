@@ -12,11 +12,12 @@
 namespace Symfony\Cmf\Component\Resource\Repository;
 
 use Doctrine\Common\Persistence\ManagerRegistry;
+use Doctrine\ODM\PHPCR\DocumentManagerInterface;
 use DTL\Glob\Finder\PhpcrOdmTraversalFinder;
 use DTL\Glob\FinderInterface;
-use Symfony\Cmf\Component\Resource\Repository\Resource\PhpcrOdmResource;
-use Puli\Repository\Resource\Collection\ArrayResourceCollection;
 use Puli\Repository\Api\ResourceNotFoundException;
+use Puli\Repository\Resource\Collection\ArrayResourceCollection;
+use Symfony\Cmf\Component\Resource\Repository\Resource\PhpcrOdmResource;
 
 class PhpcrOdmRepository extends AbstractPhpcrRepository
 {
@@ -32,6 +33,9 @@ class PhpcrOdmRepository extends AbstractPhpcrRepository
         $this->managerRegistry = $managerRegistry;
     }
 
+    /**
+     * @return DocumentManagerInterface
+     */
     protected function getManager()
     {
         return $this->managerRegistry->getManager();
@@ -82,7 +86,7 @@ class PhpcrOdmRepository extends AbstractPhpcrRepository
      */
     public function findByTag($tag)
     {
-        throw new \Exception('Get by tag not currently supported');
+        throw new \Exception('Find by tag not supported');
     }
 
     /**
@@ -115,5 +119,38 @@ class PhpcrOdmRepository extends AbstractPhpcrRepository
         }
 
         return $collection;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function removeNodes(array $documents)
+    {
+        foreach ($documents as $document) {
+            $this->getManager()->remove($document);
+        }
+
+        $this->getManager()->flush();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function moveNodes(array $documents, $sourceQuery, $targetPath)
+    {
+        $this->doMoveNodes($documents, $sourceQuery, $targetPath);
+        $this->getManager()->flush();
+    }
+
+    private function doMoveNodes(array $documents, $sourceQuery, $targetPath)
+    {
+        if (false === $this->isGlobbed($sourceQuery)) {
+            return $this->getManager()->move(current($documents), $targetPath);
+        }
+
+        foreach ($documents as $document) {
+            $node = $this->getManager()->getNodeForDocument($document);
+            $this->getManager()->move($document, $targetPath.'/'.$node->getName());
+        }
     }
 }
