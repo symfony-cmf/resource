@@ -12,16 +12,16 @@
     "minimum-stability": "dev",
     "prefer-stable": true,
     "require": {
-        "php": "^5.3.9|^7.0",
+        "php": "^5.5.6|^7.0",
         "puli/repository": "^1.0.0-beta10",
         "dantleech/glob-finder": "~1.0"
     },
     "require-dev": {
         "phpspec/prophecy-phpunit": "~1.0.0",
-        "doctrine/phpcr-odm": "~1.2",
         "jackalope/jackalope-fs": "dev-master",
         "sonata-project/admin-bundle": "^3.1",
-        "sylius/resource-bundle": "0.18"
+        "sylius/resource-bundle": "^0.18",
+        "doctrine/phpcr-odm": "^1.4"
     },
     "suggest": {
         "doctrine/phpcr-odm": "To enable support for the PHPCR ODM documents",

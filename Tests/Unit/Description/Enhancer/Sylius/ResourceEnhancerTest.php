@@ -89,7 +89,52 @@ class ResourceEnhancerTest extends \PHPUnit_Framework_TestCAse
      */
     public function testEnhance()
     {
+        $this->initEnhance();
+
         $description = new Description($this->cmfResource->reveal());
+        $this->enhancer->enhance($description);
+
+        $this->assertEquals([
+            Descriptor::LINK_SHOW_HTML => 'show/5',
+            Descriptor::LINK_LIST_HTML => 'index/5',
+            Descriptor::LINK_EDIT_HTML => 'update/5',
+            Descriptor::LINK_CREATE_HTML => 'create/5',
+            Descriptor::LINK_REMOVE_HTML => 'delete/5',
+        ], $description->all());
+    }
+
+    /**
+     * It should add child type metadata if the CHILDREN_TYPE descriptor has previously been set.
+     */
+    public function testChildrenType()
+    {
+        $this->initEnhance();
+
+        $this->urlGenerator->generate('create')->will(function ($args) {
+            return '/create';
+        });
+        $this->metadata->getAlias()->willReturn('std.class');
+
+        $description = new Description($this->cmfResource->reveal());
+        $description->set(Descriptor::CHILDREN_TYPES, [
+            \stdClass::class,
+        ]);
+
+        $this->enhancer->enhance($description);
+
+        $this->assertEquals([
+            Descriptor::LINK_SHOW_HTML => 'show/5',
+            Descriptor::LINK_LIST_HTML => 'index/5',
+            Descriptor::LINK_EDIT_HTML => 'update/5',
+            Descriptor::LINK_CREATE_HTML => 'create/5',
+            Descriptor::LINK_REMOVE_HTML => 'delete/5',
+            Descriptor::CHILDREN_TYPES => [\stdClass::class],
+            Descriptor::LINKS_CREATE_CHILD_HTML => ['std.class' => '/create?parent=5'],
+        ], $description->all());
+    }
+
+    private function initEnhance()
+    {
         $this->cmfResource->getPayloadType()->willReturn('stdClass');
         $this->cmfResource->getPayload()->willReturn($this->payload->reveal());
         $this->payload->getId()->willReturn(5);
@@ -105,15 +150,5 @@ class ResourceEnhancerTest extends \PHPUnit_Framework_TestCAse
         $this->urlGenerator->generate(Argument::type('string'), Argument::type('array'))->will(function ($args) {
             return $args[0].'/'.$args[1]['id'];
         });
-
-        $this->enhancer->enhance($description);
-
-        $this->assertEquals([
-            Descriptor::LINK_SHOW_HTML => 'show/5',
-            Descriptor::LINK_LIST_HTML => 'index/5',
-            Descriptor::LINK_EDIT_HTML => 'update/5',
-            Descriptor::LINK_CREATE_HTML => 'create/5',
-            Descriptor::LINK_REMOVE_HTML => 'delete/5',
-        ], $description->all());
     }
 }
