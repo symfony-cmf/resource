@@ -74,6 +74,10 @@ abstract class AbstractPhpcrRepositoryTestCase extends \PHPUnit_Framework_TestCa
 
     abstract public function testRemoveException();
 
+    abstract public function testReorder();
+
+    abstract public function testReorderToLast();
+
     /**
      * @dataProvider provideGetInvalid
      * @expectedException \InvalidArgumentException

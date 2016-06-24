@@ -247,6 +247,41 @@ class PhpcrOdmRepositoryTest extends AbstractPhpcrRepositoryTestCase
         }
     }
 
+    /**
+     * {@inheritdoc}
+     */
+    public function testReorder()
+    {
+        $this->doTestReorder(1, true);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function testReorderToLast()
+    {
+        $this->doTestReorder(66, false);
+    }
+
+    private function doTestReorder($position, $before)
+    {
+        $evaluatedPath = '/test/foo';
+
+        $this->documentManager->find(null, $evaluatedPath)->willReturn($this->child1);
+        $this->documentManager->getNodeForDocument($this->child1)->willReturn($this->node1->reveal());
+        $this->node1->getParent()->willReturn($this->node2->reveal());
+        $this->node1->getName()->willReturn('foo');
+        $this->node2->getNodeNames()->willReturn([
+            'foo', 'bar', 'baz',
+        ]);
+        $this->node2->getPath()->willReturn('/test');
+        $this->documentManager->find(null, '/test')->willReturn($this->document);
+        $this->documentManager->reorder($this->document, 'foo', 'baz', $before)->shouldBeCalled();
+        $this->documentManager->flush()->shouldBeCalled();
+
+        $this->getRepository('/test')->reorder('/foo', $position);
+    }
+
     protected function getRepository($path = null)
     {
         $repository = new PhpcrOdmRepository($this->managerRegistry->reveal(), $path, $this->finder->reveal());

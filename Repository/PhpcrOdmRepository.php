@@ -46,16 +46,7 @@ class PhpcrOdmRepository extends AbstractPhpcrRepository
      */
     public function get($path)
     {
-        $resolvedPath = $this->resolvePath($path);
-        $document = $this->getManager()->find(null, $resolvedPath);
-
-        if (null === $document) {
-            throw new ResourceNotFoundException(sprintf(
-                'No PHPCR-ODM document could be found at "%s"',
-                $resolvedPath
-            ));
-        }
-
+        $document = $this->getDocument($path);
         $resource = new PhpcrOdmResource($path, $document);
         $resource->attachTo($this);
 
@@ -95,6 +86,27 @@ class PhpcrOdmRepository extends AbstractPhpcrRepository
     public function getTags()
     {
         return array();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function reorderNode($sourcePath, $position)
+    {
+        $document = $this->getDocument($sourcePath);
+        $node = $this->getManager()->getNodeForDocument($document);
+        $parent = $node->getParent();
+        $nodeNames = $parent->getNodeNames();
+        $parentDocument = $this->getManager()->find(null, $parent->getPath());
+
+        if (isset($nodeNames[$position + 1])) {
+            $this->getManager()->reorder($parentDocument, $node->getName(), $nodeNames[$position + 1], true);
+        } else {
+            $lastName = end($nodeNames);
+            $this->getManager()->reorder($parentDocument, $node->getName(), $lastName, false);
+        }
+
+        $this->getManager()->flush();
     }
 
     /**
@@ -152,5 +164,20 @@ class PhpcrOdmRepository extends AbstractPhpcrRepository
             $node = $this->getManager()->getNodeForDocument($document);
             $this->getManager()->move($document, $targetPath.'/'.$node->getName());
         }
+    }
+
+    private function getDocument($path)
+    {
+        $resolvedPath = $this->resolvePath($path);
+        $document = $this->getManager()->find(null, $resolvedPath);
+
+        if (null === $document) {
+            throw new ResourceNotFoundException(sprintf(
+                'No PHPCR-ODM document could be found at "%s"',
+                $resolvedPath
+            ));
+        }
+
+        return $document;
     }
 }

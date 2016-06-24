@@ -47,20 +47,7 @@ class PhpcrRepository extends AbstractPhpcrRepository
      */
     public function get($path)
     {
-        $resolvedPath = $this->resolvePath($path);
-
-        try {
-            $node = $this->session->getNode($resolvedPath);
-        } catch (\PHPCR\PathNotFoundException $e) {
-            throw new ResourceNotFoundException(sprintf(
-                'No PHPCR node could be found at "%s"',
-                $resolvedPath
-            ), null, $e);
-        }
-
-        if (null === $node) {
-            throw new \RuntimeException('Session did not return a node or throw an exception');
-        }
+        $node = $this->getNode($path);
 
         $resource = new PhpcrResource($path, $node);
         $resource->attachTo($this);
@@ -144,6 +131,26 @@ class PhpcrRepository extends AbstractPhpcrRepository
         $this->session->save();
     }
 
+    /**
+     * {@inheritdoc}
+     */
+    public function reorderNode($sourcePath, $position)
+    {
+        $node = $this->getNode($sourcePath);
+        $parent = $node->getParent();
+        $nodeNames = $parent->getNodeNames();
+
+        if (isset($nodeNames[$position + 1])) {
+            $parent->orderBefore($node->getName(), $nodeNames[$position + 1]);
+        } else {
+            $lastName = $nodeNames[count($nodeNames) - 1];
+            $parent->orderBefore($node->getName(), $lastName);
+            $parent->orderBefore($lastName, $node->getName());
+        }
+
+        $this->session->save();
+    }
+
     private function doMoveNodes(array $nodes, $sourceQuery, $targetPath)
     {
         if (false === $this->isGlobbed($sourceQuery)) {
@@ -153,5 +160,25 @@ class PhpcrRepository extends AbstractPhpcrRepository
         foreach ($nodes as $node) {
             $this->session->move($node->getPath(), $targetPath.'/'.$node->getName());
         }
+    }
+
+    private function getNode($path)
+    {
+        $resolvedPath = $this->resolvePath($path);
+
+        try {
+            $node = $this->session->getNode($resolvedPath);
+        } catch (\PHPCR\PathNotFoundException $e) {
+            throw new ResourceNotFoundException(sprintf(
+                'No PHPCR node could be found at "%s"',
+                $resolvedPath
+            ), null, $e);
+        }
+
+        if (null === $node) {
+            throw new \RuntimeException('Session did not return a node or throw an exception');
+        }
+
+        return $node;
     }
 }
