@@ -39,4 +39,19 @@ interface EditableRepository extends PuliEditableRepository
      * @throws UnsupportedLanguageException If the language is not supported.
      */
     public function move($sourceQuery, $targetPath, $language = 'glob');
+
+    /**
+     * Change the position of a node relative to its siblings.
+     *
+     * The $position is positive integer beginning at `0`. If an index is
+     * specified greater than the number of siblings, then the node will be
+     * added as the last sibling in the set, otherwise the node will be inserted
+     * at the given $position.
+     *
+     * The $southPath identifies a single node.
+     *
+     * @param string $sourcePath
+     * @param int    $position
+     */
+    public function reorder($sourcePath, $position);
 }

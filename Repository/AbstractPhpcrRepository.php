@@ -19,6 +19,7 @@ use Webmozart\PathUtil\Path;
 use Puli\Repository\AbstractRepository;
 use Symfony\Cmf\Component\Resource\Repository\Api\EditableRepository;
 use DTL\Glob\GlobHelper;
+use Webmozart\Assert\Assert;
 
 /**
  * Abstract repository for both PHPCR and PHPCR-ODM repositories.
@@ -147,6 +148,15 @@ abstract class AbstractPhpcrRepository extends AbstractRepository implements Res
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public function reorder($sourcePath, $position)
+    {
+        Assert::greaterThanEq($position, 0, 'Reorder position cannot be negative, got: %s');
+        $this->reorderNode($sourcePath, $position);
+    }
+
+    /**
      * Return the path with the basePath prefix
      * if it has been set.
      *
@@ -194,7 +204,9 @@ abstract class AbstractPhpcrRepository extends AbstractRepository implements Res
     abstract protected function buildCollection(array $nodes);
 
     /**
-     * Rmeove the given nodes.
+     * Remove the given nodes.
+     *
+     * @see EditableRepository::remove()
      *
      * @param NodeInterface[]
      */
@@ -203,7 +215,19 @@ abstract class AbstractPhpcrRepository extends AbstractRepository implements Res
     /**
      * Move the given nodes.
      *
+     * @see EditableRepository::move()
+     *
      * @param NodeInterface[]
      */
     abstract protected function moveNodes(array $nodes, $query, $targetPath);
+
+    /**
+     * Reorder the node at the given path to be in $position position.
+     *
+     * @see EditableRepository::reorder()
+     *
+     * @param string $sourcePath
+     * @param int    $position
+     */
+    abstract protected function reorderNode($sourcePath, $position);
 }

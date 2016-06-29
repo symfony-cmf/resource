@@ -224,6 +224,49 @@ class PhpcrRepositoryTest extends AbstractPhpcrRepositoryTestCase
     /**
      * {@inheritdoc}
      */
+    public function testReorder()
+    {
+        $evaluatedPath = '/test/node-1';
+
+        $this->session->getNode($evaluatedPath)->willReturn($this->node->reveal());
+        $this->node->getPath()->willReturn($evaluatedPath);
+        $this->node->getParent()->willReturn($this->node1->reveal());
+        $this->node->getName()->willReturn('node-1');
+        $this->node1->getNodeNames()->willReturn([
+            'node-1', 'node-2', 'node-3',
+        ]);
+
+        $this->node1->orderBefore('node-1', 'node-3')->shouldBeCalled();
+        $this->session->save()->shouldBeCalled();
+
+        $this->getRepository('/test')->reorder('/node-1', 1);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function testReorderToLast()
+    {
+        $evaluatedPath = '/test/node-1';
+
+        $this->session->getNode($evaluatedPath)->willReturn($this->node->reveal());
+        $this->node->getPath()->willReturn($evaluatedPath);
+        $this->node->getParent()->willReturn($this->node1->reveal());
+        $this->node->getName()->willReturn('node-1');
+        $this->node1->getNodeNames()->willReturn([
+            'node-1', 'node-2', 'node-3',
+        ]);
+
+        $this->node1->orderBefore('node-1', 'node-3')->shouldBeCalled();
+        $this->node1->orderBefore('node-3', 'node-1')->shouldBeCalled();
+        $this->session->save()->shouldBeCalled();
+
+        $this->getRepository('/test')->reorder('/node-1', 66);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     protected function getRepository($path = null)
     {
         $repository = new PhpcrRepository($this->session->reveal(), $path, $this->finder->reveal());
