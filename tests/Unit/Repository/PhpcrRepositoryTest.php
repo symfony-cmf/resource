@@ -235,9 +235,9 @@ class PhpcrRepositoryTest extends AbstractPhpcrRepositoryTestCase
         $this->node->getPath()->willReturn($evaluatedPath);
         $this->node->getParent()->willReturn($this->node1->reveal());
         $this->node->getName()->willReturn('node-1');
-        $this->node1->getNodeNames()->willReturn([
+        $this->node1->getNodeNames()->willReturn(new \ArrayIterator([
             'node-1', 'node-2', 'node-3',
-        ]);
+        ]));
 
         $this->node1->orderBefore('node-1', 'node-3')->shouldBeCalled();
         $this->session->save()->shouldBeCalled();
