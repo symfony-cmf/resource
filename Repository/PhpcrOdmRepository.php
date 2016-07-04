@@ -99,7 +99,9 @@ class PhpcrOdmRepository extends AbstractPhpcrRepository
         $nodeNames = $parent->getNodeNames();
         $parentDocument = $this->getManager()->find(null, $parent->getPath());
 
-        if (isset($nodeNames[$position + 1])) {
+        if ($position == 0) {
+            $this->getManager()->reorder($parentDocument, $node->getName(), $nodeNames[$position], true);
+        } elseif (isset($nodeNames[$position + 1])) {
             $this->getManager()->reorder($parentDocument, $node->getName(), $nodeNames[$position + 1], true);
         } else {
             $lastName = end($nodeNames);
