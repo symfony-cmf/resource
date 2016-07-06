@@ -26,7 +26,7 @@ use Sylius\Component\Resource\Model\ResourceInterface;
 use Prophecy\Argument;
 use Symfony\Cmf\Component\Resource\Description\Descriptor;
 
-class ResourceEnhancerTest extends \PHPUnit_Framework_TestCAse
+class ResourceEnhancerTest extends \PHPUnit_Framework_TestCase
 {
     public function setUp()
     {
