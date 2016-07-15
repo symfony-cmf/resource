@@ -13,7 +13,7 @@
     "prefer-stable": true,
     "require": {
         "php": "^5.3.9|^7.0",
-        "puli/repository": "^1.0.0-beta10",
+        "puli/repository": ">=1.0.0-beta10 < dev-master",
         "dantleech/glob-finder": "~1.0"
     },
     "require-dev": {
