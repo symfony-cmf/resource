@@ -21,11 +21,27 @@ use Puli\Repository\Api\ResourceRepository;
 interface RepositoryRegistryInterface
 {
     /**
+     * Return the names of all the regstered repositories.
+     *
+     * @return string[]
+     */
+    public function names();
+
+    /**
+     * Return all repositories.
+     *
+     * Keys must be the repository names.
+     *
+     * @return ResourceRepository[]
+     */
+    public function all();
+
+    /**
      * Return the named repository.
      *
      * @param string $name
      *
-     * @return Puli\Repository\Api\ResourceRepository
+     * @return ResourceRepository
      */
     public function get($repositoryName);
 

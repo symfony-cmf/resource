@@ -35,8 +35,8 @@ interface EditableRepository extends PuliEditableRepository
      *
      * @return int
      *
-     * @throws InvalidArgumentException     If the sourceQuery is invalid.
-     * @throws UnsupportedLanguageException If the language is not supported.
+     * @throws InvalidArgumentException     If the sourceQuery is invalid
+     * @throws UnsupportedLanguageException If the language is not supported
      */
     public function move($sourceQuery, $targetPath, $language = 'glob');
 
