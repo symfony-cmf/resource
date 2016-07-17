@@ -20,6 +20,9 @@ use Symfony\Cmf\Component\Resource\Repository\Resource\CmfResource;
 use Sylius\Bundle\ResourceBundle\Controller\RequestConfigurationFactory;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Cmf\Component\Resource\Description\Descriptor;
+use Symfony\Component\Routing\Exception\RouteNotFoundException;
+use Symfony\Component\HttpFoundation\Request;
+use Sylius\Component\Resource\Metadata\Metadata;
 
 /**
  * Add descriptors from the Sylius Resource component.
@@ -81,13 +84,26 @@ class ResourceEnhancer implements DescriptionEnhancerInterface
         ];
 
         foreach ($map as $descriptor => $action) {
-            $url = $this->urlGenerator->generate(
-                $configuration->getRouteName($action),
-                [
-                    'id' => $payload->getId(),
-                ]
-            );
-            $description->set($descriptor, $url);
+
+            // note that some resources may not have routes
+            // registered with sonata (f.e. folder resources)
+            // so we ignore route-not-found exceptions.
+            try {
+                $url = $this->urlGenerator->generate(
+                    $configuration->getRouteName($action),
+                    [
+                        'id' => $payload->getId(),
+                    ]
+                );
+                $description->set($descriptor, $url);
+            } catch (RouteNotFoundException $e) {
+            }
+        }
+
+        // if a previous enhancer has set the children types descriptor, then
+        // we can generate the LINKS_CREATE_CHILD_HTML descriptor.
+        if ($description->has(Descriptor::CHILDREN_TYPES)) {
+            $this->processChildrenTypes($description, $metadata, $request, $payload);
         }
     }
 
@@ -107,5 +123,29 @@ class ResourceEnhancer implements DescriptionEnhancerInterface
         }
 
         return true;
+    }
+
+    private function processChildrenTypes(Description $description, Metadata $metadata, Request $request, $payload)
+    {
+        $childClasses = $description->get(Descriptor::CHILDREN_TYPES);
+        $childLinks = [];
+
+        foreach ($childClasses as $childClass) {
+            try {
+                $metadata = $this->registry->getByClass($childClass);
+            } catch (\InvalidArgumentException $e) {
+                continue;
+            }
+
+            $configuration = $this->requestConfigurationFactory->create($metadata, $request);
+
+            $url = $this->urlGenerator->generate(
+                $configuration->getRouteName('create')
+            );
+
+            $childLinks[$metadata->getAlias()] = $url.'?parent='.$payload->getId();
+        }
+
+        $description->set(Descriptor::LINKS_CREATE_CHILD_HTML, $childLinks);
     }
 }
