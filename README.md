@@ -16,9 +16,7 @@ The Resource component provides PHPCR/ODM integration with Puli.
 
 ## Documentation
 
-Please refer to the ResourceBundle documentation:
-
-* [ResourceBundle documentation](http://symfony.com/doc/master/cmf/bundles/resource/index.html)
+This library is under development and as yet there is no documentation.
 
 See also:
 
