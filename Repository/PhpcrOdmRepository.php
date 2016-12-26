@@ -18,6 +18,9 @@ use DTL\Glob\FinderInterface;
 use Symfony\Cmf\Component\Resource\Puli\ArrayResourceCollection;
 use Symfony\Cmf\Component\Resource\Repository\Resource\PhpcrOdmResource;
 
+/**
+ * @internal
+ */
 class PhpcrOdmRepository extends AbstractPhpcrRepository
 {
     /**

@@ -15,6 +15,8 @@ use Symfony\Cmf\Component\Resource\Puli\Api\PuliResource;
 
 /**
  * Descriptive metadata for resources.
+ *
+ * @internal
  */
 class Description
 {

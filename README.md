@@ -10,6 +10,10 @@ and licensed under the [MIT License](LICENSE).
 
 The Resource component provides PHPCR/ODM integration with Puli.
 
+ > **CAUTION** As Puli is not yet stable, the complete component is marked
+ > internal. Backwards compatibility of upcoming 1.x versions is not
+ > guaranteed.
+
 ## Requirements 
 
 * See also the `require` section of [composer.json](composer.json)

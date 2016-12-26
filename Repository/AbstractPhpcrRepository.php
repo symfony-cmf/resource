@@ -24,6 +24,8 @@ use Webmozart\Assert\Assert;
  * Abstract repository for both PHPCR and PHPCR-ODM repositories.
  *
  * @author Daniel Leech <daniel@dantleech.com>
+ *
+ * @internal
  */
 abstract class AbstractPhpcrRepository extends AbstractRepository implements ResourceRepository, EditableRepository
 {

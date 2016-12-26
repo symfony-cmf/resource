@@ -18,6 +18,8 @@ use PHPCR\NodeInterface;
  * Metadata for PHPCR node.
  *
  * @author Daniel Leech <daniel@dantleech.com>
+ *
+ * @internal
  */
 class PhpcrMetadata extends ResourceMetadata
 {

@@ -23,6 +23,8 @@ use Symfony\Cmf\Component\Resource\Puli\Api\PuliResource;
  * Add links and meta-info from Sonata Admin.
  *
  * @author Daniel Leech <daniel@dantleech.com>
+ *
+ * @internal
  */
 class AdminEnhancer implements DescriptionEnhancerInterface
 {

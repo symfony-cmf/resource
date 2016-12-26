@@ -28,6 +28,8 @@ use Sylius\Component\Resource\Metadata\Metadata;
  * Add descriptors from the Sylius Resource component.
  *
  * @author Daniel Leech <daniel@dantleech.com>
+ *
+ * @internal
  */
 class ResourceEnhancer implements DescriptionEnhancerInterface
 {

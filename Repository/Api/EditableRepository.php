@@ -18,6 +18,8 @@ use Symfony\Cmf\Component\Resource\Puli\Api\ResourceRepository;
  * implemented features.
  *
  * @author Maximilian Berghoff <Maximilian.Berghoff@mayflower.de>
+ *
+ * @internal
  */
 interface EditableRepository extends ResourceRepository
 {

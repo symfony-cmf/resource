@@ -21,6 +21,8 @@ use Symfony\Cmf\Component\Resource\Repository\Resource\PhpcrResource;
  * Resource repository for PHPCR.
  *
  * @author Daniel Leech <daniel@dantleech.com>
+ *
+ * @internal
  */
 class PhpcrRepository extends AbstractPhpcrRepository
 {

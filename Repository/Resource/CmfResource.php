@@ -19,6 +19,8 @@ use Symfony\Cmf\Component\Resource\Puli\GenericResource;
  * NOTE: This is not ideal and only exists here to add the "getPayload" and
  *       "getPayloadType" methods to the Puli API.
  *       See: https://github.com/puli/issues/issues/44
+ *
+ * @internal
  */
 class CmfResource extends GenericResource
 {

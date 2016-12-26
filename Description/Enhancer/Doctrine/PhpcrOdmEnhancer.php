@@ -23,6 +23,8 @@ use Doctrine\Common\Util\ClassUtils;
  * Add descriptors from the Doctrine PHPCR ODM.
  *
  * @author Daniel Leech <daniel@dantleech.com>
+ *
+ * @internal
  */
 class PhpcrOdmEnhancer implements DescriptionEnhancerInterface
 {
