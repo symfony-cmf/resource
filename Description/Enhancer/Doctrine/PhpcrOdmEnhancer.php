@@ -13,9 +13,9 @@ namespace Symfony\Cmf\Component\Resource\Description\Enhancer\Doctrine;
 
 use Symfony\Cmf\Component\Resource\Description\DescriptionEnhancerInterface;
 use Symfony\Cmf\Component\Resource\Description\Description;
-use Puli\Repository\Api\Resource\PuliResource;
-use Symfony\Cmf\Component\Resource\Repository\Resource\CmfResource;
 use Symfony\Cmf\Component\Resource\Description\Descriptor;
+use Symfony\Cmf\Component\Resource\Puli\Api\PuliResource;
+use Symfony\Cmf\Component\Resource\Repository\Resource\CmfResource;
 use Doctrine\ODM\PHPCR\Mapping\ClassMetadataFactory;
 use Doctrine\Common\Util\ClassUtils;
 

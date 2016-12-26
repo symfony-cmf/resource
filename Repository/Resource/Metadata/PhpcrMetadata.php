@@ -11,7 +11,7 @@
 
 namespace Symfony\Cmf\Component\Resource\Repository\Resource\Metadata;
 
-use Puli\Repository\Api\Resource\ResourceMetadata;
+use Symfony\Cmf\Component\Resource\Puli\Api\ResourceMetadata;
 use PHPCR\NodeInterface;
 
 /**

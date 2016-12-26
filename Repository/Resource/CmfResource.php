@@ -11,7 +11,7 @@
 
 namespace Symfony\Cmf\Component\Resource\Repository\Resource;
 
-use Puli\Repository\Resource\GenericResource;
+use Symfony\Cmf\Component\Resource\Puli\GenericResource;
 
 /**
  * Base class for CMF resources.

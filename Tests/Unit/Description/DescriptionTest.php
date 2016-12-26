@@ -13,7 +13,7 @@ namespace Symfony\Cmf\Component\Resource\Tests\Unit\Repository;
 
 use Symfony\Cmf\Component\Resource\Description\Description;
 use Symfony\Cmf\Component\Resource\Description\Descriptor;
-use Puli\Repository\Api\Resource\PuliResource;
+use Symfony\Cmf\Component\Resource\Puli\Api\PuliResource;
 
 class DescriptionTest extends \PHPUnit_Framework_TestCase
 {

@@ -15,7 +15,7 @@ use Symfony\Cmf\Component\Resource\Description\Description;
 use Symfony\Cmf\Component\Resource\Description\DescriptionEnhancerInterface;
 use Prophecy\Argument;
 use Symfony\Cmf\Component\Resource\Description\DescriptionFactory;
-use Puli\Repository\Api\Resource\PuliResource;
+use Symfony\Cmf\Component\Resource\Puli\Api\PuliResource;
 
 class DescriptionFactoryTest extends \PHPUnit_Framework_TestCase
 {

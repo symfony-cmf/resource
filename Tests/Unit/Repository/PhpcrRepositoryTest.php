@@ -11,7 +11,9 @@
 
 namespace Symfony\Cmf\Component\Resource\Tests\Unit\Repository;
 
+use Symfony\Cmf\Component\Resource\Puli\ArrayResourceCollection;
 use Symfony\Cmf\Component\Resource\Repository\PhpcrRepository;
+use Symfony\Cmf\Component\Resource\Repository\Resource\PhpcrResource;
 
 class PhpcrRepositoryTest extends AbstractPhpcrRepositoryTestCase
 {
@@ -39,7 +41,7 @@ class PhpcrRepositoryTest extends AbstractPhpcrRepositoryTestCase
 
         $res = $this->getRepository($basePath)->get($requestedPath);
 
-        $this->assertInstanceOf('Symfony\Cmf\Component\Resource\Repository\Resource\PhpcrResource', $res);
+        $this->assertInstanceOf(PhpcrResource::class, $res);
 
         $this->assertEquals($requestedPath, $res->getPath());
         $this->assertEquals('foobar', $res->getName());
@@ -59,7 +61,7 @@ class PhpcrRepositoryTest extends AbstractPhpcrRepositoryTestCase
 
         $res = $this->getRepository()->find('/cmf/*');
 
-        $this->assertInstanceOf('Puli\Repository\Resource\Collection\ArrayResourceCollection', $res);
+        $this->assertInstanceOf(ArrayResourceCollection::class, $res);
         $this->assertCount(1, $res);
         $nodeResource = $res->offsetGet(0);
         $this->assertSame($this->node->reveal(), $nodeResource->getPayload());
@@ -81,16 +83,17 @@ class PhpcrRepositoryTest extends AbstractPhpcrRepositoryTestCase
 
         $res = $this->getRepository($basePath)->listChildren($requestedPath);
 
-        $this->assertInstanceOf('Puli\Repository\Resource\Collection\ArrayResourceCollection', $res);
+        $this->assertInstanceOf(ArrayResourceCollection::class, $res);
         $this->assertCount(2, $res);
-        $this->assertInstanceOf('Symfony\Cmf\Component\Resource\Repository\Resource\PhpcrResource', $res[0]);
+        $this->assertInstanceOf(PhpcrResource::class, $res[0]);
         $this->assertEquals($canonicalPath.'/node1', $res[0]->getPath());
     }
 
     /**
      * {@inheritdoc}
      *
-     * @expectedException \Puli\Repository\Api\ResourceNotFoundException
+     * @expectedException \RuntimeException
+     * @expectedExceptionMessage No PHPCR node could be found at "/test"
      */
     public function testGetNotExisting()
     {

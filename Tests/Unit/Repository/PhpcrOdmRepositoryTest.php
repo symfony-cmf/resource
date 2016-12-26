@@ -11,7 +11,9 @@
 
 namespace Symfony\Cmf\Component\Resource\Tests\Unit\Repository;
 
+use Symfony\Cmf\Component\Resource\Puli\ArrayResourceCollection;
 use Symfony\Cmf\Component\Resource\Repository\PhpcrOdmRepository;
+use Symfony\Cmf\Component\Resource\Repository\Resource\PhpcrOdmResource;
 use Doctrine\ODM\PHPCR\DocumentManagerInterface;
 use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\ODM\PHPCR\ChildrenCollection;
@@ -82,7 +84,7 @@ class PhpcrOdmRepositoryTest extends AbstractPhpcrRepositoryTestCase
 
         $res = $this->getRepository('/base/path')->find('/cmf/*');
 
-        $this->assertInstanceOf('Puli\Repository\Resource\Collection\ArrayResourceCollection', $res);
+        $this->assertInstanceOf(ArrayResourceCollection::class, $res);
         $this->assertCount(1, $res);
         $documentResource = $res->offsetGet(0);
         $this->assertSame($this->document, $documentResource->getPayload());
@@ -105,9 +107,9 @@ class PhpcrOdmRepositoryTest extends AbstractPhpcrRepositoryTestCase
 
         $res = $this->getRepository($basePath)->listChildren($requestedPath);
 
-        $this->assertInstanceOf('Puli\Repository\Resource\Collection\ArrayResourceCollection', $res);
+        $this->assertInstanceOf(ArrayResourceCollection::class, $res);
         $this->assertCount(2, $res);
-        $this->assertInstanceOf('Symfony\Cmf\Component\Resource\Repository\Resource\PhpcrOdmResource', $res[0]);
+        $this->assertInstanceOf(PhpcrOdmResource::class, $res[0]);
         $this->assertEquals($canonicalPath.'/child1', $res[0]->getPath());
     }
 
@@ -135,7 +137,8 @@ class PhpcrOdmRepositoryTest extends AbstractPhpcrRepositoryTestCase
     /**
      * {@inheritdoc}
      *
-     * @expectedException Puli\Repository\Api\ResourceNotFoundException
+     * @expectedException \RuntimeException
+     * @expectedExceptionMessage No PHPCR-ODM document could be found at "/test"
      */
     public function testGetNotExisting()
     {
