@@ -9,10 +9,10 @@
             "homepage": "https://github.com/symfony-cmf/symfony-cmf/contributors"
         }
     ],
-    "minimum-stability": "dev",
+    "minimum-stability": "RC",
     "prefer-stable": true,
     "require": {
-        "php": "^5.5.6|^7.0",
+        "php": "^5.6|^7.0",
         "dantleech/glob-finder": "~1.0",
         "webmozart/assert": "^1.2",
         "webmozart/path-util": "^2.3"

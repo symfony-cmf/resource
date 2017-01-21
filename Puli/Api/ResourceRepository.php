@@ -80,8 +80,8 @@ interface ResourceRepository
      *
      * @return bool Returns `true` if the resource has child resources.
      *
-     * @throws ResourceNotFoundException If the resource cannot be found.
-     * @throws \InvalidArgumentException  If the path is invalid. The path must
+     * @throws \RuntimeException         If the resource cannot be found.
+     * @throws \InvalidArgumentException If the path is invalid. The path must
      *                                   be a non-empty string starting with "/".
      */
     public function hasChildren($path);
@@ -94,8 +94,8 @@ interface ResourceRepository
      *
      * @return ResourceCollection The child resources of the resource.
      *
-     * @throws ResourceNotFoundException If the resource cannot be found.
-     * @throws \InvalidArgumentException  If the path is invalid. The path must
+     * @throws \RuntimeException         If the resource cannot be found.
+     * @throws \InvalidArgumentException If the path is invalid. The path must
      *                                   be a non-empty string starting with "/".
      */
     public function listChildren($path);
