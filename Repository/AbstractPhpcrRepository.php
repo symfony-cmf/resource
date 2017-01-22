@@ -12,11 +12,10 @@
 namespace Symfony\Cmf\Component\Resource\Repository;
 
 use DTL\Glob\FinderInterface;
-use Puli\Repository\Api\ResourceRepository;
-use Puli\Repository\Api\UnsupportedLanguageException;
-use Puli\Repository\Resource\Collection\ArrayResourceCollection;
+use Symfony\Cmf\Component\Resource\Puli\Api\ResourceRepository;
+use Symfony\Cmf\Component\Resource\Puli\ArrayResourceCollection;
 use Webmozart\PathUtil\Path;
-use Puli\Repository\AbstractRepository;
+use Symfony\Cmf\Component\Resource\Puli\AbstractRepository;
 use Symfony\Cmf\Component\Resource\Repository\Api\EditableRepository;
 use DTL\Glob\GlobHelper;
 use Webmozart\Assert\Assert;
@@ -25,6 +24,8 @@ use Webmozart\Assert\Assert;
  * Abstract repository for both PHPCR and PHPCR-ODM repositories.
  *
  * @author Daniel Leech <daniel@dantleech.com>
+ *
+ * @internal
  */
 abstract class AbstractPhpcrRepository extends AbstractRepository implements ResourceRepository, EditableRepository
 {
@@ -71,7 +72,10 @@ abstract class AbstractPhpcrRepository extends AbstractRepository implements Res
     public function find($query, $language = 'glob')
     {
         if ($language != 'glob') {
-            throw new UnsupportedLanguageException($language);
+            throw new \RuntimeException(sprintf(
+                'The language "%s" is not supported.',
+                $language
+            ));
         }
 
         $nodes = $this->finder->find($this->resolvePath($query));

@@ -11,12 +11,14 @@
 
 namespace Symfony\Cmf\Component\Resource;
 
-use Puli\Repository\Api\ResourceRepository;
+use Symfony\Cmf\Component\Resource\Puli\Api\ResourceRepository;
 
 /**
  * The registry is used to retrieve named repositories.
  *
  * @author Daniel Leech <daniel@dantleech.com>
+ *
+ * @internal
  */
 interface RepositoryRegistryInterface
 {

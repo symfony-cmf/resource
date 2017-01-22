@@ -14,6 +14,8 @@ namespace Symfony\Cmf\Component\Resource\Description;
 /**
  * Class containing recommended descriptors for use by enhancers in order to
  * provide a level of interoperability.
+ *
+ * @internal
  */
 final class Descriptor
 {

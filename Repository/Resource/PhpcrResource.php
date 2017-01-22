@@ -19,6 +19,8 @@ use Symfony\Cmf\Component\Resource\Repository\Resource\Metadata\PhpcrMetadata;
  * Resource representing a PHPCR node.
  *
  * @author Daniel Leech <daniel@dantleech.com>
+ *
+ * @internal
  */
 class PhpcrResource extends CmfResource
 {

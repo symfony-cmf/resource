@@ -16,13 +16,15 @@ use Doctrine\Common\Util\ClassUtils;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Cmf\Component\Resource\Description\DescriptionEnhancerInterface;
 use Symfony\Cmf\Component\Resource\Description\Description;
-use Puli\Repository\Api\Resource\PuliResource;
 use Symfony\Cmf\Component\Resource\Description\Descriptor;
+use Symfony\Cmf\Component\Resource\Puli\Api\PuliResource;
 
 /**
  * Add links and meta-info from Sonata Admin.
  *
  * @author Daniel Leech <daniel@dantleech.com>
+ *
+ * @internal
  */
 class AdminEnhancer implements DescriptionEnhancerInterface
 {

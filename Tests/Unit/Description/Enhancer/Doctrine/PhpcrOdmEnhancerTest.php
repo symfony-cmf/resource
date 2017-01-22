@@ -16,7 +16,7 @@ use Symfony\Cmf\Component\Resource\Repository\Resource\CmfResource;
 use Symfony\Cmf\Component\Resource\Description\Descriptor;
 use Doctrine\ODM\PHPCR\Mapping\ClassMetadataFactory;
 use Symfony\Cmf\Component\Resource\Description\Enhancer\Doctrine\PhpcrOdmEnhancer;
-use Puli\Repository\Api\Resource\PuliResource;
+use Symfony\Cmf\Component\Resource\Puli\Api\PuliResource;
 use Doctrine\ODM\PHPCR\Mapping\ClassMetadata;
 
 class PhpcrOdmEnhancerTest extends \PHPUnit_Framework_TestCAse

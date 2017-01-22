@@ -20,6 +20,8 @@ use Doctrine\Common\Util\ClassUtils;
  * Resource representing a PHPCR document.
  *
  * @author Daniel Leech <daniel@dantleech.com>
+ *
+ * @internal
  */
 class PhpcrOdmResource extends CmfResource
 {

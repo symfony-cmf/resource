@@ -15,8 +15,8 @@ use Sylius\Component\Resource\Metadata\RegistryInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Cmf\Component\Resource\Description\DescriptionEnhancerInterface;
 use Symfony\Cmf\Component\Resource\Description\Description;
-use Puli\Repository\Api\Resource\PuliResource;
 use Symfony\Cmf\Component\Resource\Repository\Resource\CmfResource;
+use Symfony\Cmf\Component\Resource\Puli\Api\PuliResource;
 use Sylius\Bundle\ResourceBundle\Controller\RequestConfigurationFactory;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Cmf\Component\Resource\Description\Descriptor;
@@ -28,6 +28,8 @@ use Sylius\Component\Resource\Metadata\Metadata;
  * Add descriptors from the Sylius Resource component.
  *
  * @author Daniel Leech <daniel@dantleech.com>
+ *
+ * @internal
  */
 class ResourceEnhancer implements DescriptionEnhancerInterface
 {

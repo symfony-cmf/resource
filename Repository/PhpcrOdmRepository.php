@@ -15,10 +15,12 @@ use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\ODM\PHPCR\DocumentManagerInterface;
 use DTL\Glob\Finder\PhpcrOdmTraversalFinder;
 use DTL\Glob\FinderInterface;
-use Puli\Repository\Api\ResourceNotFoundException;
-use Puli\Repository\Resource\Collection\ArrayResourceCollection;
+use Symfony\Cmf\Component\Resource\Puli\ArrayResourceCollection;
 use Symfony\Cmf\Component\Resource\Repository\Resource\PhpcrOdmResource;
 
+/**
+ * @internal
+ */
 class PhpcrOdmRepository extends AbstractPhpcrRepository
 {
     /**
@@ -174,7 +176,7 @@ class PhpcrOdmRepository extends AbstractPhpcrRepository
         $document = $this->getManager()->find(null, $resolvedPath);
 
         if (null === $document) {
-            throw new ResourceNotFoundException(sprintf(
+            throw new \RuntimeException(sprintf(
                 'No PHPCR-ODM document could be found at "%s"',
                 $resolvedPath
             ));

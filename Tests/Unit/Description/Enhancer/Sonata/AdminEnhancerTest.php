@@ -11,7 +11,7 @@
 
 namespace Symfony\Cmf\Component\Resource\Tests\Unit\Description\Enhancer;
 
-use Sonata\AdminBundle\Admin\Admin;
+use Sonata\AdminBundle\Admin\AbstractAdmin;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Cmf\Component\Resource\Description\Description;
 use Symfony\Cmf\Component\Resource\Repository\Resource\CmfResource;
@@ -79,7 +79,7 @@ class SonataAdminEnhancerTest extends \PHPUnit_Framework_TestCAse
     }
 }
 
-class TestAdmin extends Admin
+class TestAdmin extends AbstractAdmin
 {
     protected $baseRouteName = 'std_class';
     protected $baseRoutePattern = '_';

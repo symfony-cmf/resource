@@ -19,7 +19,7 @@ use Sylius\Component\Resource\Metadata\Metadata;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Sylius\Bundle\ResourceBundle\Controller\RequestConfigurationFactory;
-use Puli\Repository\Api\Resource\PuliResource;
+use Symfony\Cmf\Component\Resource\Puli\Api\PuliResource;
 use Symfony\Cmf\Component\Resource\Description\Description;
 use Sylius\Bundle\ResourceBundle\Controller\RequestConfiguration;
 use Sylius\Component\Resource\Model\ResourceInterface;

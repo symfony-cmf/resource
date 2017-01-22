@@ -9,19 +9,20 @@
             "homepage": "https://github.com/symfony-cmf/symfony-cmf/contributors"
         }
     ],
-    "minimum-stability": "dev",
+    "minimum-stability": "RC",
     "prefer-stable": true,
     "require": {
-        "php": "^5.5.6|^7.0",
-        "puli/repository": "^1.0.0-beta10",
-        "dantleech/glob-finder": "~1.0"
+        "php": "^5.6|^7.0",
+        "dantleech/glob-finder": "~1.0",
+        "webmozart/assert": "^1.2",
+        "webmozart/path-util": "^2.3"
     },
     "require-dev": {
-        "phpspec/prophecy-phpunit": "~1.0.0",
-        "jackalope/jackalope-fs": "dev-master",
+        "jackalope/jackalope-doctrine-dbal": "^1.2",
         "sonata-project/admin-bundle": "^3.1",
         "sylius/resource-bundle": "^0.18",
-        "doctrine/phpcr-odm": "^1.4"
+        "doctrine/phpcr-odm": "^1.4",
+        "symfony/phpunit-bridge": "^3.2"
     },
     "suggest": {
         "doctrine/phpcr-odm": "To enable support for the PHPCR ODM documents",
