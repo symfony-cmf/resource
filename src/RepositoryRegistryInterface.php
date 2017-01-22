@@ -54,7 +54,7 @@ interface RepositoryRegistryInterface
      *
      * @throws \RuntimeException If the name cannot be determined
      */
-    public function getRepositoryAlias(ResourceRepository $resource);
+    public function getRepositoryName(ResourceRepository $resource);
 
     /**
      * Return the type for the given resource repository.
