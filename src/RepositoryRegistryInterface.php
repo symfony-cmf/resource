@@ -23,7 +23,7 @@ use Symfony\Cmf\Component\Resource\Puli\Api\ResourceRepository;
 interface RepositoryRegistryInterface
 {
     /**
-     * Return the names of all the regstered repositories.
+     * Return the names of all the registered repositories.
      *
      * @return string[]
      */
@@ -41,11 +41,11 @@ interface RepositoryRegistryInterface
     /**
      * Return the named repository.
      *
-     * @param string $name
+     * @param null|string $name
      *
      * @return ResourceRepository
      */
-    public function get($repositoryName);
+    public function get($repositoryName = null);
 
     /**
      * Return the name assigned to the given resource repository.
