@@ -19,13 +19,14 @@ matrix:
     - php: 7.1
       env: DEPS=dev
     - php: 5.6
-      env: COMPOSER_FLAGS="--prefer-lowest"
+      env: COMPOSER_FLAGS="--prefer-lowest" REQUIREMENTS="phpcr/phpcr:2.1.2"
   fast_finish: true
 
 before_install:
   - if [[ "$TRAVIS_PHP_VERSION" != "hhvm" ]]; then echo "memory_limit = -1" >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini; fi
   - phpenv config-rm xdebug.ini || true
   - composer self-update
+  - if [ "$REQUIREMENTS" != "" ]; then composer require --no-update $REQUIREMENTS; fi
   - if [ "$DEPS" = "dev" ]; then perl -pi -e 's/^}$/,"minimum-stability":"dev"}/' composer.json; fi
 
 install: composer update --prefer-dist $COMPOSER_FLAGS
