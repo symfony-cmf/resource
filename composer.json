@@ -30,8 +30,12 @@
     },
     "autoload": {
         "psr-4": {
-            "Symfony\\Cmf\\Component\\Resource\\": ""
+            "Symfony\\Cmf\\Component\\Resource\\Puli\\": "puli",
+            "Symfony\\Cmf\\Component\\Resource\\": "src"
         }
+    },
+    "autoload-dev": {
+        "psr-4": { "Symfony\\Cmf\\Component\\Resource\\Tests\\": "tests" }
     },
     "extra": {
         "branch-alias": {
