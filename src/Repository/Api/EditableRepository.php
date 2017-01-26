@@ -3,7 +3,7 @@
 /*
  * This file is part of the Symfony CMF package.
  *
- * (c) 2011-2015 Symfony CMF
+ * (c) 2011-2017 Symfony CMF
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -28,12 +28,12 @@ interface EditableRepository extends ResourceRepository
      *
      * All resources passed to this method must implement {@link PuliResource}.
      *
-     * @param string                          $path     The path at which to
-     *                                                  add the resource.
-     * @param PuliResource|ResourceCollection $resource The resource(s) to add
-     *                                                  at that path.
+     * @param string                          $path     the path at which to
+     *                                                  add the resource
+     * @param PuliResource|ResourceCollection $resource the resource(s) to add
+     *                                                  at that path
      *
-     * @throws \InvalidArgumentException if the path is invalid. The path must 
+     * @throws \InvalidArgumentException if the path is invalid. The path must
      *                                   be a non-empty string starting with "/"
      * @throws \RuntimeException         if the resource is invalid
      */
@@ -42,11 +42,11 @@ interface EditableRepository extends ResourceRepository
     /**
      * Removes all resources matching the given query.
      *
-     * @param string $query    A resource query.
+     * @param string $query    a resource query
      * @param string $language The language of the query. All implementations
      *                         must support the language "glob".
      *
-     * @return int The number of resources removed from the repository.
+     * @return int the number of resources removed from the repository
      *
      * @throws \InvalidArgumentException if the query is invalid
      * @throws \RuntimeException         if the language is not supported
@@ -56,7 +56,7 @@ interface EditableRepository extends ResourceRepository
     /**
      * Removes all resources from the repository.
      *
-     * @return int The number of resources removed from the repository.
+     * @return int the number of resources removed from the repository
      */
     public function clear();
 

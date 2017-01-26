@@ -3,7 +3,7 @@
 /*
  * This file is part of the Symfony CMF package.
  *
- * (c) 2011-2015 Symfony CMF
+ * (c) 2011-2017 Symfony CMF
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -11,18 +11,18 @@
 
 namespace Symfony\Cmf\Component\Resource\Tests\Unit\Description\Enhancer;
 
-use Sonata\AdminBundle\Admin\AbstractAdmin;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
-use Symfony\Cmf\Component\Resource\Description\Description;
-use Symfony\Cmf\Component\Resource\Repository\Resource\CmfResource;
-use Sonata\AdminBundle\Admin\Pool;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Sonata\AdminBundle\Model\AuditManagerInterface;
-use Sonata\AdminBundle\Route\PathInfoBuilder;
-use Sonata\AdminBundle\Model\ModelManagerInterface;
 use Prophecy\Argument;
+use Sonata\AdminBundle\Admin\AbstractAdmin;
+use Sonata\AdminBundle\Admin\Pool;
+use Sonata\AdminBundle\Model\AuditManagerInterface;
+use Sonata\AdminBundle\Model\ModelManagerInterface;
+use Sonata\AdminBundle\Route\PathInfoBuilder;
+use Symfony\Cmf\Component\Resource\Description\Description;
 use Symfony\Cmf\Component\Resource\Description\Descriptor;
 use Symfony\Cmf\Component\Resource\Description\Enhancer\Sonata\AdminEnhancer;
+use Symfony\Cmf\Component\Resource\Repository\Resource\CmfResource;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class SonataAdminEnhancerTest extends \PHPUnit_Framework_TestCAse
 {

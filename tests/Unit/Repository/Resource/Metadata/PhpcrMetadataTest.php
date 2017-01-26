@@ -3,7 +3,7 @@
 /*
  * This file is part of the Symfony CMF package.
  *
- * (c) 2011-2015 Symfony CMF
+ * (c) 2011-2017 Symfony CMF
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -40,47 +40,47 @@ class PhpcrMetadataTest extends \PHPUnit_Framework_TestCase
 
     public function provideMethods()
     {
-        return array(
-            array(
+        return [
+            [
                 'getCreationTime',
                 'mix:created',
                 true,
                 'jcr:created',
                 new \DateTime('2015-01-01T00:00:00Z'),
                 1420070400,
-            ),
-            array(
+            ],
+            [
                 'getModificationTime',
                 'mix:lastModified',
                 true,
                 'jcr:lastModified',
                 new \DateTime('2015-01-01T00:00:00Z'),
                 1420070400,
-            ),
-            array(
+            ],
+            [
                 'getCreationTime',
                 'mix:created',
                 false,
                 null,
                 null,
                 0,
-            ),
-            array(
+            ],
+            [
                 'getModificationTime',
                 'mix:lastModified',
                 false,
                 null,
                 null,
                 0,
-            ),
-            array(
+            ],
+            [
                 'getAccessTime',
                 null,
                 null,
                 null,
                 null,
                 0,
-            ),
-        );
+            ],
+        ];
     }
 }

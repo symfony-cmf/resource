@@ -3,7 +3,7 @@
 /*
  * This file is part of the Symfony CMF package.
  *
- * (c) 2011-2015 Symfony CMF
+ * (c) 2011-2017 Symfony CMF
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -32,10 +32,10 @@ abstract class AbstractPhpcrRepositoryTestCase extends \PHPUnit_Framework_TestCa
 
     public function provideHasChildren()
     {
-        return array(
-            array(2, true),
-            array(0, false),
-        );
+        return [
+            [2, true],
+            [0, false],
+        ];
     }
 
     /**
@@ -55,11 +55,11 @@ abstract class AbstractPhpcrRepositoryTestCase extends \PHPUnit_Framework_TestCa
 
     public function provideGet()
     {
-        return array(
-            array(null, '/cmf/foobar', '/cmf/foobar', '/cmf/foobar'),
-            array('/site/foo.com', '/cmf/foobar', '/cmf/foobar', '/site/foo.com/cmf/foobar'),
-            array('/site/foo.com', '/bar/../foobar', '/foobar', '/site/foo.com/foobar'),
-        );
+        return [
+            [null, '/cmf/foobar', '/cmf/foobar', '/cmf/foobar'],
+            ['/site/foo.com', '/cmf/foobar', '/cmf/foobar', '/site/foo.com/cmf/foobar'],
+            ['/site/foo.com', '/bar/../foobar', '/foobar', '/site/foo.com/foobar'],
+        ];
     }
 
     abstract public function testFind();
@@ -89,12 +89,12 @@ abstract class AbstractPhpcrRepositoryTestCase extends \PHPUnit_Framework_TestCa
 
     public function provideGetInvalid()
     {
-        return array(
-            array(null, 'cmf/foobar'),
-            array(null, ''),
-            array(null, new \stdClass()),
-            array('asd', 'asd'),
-        );
+        return [
+            [null, 'cmf/foobar'],
+            [null, ''],
+            [null, new \stdClass()],
+            ['asd', 'asd'],
+        ];
     }
 
     /**

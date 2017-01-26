@@ -3,7 +3,7 @@
 /*
  * This file is part of the Symfony CMF package.
  *
- * (c) 2011-2015 Symfony CMF
+ * (c) 2011-2017 Symfony CMF
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -50,14 +50,13 @@ class DescriptionTest extends \PHPUnit_Framework_TestCase
             Descriptor::TYPE_ALIAS => 'page',
             Descriptor::LINK_EDIT_HTML => '/path/to/edit',
             'custom.key' => 'Hello',
-
         ], $this->description->all());
     }
 
     /**
      * It should throw an exception if a non-scalar value is set.
      *
-     * @expectedException InvalidArgumentException
+     * @expectedException \InvalidArgumentException
      * @expectedExceptionMessage Only scalar and array values are allowed as descriptor values, got "object" when setting descriptor "hello"
      */
     public function testSetNonScalar()

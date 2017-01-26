@@ -3,7 +3,7 @@
 /*
  * This file is part of the Symfony CMF package.
  *
- * (c) 2011-2015 Symfony CMF
+ * (c) 2011-2017 Symfony CMF
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -11,13 +11,13 @@
 
 namespace Symfony\Cmf\Component\Resource\Description\Enhancer\Doctrine;
 
-use Symfony\Cmf\Component\Resource\Description\DescriptionEnhancerInterface;
+use Doctrine\Common\Util\ClassUtils;
+use Doctrine\ODM\PHPCR\Mapping\ClassMetadataFactory;
 use Symfony\Cmf\Component\Resource\Description\Description;
+use Symfony\Cmf\Component\Resource\Description\DescriptionEnhancerInterface;
 use Symfony\Cmf\Component\Resource\Description\Descriptor;
 use Symfony\Cmf\Component\Resource\Puli\Api\PuliResource;
 use Symfony\Cmf\Component\Resource\Repository\Resource\CmfResource;
-use Doctrine\ODM\PHPCR\Mapping\ClassMetadataFactory;
-use Doctrine\Common\Util\ClassUtils;
 
 /**
  * Add descriptors from the Doctrine PHPCR ODM.
