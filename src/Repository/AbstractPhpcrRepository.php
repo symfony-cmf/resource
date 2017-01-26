@@ -168,7 +168,7 @@ abstract class AbstractPhpcrRepository extends AbstractRepository implements Res
      *
      * @return string
      */
-    protected function resolvePath($path)
+    public function resolvePath($path)
     {
         $path = $this->sanitizePath($path);
 
