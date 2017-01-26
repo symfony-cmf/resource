@@ -3,7 +3,7 @@
 /*
  * This file is part of the Symfony CMF package.
  *
- * (c) 2011-2015 Symfony CMF
+ * (c) 2011-2017 Symfony CMF
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -12,13 +12,13 @@
 namespace Symfony\Cmf\Component\Resource\Repository;
 
 use DTL\Glob\FinderInterface;
+use DTL\Glob\GlobHelper;
+use Symfony\Cmf\Component\Resource\Puli\AbstractRepository;
 use Symfony\Cmf\Component\Resource\Puli\Api\ResourceRepository;
 use Symfony\Cmf\Component\Resource\Puli\ArrayResourceCollection;
-use Webmozart\PathUtil\Path;
-use Symfony\Cmf\Component\Resource\Puli\AbstractRepository;
 use Symfony\Cmf\Component\Resource\Repository\Api\EditableRepository;
-use DTL\Glob\GlobHelper;
 use Webmozart\Assert\Assert;
+use Webmozart\PathUtil\Path;
 
 /**
  * Abstract repository for both PHPCR and PHPCR-ODM repositories.

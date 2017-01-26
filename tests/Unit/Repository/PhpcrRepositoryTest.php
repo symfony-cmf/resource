@@ -3,7 +3,7 @@
 /*
  * This file is part of the Symfony CMF package.
  *
- * (c) 2011-2015 Symfony CMF
+ * (c) 2011-2017 Symfony CMF
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -55,9 +55,9 @@ class PhpcrRepositoryTest extends AbstractPhpcrRepositoryTestCase
     public function testFind()
     {
         $this->session->getNode('/cmf/foobar')->willReturn($this->node);
-        $this->finder->find('/cmf/*')->willReturn(array(
+        $this->finder->find('/cmf/*')->willReturn([
             $this->node,
-        ));
+        ]);
 
         $res = $this->getRepository()->find('/cmf/*');
 
@@ -75,9 +75,9 @@ class PhpcrRepositoryTest extends AbstractPhpcrRepositoryTestCase
     public function testListChildren($basePath, $requestedPath, $canonicalPath, $absPath)
     {
         $this->session->getNode($absPath)->willReturn($this->node);
-        $this->node->getNodes()->willReturn(array(
+        $this->node->getNodes()->willReturn([
             $this->node1, $this->node2,
-        ));
+        ]);
         $this->node1->getPath()->willReturn($absPath.'/node1');
         $this->node2->getPath()->willReturn($absPath.'/node2');
 
@@ -108,7 +108,7 @@ class PhpcrRepositoryTest extends AbstractPhpcrRepositoryTestCase
      */
     public function testHasChildren($nbChildren, $hasChildren)
     {
-        $children = array();
+        $children = [];
         for ($i = 0; $i < $nbChildren; ++$i) {
             $children[] = $this->prophesize('PHPCR\NodeInterface');
         }

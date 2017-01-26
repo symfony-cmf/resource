@@ -3,7 +3,7 @@
 /*
  * This file is part of the Symfony CMF package.
  *
- * (c) 2011-2015 Symfony CMF
+ * (c) 2011-2017 Symfony CMF
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -11,15 +11,15 @@
 
 namespace Symfony\Cmf\Component\Resource\Tests\Unit\Repository;
 
-use Symfony\Cmf\Component\Resource\Puli\ArrayResourceCollection;
-use Symfony\Cmf\Component\Resource\Repository\PhpcrOdmRepository;
-use Symfony\Cmf\Component\Resource\Repository\Resource\PhpcrOdmResource;
-use Doctrine\ODM\PHPCR\DocumentManagerInterface;
 use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\ODM\PHPCR\ChildrenCollection;
+use Doctrine\ODM\PHPCR\DocumentManagerInterface;
 use Doctrine\ODM\PHPCR\UnitOfWork;
 use PHPCR\NodeInterface;
 use Prophecy\Argument;
+use Symfony\Cmf\Component\Resource\Puli\ArrayResourceCollection;
+use Symfony\Cmf\Component\Resource\Repository\PhpcrOdmRepository;
+use Symfony\Cmf\Component\Resource\Repository\Resource\PhpcrOdmResource;
 
 class PhpcrOdmRepositoryTest extends AbstractPhpcrRepositoryTestCase
 {
@@ -78,9 +78,9 @@ class PhpcrOdmRepositoryTest extends AbstractPhpcrRepositoryTestCase
         $this->documentManager->find(null, '/base/path/cmf/foobar')->willReturn($this->document);
         $this->uow->getDocumentId($this->document)->willReturn('/cmf/foobar');
 
-        $this->finder->find('/base/path/cmf/*')->willReturn(array(
+        $this->finder->find('/base/path/cmf/*')->willReturn([
             $this->document,
-        ));
+        ]);
 
         $res = $this->getRepository('/base/path')->find('/cmf/*');
 
@@ -98,9 +98,9 @@ class PhpcrOdmRepositoryTest extends AbstractPhpcrRepositoryTestCase
     public function testListChildren($basePath, $requestedPath, $canonicalPath, $absPath)
     {
         $this->documentManager->find(null, $absPath)->willReturn($this->document);
-        $this->childrenCollection->toArray()->willReturn(array(
+        $this->childrenCollection->toArray()->willReturn([
             $this->child1, $this->child2,
-        ));
+        ]);
         $this->documentManager->getChildren($this->document)->willReturn($this->childrenCollection);
         $this->uow->getDocumentId($this->child1)->willReturn($absPath.'/child1');
         $this->uow->getDocumentId($this->child2)->willReturn($absPath.'/child2');
@@ -120,7 +120,7 @@ class PhpcrOdmRepositoryTest extends AbstractPhpcrRepositoryTestCase
      */
     public function testHasChildren($nbChildren, $hasChildren)
     {
-        $children = array();
+        $children = [];
         for ($i = 0; $i < $nbChildren; ++$i) {
             $children[] = new \stdClass();
         }

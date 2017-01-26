@@ -3,7 +3,7 @@
 /*
  * This file is part of the Symfony CMF package.
  *
- * (c) 2011-2015 Symfony CMF
+ * (c) 2011-2017 Symfony CMF
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -11,20 +11,20 @@
 
 namespace Symfony\Cmf\Component\Resource\Tests\Unit\Description\Enhancer;
 
-use Sylius\Component\Resource\Metadata\RegistryInterface;
-use Symfony\Cmf\Component\Resource\Description\Enhancer\Sylius\ResourceEnhancer;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Cmf\Component\Resource\Repository\Resource\CmfResource;
+use Prophecy\Argument;
+use Sylius\Bundle\ResourceBundle\Controller\RequestConfiguration;
+use Sylius\Bundle\ResourceBundle\Controller\RequestConfigurationFactory;
 use Sylius\Component\Resource\Metadata\Metadata;
+use Sylius\Component\Resource\Metadata\RegistryInterface;
+use Sylius\Component\Resource\Model\ResourceInterface;
+use Symfony\Cmf\Component\Resource\Description\Description;
+use Symfony\Cmf\Component\Resource\Description\Descriptor;
+use Symfony\Cmf\Component\Resource\Description\Enhancer\Sylius\ResourceEnhancer;
+use Symfony\Cmf\Component\Resource\Puli\Api\PuliResource;
+use Symfony\Cmf\Component\Resource\Repository\Resource\CmfResource;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
-use Sylius\Bundle\ResourceBundle\Controller\RequestConfigurationFactory;
-use Symfony\Cmf\Component\Resource\Puli\Api\PuliResource;
-use Symfony\Cmf\Component\Resource\Description\Description;
-use Sylius\Bundle\ResourceBundle\Controller\RequestConfiguration;
-use Sylius\Component\Resource\Model\ResourceInterface;
-use Prophecy\Argument;
-use Symfony\Cmf\Component\Resource\Description\Descriptor;
 
 class ResourceEnhancerTest extends \PHPUnit_Framework_TestCAse
 {

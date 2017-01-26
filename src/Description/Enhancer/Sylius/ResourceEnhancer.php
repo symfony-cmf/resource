@@ -3,7 +3,7 @@
 /*
  * This file is part of the Symfony CMF package.
  *
- * (c) 2011-2015 Symfony CMF
+ * (c) 2011-2017 Symfony CMF
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -11,18 +11,18 @@
 
 namespace Symfony\Cmf\Component\Resource\Description\Enhancer\Sylius;
 
-use Sylius\Component\Resource\Metadata\RegistryInterface;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
-use Symfony\Cmf\Component\Resource\Description\DescriptionEnhancerInterface;
-use Symfony\Cmf\Component\Resource\Description\Description;
-use Symfony\Cmf\Component\Resource\Repository\Resource\CmfResource;
-use Symfony\Cmf\Component\Resource\Puli\Api\PuliResource;
 use Sylius\Bundle\ResourceBundle\Controller\RequestConfigurationFactory;
-use Symfony\Component\HttpFoundation\RequestStack;
-use Symfony\Cmf\Component\Resource\Description\Descriptor;
-use Symfony\Component\Routing\Exception\RouteNotFoundException;
-use Symfony\Component\HttpFoundation\Request;
 use Sylius\Component\Resource\Metadata\Metadata;
+use Sylius\Component\Resource\Metadata\RegistryInterface;
+use Symfony\Cmf\Component\Resource\Description\Description;
+use Symfony\Cmf\Component\Resource\Description\DescriptionEnhancerInterface;
+use Symfony\Cmf\Component\Resource\Description\Descriptor;
+use Symfony\Cmf\Component\Resource\Puli\Api\PuliResource;
+use Symfony\Cmf\Component\Resource\Repository\Resource\CmfResource;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\Routing\Exception\RouteNotFoundException;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
  * Add descriptors from the Sylius Resource component.
@@ -86,7 +86,6 @@ class ResourceEnhancer implements DescriptionEnhancerInterface
         ];
 
         foreach ($map as $descriptor => $action) {
-
             // note that some resources may not have routes
             // registered with sonata (f.e. folder resources)
             // so we ignore route-not-found exceptions.
