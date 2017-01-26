@@ -274,9 +274,9 @@ class PhpcrOdmRepositoryTest extends AbstractPhpcrRepositoryTestCase
         $this->documentManager->getNodeForDocument($this->child1)->willReturn($this->node1->reveal());
         $this->node1->getParent()->willReturn($this->node2->reveal());
         $this->node1->getName()->willReturn('foo');
-        $this->node2->getNodeNames()->willReturn([
+        $this->node2->getNodeNames()->willReturn(new \ArrayIterator([
             'foo', 'bar', 'baz',
-        ]);
+        ]));
         $this->node2->getPath()->willReturn('/test');
         $this->documentManager->find(null, '/test')->willReturn($this->document);
         $this->documentManager->reorder($this->document, 'foo', 'baz', $before)->shouldBeCalled();

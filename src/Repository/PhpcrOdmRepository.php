@@ -98,7 +98,7 @@ class PhpcrOdmRepository extends AbstractPhpcrRepository
         $document = $this->getDocument($sourcePath);
         $node = $this->getManager()->getNodeForDocument($document);
         $parent = $node->getParent();
-        $nodeNames = $parent->getNodeNames();
+        $nodeNames = iterator_to_array($parent->getNodeNames());
         $parentDocument = $this->getManager()->find(null, $parent->getPath());
 
         if ($position == 0) {
