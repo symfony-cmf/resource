@@ -2,7 +2,6 @@ language: php
 
 php:
   - 7.1
-  - hhvm
 
 sudo: false
 
@@ -20,6 +19,8 @@ matrix:
       env: DEPS=dev
     - php: 5.6
       env: COMPOSER_FLAGS="--prefer-lowest" REQUIREMENTS="phpcr/phpcr:2.1.2"
+    - php: hhvm
+      dist: trusty
   fast_finish: true
 
 before_install:
@@ -29,7 +30,7 @@ before_install:
   - if [ "$REQUIREMENTS" != "" ]; then composer require --no-update $REQUIREMENTS; fi
   - if [ "$DEPS" = "dev" ]; then perl -pi -e 's/^}$/,"minimum-stability":"dev"}/' composer.json; fi
 
-install: composer update --prefer-dist $COMPOSER_FLAGS
+install: travis_wait composer update --prefer-dist $COMPOSER_FLAGS
 
 script: vendor/bin/simple-phpunit
 
