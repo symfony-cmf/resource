@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of the Symfony CMF package.
+ *
+ * (c) 2011-2017 Symfony CMF
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Symfony\Cmf\Component\Resource\Puli\Api;
 
 /**
@@ -14,24 +23,24 @@ interface ResourceCollection extends \Traversable, \ArrayAccess, \Countable
     /**
      * Adds a resource to the collection.
      *
-     * @param PuliResource $resource The added resource.
+     * @param PuliResource $resource the added resource
      */
     public function add(PuliResource $resource);
 
     /**
      * Sets a resource at a collection key.
      *
-     * @param int          $key      The collection key.
-     * @param PuliResource $resource The resource to set.
+     * @param int          $key      the collection key
+     * @param PuliResource $resource the resource to set
      */
     public function set($key, PuliResource $resource);
 
     /**
      * Returns the resource for a collection key.
      *
-     * @param int $key The collection key.
+     * @param int $key the collection key
      *
-     * @return PuliResource The resource at the key.
+     * @return PuliResource the resource at the key
      *
      * @throws \OutOfBoundsException if the key does not exist
      */
@@ -40,16 +49,16 @@ interface ResourceCollection extends \Traversable, \ArrayAccess, \Countable
     /**
      * Removes a collection key from the collection.
      *
-     * @param int $key The collection key.
+     * @param int $key the collection key
      */
     public function remove($key);
 
     /**
      * Returns whether a collection key exists.
      *
-     * @param int $key The collection key.
+     * @param int $key the collection key
      *
-     * @return bool Whether the collection key exists.
+     * @return bool whether the collection key exists
      */
     public function has($key);
 
@@ -61,7 +70,7 @@ interface ResourceCollection extends \Traversable, \ArrayAccess, \Countable
     /**
      * Returns the keys of the collection.
      *
-     * @return int[] The collection keys.
+     * @return int[] the collection keys
      */
     public function keys();
 
@@ -88,7 +97,7 @@ interface ResourceCollection extends \Traversable, \ArrayAccess, \Countable
     /**
      * Returns whether the collection is empty.
      *
-     * @return bool Returns `true` only if the collection contains no resources.
+     * @return bool returns `true` only if the collection contains no resources
      */
     public function isEmpty();
 
@@ -97,7 +106,7 @@ interface ResourceCollection extends \Traversable, \ArrayAccess, \Countable
      *
      * The paths are returned in the order of their resources in the collection.
      *
-     * @return string[] The paths of the resources in the collection.
+     * @return string[] the paths of the resources in the collection
      *
      * @see PuliResource::getPath
      */
@@ -108,7 +117,7 @@ interface ResourceCollection extends \Traversable, \ArrayAccess, \Countable
      *
      * The names are returned in the order of their resources in the collection.
      *
-     * @return string[] The names of the resources in the collection.
+     * @return string[] the names of the resources in the collection
      *
      * @see PuliResource::getName
      */
@@ -117,7 +126,7 @@ interface ResourceCollection extends \Traversable, \ArrayAccess, \Countable
     /**
      * Returns the collection contents as array.
      *
-     * @return PuliResource[] The resources in the collection.
+     * @return PuliResource[] the resources in the collection
      */
     public function toArray();
 }

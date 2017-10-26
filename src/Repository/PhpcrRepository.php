@@ -141,7 +141,7 @@ class PhpcrRepository extends AbstractPhpcrRepository
         $parent = $node->getParent();
         $nodeNames = $parent->getNodeNames();
 
-        if ($position == 0) {
+        if ($position === 0) {
             $parent->orderBefore($node->getName(), $nodeNames[$position]);
         } elseif (isset($nodeNames[$position + 1])) {
             $parent->orderBefore($node->getName(), $nodeNames[$position + 1]);

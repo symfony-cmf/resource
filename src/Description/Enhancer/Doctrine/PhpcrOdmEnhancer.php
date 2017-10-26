@@ -47,7 +47,7 @@ class PhpcrOdmEnhancer implements DescriptionEnhancerInterface
         // explode the allowed types into concrete classes
         foreach ($this->metadataFactory->getAllMetadata() as $childMetadata) {
             foreach ($childClasses as $childClass) {
-                if ($childClass == $childMetadata->name || $childMetadata->getReflectionClass()->isSubclassOf($childClass)) {
+                if ($childClass === $childMetadata->name || $childMetadata->getReflectionClass()->isSubclassOf($childClass)) {
                     $childTypes[] = $childMetadata->name;
                 }
             }
