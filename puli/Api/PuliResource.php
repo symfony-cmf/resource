@@ -1,13 +1,9 @@
 <?php
 
 /*
-* This file is part of the Symfony CMF package.
-*
-*  (c) 2011-2016 Symfony CMF
-*
-* Most of this file is directly copied from the puli/repository package.
+ * This file is part of the Symfony CMF package.
  *
- * (c) Bernhard Schussek <bschussek@gmail.com>
+ * (c) 2011-2017 Symfony CMF
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -88,30 +84,30 @@ interface PuliResource extends \Serializable
     /**
      * Returns whether the child resource with the given relative path exists.
      *
-     * @param string $relPath The relative resource path.
+     * @param string $relPath the relative resource path
      *
-     * @return bool Whether a resource with the given path exists.
+     * @return bool whether a resource with the given path exists
      */
     public function hasChild($relPath);
 
     /**
      * Returns whether the resource has child resources.
      *
-     * @return bool Returns `true` if the resource has child resources.
+     * @return bool returns `true` if the resource has child resources
      */
     public function hasChildren();
 
     /**
      * Lists the child resources of the resources.
      *
-     * @return ResourceCollection The child resources indexed by their names.
+     * @return ResourceCollection the child resources indexed by their names
      */
     public function listChildren();
-    
+
     /**
      * Returns metadata about a resource.
      *
-     * @return ResourceMetadata The resource metadata.
+     * @return ResourceMetadata the resource metadata
      */
     public function getMetadata();
 
@@ -157,7 +153,7 @@ interface PuliResource extends \Serializable
      * $resource->attachTo($repo, '/path/in/repo');
      * ```
      *
-     * @param ResourceRepository $repo The repository.
+     * @param ResourceRepository $repo the repository
      * @param string|null        $path The path of the resource in the
      *                                 repository. If not passed, the resource
      *                                 will be attached to it current path.
@@ -181,7 +177,7 @@ interface PuliResource extends \Serializable
      * Resources can be attached to a repository with {@link attachTo()}. The
      * method {@link getRepository()} returns the attached repository.
      *
-     * @return bool Whether the resource is attached to a repository.
+     * @return bool whether the resource is attached to a repository
      */
     public function isAttached();
 
@@ -205,9 +201,9 @@ interface PuliResource extends \Serializable
      *
      * Use {@link isReference()} to find out whether a resource is a reference.
      *
-     * @param string $path The path of the reference.
+     * @param string $path the path of the reference
      *
-     * @return static The reference.
+     * @return static the reference
      */
     public function createReference($path);
 
@@ -216,7 +212,7 @@ interface PuliResource extends \Serializable
      *
      * References are created by calling {@link createReference()}.
      *
-     * @return bool Whether the resource is a reference.
+     * @return bool whether the resource is a reference
      */
     public function isReference();
 }

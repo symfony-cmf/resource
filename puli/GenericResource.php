@@ -1,9 +1,18 @@
 <?php
 
+/*
+ * This file is part of the Symfony CMF package.
+ *
+ * (c) 2011-2017 Symfony CMF
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Symfony\Cmf\Component\Resource\Puli;
 
-use Symfony\Cmf\Component\Resource\Puli\Api\ResourceMetadata;
 use Symfony\Cmf\Component\Resource\Puli\Api\PuliResource;
+use Symfony\Cmf\Component\Resource\Puli\Api\ResourceMetadata;
 use Symfony\Cmf\Component\Resource\Puli\Api\ResourceRepository;
 
 /**
@@ -33,7 +42,7 @@ class GenericResource implements PuliResource
     /**
      * Creates a new resource.
      *
-     * @param string|null $path The path of the resource.
+     * @param string|null $path the path of the resource
      */
     public function __construct($path = null)
     {
@@ -191,7 +200,7 @@ class GenericResource implements PuliResource
      */
     public function serialize()
     {
-        $data = array();
+        $data = [];
 
         $this->preSerialize($data);
 

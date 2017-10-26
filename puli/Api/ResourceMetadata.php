@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of the Symfony CMF package.
+ *
+ * (c) 2011-2017 Symfony CMF
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Symfony\Cmf\Component\Resource\Puli\Api;
 
 /**
@@ -16,7 +25,7 @@ class ResourceMetadata
      *
      * If this information is not available, the method returns 0.
      *
-     * @return int A UNIX timestamp.
+     * @return int a UNIX timestamp
      */
     public function getCreationTime()
     {
@@ -28,7 +37,7 @@ class ResourceMetadata
      *
      * If this information is not available, the method returns 0.
      *
-     * @return int A UNIX timestamp.
+     * @return int a UNIX timestamp
      */
     public function getAccessTime()
     {
@@ -40,7 +49,7 @@ class ResourceMetadata
      *
      * If this information is not available, the method returns 0.
      *
-     * @return int A UNIX timestamp.
+     * @return int a UNIX timestamp
      */
     public function getModificationTime()
     {
@@ -52,7 +61,7 @@ class ResourceMetadata
      *
      * If this information is not available, the method returns 0.
      *
-     * @return int The body size in bytes.
+     * @return int the body size in bytes
      */
     public function getSize()
     {
