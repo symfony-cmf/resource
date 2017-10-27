@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of the Symfony CMF package.
+ *
+ * (c) 2011-2017 Symfony CMF
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Symfony\Cmf\Component\Resource\Puli;
 
 use Symfony\Cmf\Component\Resource\Puli\Api\PuliResource;
@@ -102,9 +111,9 @@ class ResourceCollectionIterator implements \RecursiveIterator
      *
      * By default, the mode `KEY_AS_PATH | CURRENT_AS_RESOURCE` is used.
      *
-     * @param ResourceCollection $resources The resources to iterate.
-     * @param int|null           $mode      A bitwise combination of the mode
-     *                                      constants.
+     * @param ResourceCollection $resources the resources to iterate
+     * @param int|null           $mode      a bitwise combination of the mode
+     *                                      constants
      */
     public function __construct(ResourceCollection $resources, $mode = null)
     {
@@ -123,8 +132,8 @@ class ResourceCollectionIterator implements \RecursiveIterator
     /**
      * Returns the current value of the iterator.
      *
-     * @return PuliResource|string The current value as configured in
-     *                             {@link __construct}.
+     * @return PuliResource|string the current value as configured in
+     *                             {@link __construct}
      */
     public function current()
     {
@@ -150,9 +159,9 @@ class ResourceCollectionIterator implements \RecursiveIterator
     /**
      * Returns the current key of the iterator.
      *
-     * @return int|string|null The current key as configured in
+     * @return int|string|null the current key as configured in
      *                         {@link __construct} or `null` if the cursor
-     *                         is behind the last element.
+     *                         is behind the last element
      */
     public function key()
     {
@@ -170,7 +179,7 @@ class ResourceCollectionIterator implements \RecursiveIterator
     /**
      * Returns whether the iterator points to a valid key.
      *
-     * @return bool Whether the iterator position is valid.
+     * @return bool whether the iterator position is valid
      */
     public function valid()
     {
@@ -189,7 +198,7 @@ class ResourceCollectionIterator implements \RecursiveIterator
      * Returns whether the iterator can be applied recursively over the
      * current element.
      *
-     * @return bool Whether the current element can be iterated recursively.
+     * @return bool whether the current element can be iterated recursively
      */
     public function hasChildren()
     {
@@ -199,8 +208,8 @@ class ResourceCollectionIterator implements \RecursiveIterator
     /**
      * Returns the iterator for the children of the current element.
      *
-     * @return static Returns an instance of this class for the children of
-     *                the current element.
+     * @return static returns an instance of this class for the children of
+     *                the current element
      */
     public function getChildren()
     {

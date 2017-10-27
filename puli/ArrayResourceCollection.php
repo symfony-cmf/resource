@@ -1,10 +1,18 @@
 <?php
 
+/*
+ * This file is part of the Symfony CMF package.
+ *
+ * (c) 2011-2017 Symfony CMF
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Symfony\Cmf\Component\Resource\Puli;
 
 use Symfony\Cmf\Component\Resource\Puli\Api\PuliResource;
 use Symfony\Cmf\Component\Resource\Puli\Api\ResourceCollection;
-use Symfony\Cmf\Component\Resource\Puli\Api\UnsupportedResourceException;
 use Webmozart\Assert\Assert;
 
 /**
@@ -32,7 +40,7 @@ class ArrayResourceCollection implements \IteratorAggregate, ResourceCollection
      * @throws \InvalidArgumentException if the resources are not an array and not a traversable object
      * @throws \RuntimeException         if a resource does not implement {@link PuliResource}
      */
-    public function __construct($resources = array())
+    public function __construct($resources = [])
     {
         $this->replace($resources);
     }
@@ -89,7 +97,7 @@ class ArrayResourceCollection implements \IteratorAggregate, ResourceCollection
      */
     public function clear()
     {
-        $this->resources = array();
+        $this->resources = [];
     }
 
     /**

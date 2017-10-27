@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of the Symfony CMF package.
+ *
+ * (c) 2011-2017 Symfony CMF
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Symfony\Cmf\Component\Resource\Puli\Api;
 
 /**
@@ -39,7 +48,7 @@ interface ResourceRepository
      * @return PuliResource the resource at this path
      *
      * @throws \RuntimeException         if the resource cannot be found
-     * @throws \InvalidArgumentException if the path is invalid. The path must 
+     * @throws \InvalidArgumentException if the path is invalid. The path must
      *                                   be a non-empty string starting with "/"
      */
     public function get($path);
@@ -47,28 +56,28 @@ interface ResourceRepository
     /**
      * Returns the resources matching a query.
      *
-     * @param string $query    A resource query.
+     * @param string $query    a resource query
      * @param string $language The language of the query. All implementations
      *                         must support the language "glob".
      *
-     * @return ResourceCollection The resources matching the query.
+     * @return ResourceCollection the resources matching the query
      *
-     * @throws \InvalidArgumentException     If the query is invalid.
-     * @throws UnsupportedLanguageException If the language is not supported.
+     * @throws \InvalidArgumentException    if the query is invalid
+     * @throws UnsupportedLanguageException if the language is not supported
      */
     public function find($query, $language = 'glob');
 
     /**
      * Returns whether any resources match a query.
      *
-     * @param string $query    A resource query.
+     * @param string $query    a resource query
      * @param string $language The language of the query. All implementations
      *                         must support the language "glob".
      *
-     * @return bool Returns `true` if any resources exist that match the query.
+     * @return bool returns `true` if any resources exist that match the query
      *
-     * @throws \InvalidArgumentException     If the query is invalid.
-     * @throws UnsupportedLanguageException If the language is not supported.
+     * @throws \InvalidArgumentException    if the query is invalid
+     * @throws UnsupportedLanguageException if the language is not supported
      */
     public function contains($query, $language = 'glob');
 
@@ -78,9 +87,9 @@ interface ResourceRepository
      * @param string $path The path to the resource. Must start with "/".
      *                     "." and ".." segments in the path are supported.
      *
-     * @return bool Returns `true` if the resource has child resources.
+     * @return bool returns `true` if the resource has child resources
      *
-     * @throws \RuntimeException         If the resource cannot be found.
+     * @throws \RuntimeException         if the resource cannot be found
      * @throws \InvalidArgumentException If the path is invalid. The path must
      *                                   be a non-empty string starting with "/".
      */
@@ -92,9 +101,9 @@ interface ResourceRepository
      * @param string $path The path to the resource. Must start with "/".
      *                     "." and ".." segments in the path are supported.
      *
-     * @return ResourceCollection The child resources of the resource.
+     * @return ResourceCollection the child resources of the resource
      *
-     * @throws \RuntimeException         If the resource cannot be found.
+     * @throws \RuntimeException         if the resource cannot be found
      * @throws \InvalidArgumentException If the path is invalid. The path must
      *                                   be a non-empty string starting with "/".
      */
