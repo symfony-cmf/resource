@@ -71,7 +71,7 @@ abstract class AbstractPhpcrRepository extends AbstractRepository implements Res
      */
     public function find($query, $language = 'glob')
     {
-        if ($language !== 'glob') {
+        if ('glob' !== $language) {
             throw new \RuntimeException(sprintf(
                 'The language "%s" is not supported.',
                 $language
