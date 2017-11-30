@@ -9,8 +9,6 @@
             "homepage": "https://github.com/symfony-cmf/symfony-cmf/contributors"
         }
     ],
-    "minimum-stability": "RC",
-    "prefer-stable": true,
     "require": {
         "php": "^7.1",
         "dantleech/glob-finder": "~1.0",
