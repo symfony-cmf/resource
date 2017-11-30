@@ -35,7 +35,9 @@
         }
     },
     "autoload-dev": {
-        "psr-4": { "Symfony\\Cmf\\Component\\Resource\\Tests\\": "tests" }
+        "psr-4": {
+            "Symfony\\Cmf\\Component\\Resource\\Tests\\": "tests"
+        }
     },
     "extra": {
         "branch-alias": {

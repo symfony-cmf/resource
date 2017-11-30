@@ -24,7 +24,7 @@ The Resource component provides PHPCR/ODM integration with Puli.
 
 ## Requirements
 
-* PHP 7.1
+* PHP 7.0 / 7.1
 * Symfony 
 * See also the `require` section of [composer.json](composer.json)
 
