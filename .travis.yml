@@ -1,7 +1,6 @@
 language: php
 
 php:
-  - 7.0
   - 7.1
 
 sudo: false
@@ -18,7 +17,7 @@ matrix:
   include:
     - php: 7.1
       env: DEPS=dev
-    - php: 7.0
+    - php: 7.1
       env: COMPOSER_FLAGS="--prefer-lowest" REQUIREMENTS="phpcr/phpcr:2.1.2"
   fast_finish: true
 

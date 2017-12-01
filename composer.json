@@ -9,10 +9,8 @@
             "homepage": "https://github.com/symfony-cmf/symfony-cmf/contributors"
         }
     ],
-    "minimum-stability": "RC",
-    "prefer-stable": true,
     "require": {
-        "php": "^7.0",
+        "php": "^7.1",
         "dantleech/glob-finder": "~1.0",
         "webmozart/assert": "^1.2",
         "webmozart/path-util": "^2.3"
@@ -35,7 +33,9 @@
         }
     },
     "autoload-dev": {
-        "psr-4": { "Symfony\\Cmf\\Component\\Resource\\Tests\\": "tests" }
+        "psr-4": {
+            "Symfony\\Cmf\\Component\\Resource\\Tests\\": "tests"
+        }
     },
     "extra": {
         "branch-alias": {
