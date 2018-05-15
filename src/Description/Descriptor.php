@@ -42,10 +42,15 @@ final class Descriptor
      * Values should be either a valid URI.
      */
     const LINK_EDIT_HTML = 'link.edit.html';
+
     const LINK_CREATE_HTML = 'link.create.html';
+
     const LINK_UPDATE_HTML = 'link.update.html';
+
     const LINK_REMOVE_HTML = 'link.remove.html';
+
     const LINK_SHOW_HTML = 'link.show.html';
+
     const LINK_LIST_HTML = 'link.list.html';
 
     /**
@@ -58,10 +63,15 @@ final class Descriptor
      * Values should be either a valid URI.
      */
     const LINK_EDIT_REST = 'link.edit.rest';
+
     const LINK_CREATE_REST = 'link.create.rest';
+
     const LINK_UPDATE_REST = 'link.update.rest';
+
     const LINK_REMOVE_REST = 'link.remove.rest';
+
     const LINK_SHOW_REST = 'link.show.rest';
+
     const LINK_LIST_REST = 'link.show.rest';
 
     /**

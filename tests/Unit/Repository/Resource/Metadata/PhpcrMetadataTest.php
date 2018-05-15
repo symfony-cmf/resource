@@ -16,6 +16,7 @@ use Symfony\Cmf\Component\Resource\Repository\Resource\Metadata\PhpcrMetadata;
 class PhpcrMetadataTest extends \PHPUnit_Framework_TestCase
 {
     private $node;
+
     private $property;
 
     public function setUp()
