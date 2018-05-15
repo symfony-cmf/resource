@@ -20,8 +20,11 @@ use Symfony\Cmf\Component\Resource\Puli\Api\PuliResource;
 class DescriptionFactoryTest extends \PHPUnit_Framework_TestCase
 {
     private $factory;
+
     private $enhancer1;
+
     private $enhancer2;
+
     private $resource;
 
     public function setUp()

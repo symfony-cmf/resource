@@ -14,6 +14,7 @@ namespace Symfony\Cmf\Component\Resource\Tests\Unit\Repository;
 abstract class AbstractPhpcrRepositoryTestCase extends \PHPUnit_Framework_TestCase
 {
     protected $finder;
+
     protected $session;
 
     public function setUp()
