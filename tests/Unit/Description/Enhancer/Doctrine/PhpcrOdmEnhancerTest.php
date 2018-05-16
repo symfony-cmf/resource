@@ -22,10 +22,15 @@ use Symfony\Cmf\Component\Resource\Repository\Resource\CmfResource;
 class PhpcrOdmEnhancerTest extends \PHPUnit_Framework_TestCAse
 {
     private $metadataFactory;
+
     private $enhancer;
+
     private $cmfResource;
+
     private $puliResource;
+
     private $odmMetadata;
+
     private $description;
 
     public function setUp()

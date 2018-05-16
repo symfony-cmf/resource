@@ -24,13 +24,21 @@ use Symfony\Cmf\Component\Resource\Repository\Resource\PhpcrOdmResource;
 class PhpcrOdmRepositoryTest extends AbstractPhpcrRepositoryTestCase
 {
     private $documentManager;
+
     private $managerRegistry;
+
     private $childrenCollection;
+
     private $uow;
+
     private $document;
+
     private $child1;
+
     private $child2;
+
     private $node1;
+
     private $node2;
 
     public function setUp()
