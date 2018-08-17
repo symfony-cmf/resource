@@ -19,8 +19,8 @@
         "jackalope/jackalope-doctrine-dbal": "^1.2",
         "sonata-project/admin-bundle": "^3.1",
         "sylius/resource-bundle": "^0.18",
-        "doctrine/phpcr-odm": "^1.4",
-        "symfony/phpunit-bridge": "^3.2"
+        "symfony/phpunit-bridge": "^3.3 || ^4.0",
+        "doctrine/phpcr-odm": "^1.4|^2.0"
     },
     "suggest": {
         "doctrine/phpcr-odm": "To enable support for the PHPCR ODM documents",
