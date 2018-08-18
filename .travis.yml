@@ -11,12 +11,15 @@ cache:
     - .phpunit
 
 env:
-  global: SYMFONY_PHPUNIT_DIR=.phpunit SYMFONY_PHPUNIT_REMOVE="symfony/yaml"
+  global:
+     - SYMFONY_DEPRECATIONS_HELPER="/.*each.*/"
+     - SYMFONY_PHPUNIT_DIR=.phpunit SYMFONY_PHPUNIT_REMOVE="symfony/yaml"
+     - SYMFONY_PHPUNIT_VERSION=5.7
 
 matrix:
+  matrix: SYMFONY_VERSION=4.0.*
   include:
     - php: 7.1
-      env: DEPS=dev
     - php: 7.1
       env: COMPOSER_FLAGS="--prefer-lowest" REQUIREMENTS="phpcr/phpcr:2.1.2"
   fast_finish: true
