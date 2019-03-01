@@ -1,9 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the Symfony CMF package.
  *
- * (c) 2011-2017 Symfony CMF
+ * (c) Symfony CMF
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -36,14 +38,6 @@ class PhpcrOdmRepository extends AbstractPhpcrRepository
     }
 
     /**
-     * @return DocumentManagerInterface
-     */
-    protected function getManager()
-    {
-        return $this->managerRegistry->getManager();
-    }
-
-    /**
      * {@inheritdoc}
      */
     public function get($path)
@@ -71,7 +65,7 @@ class PhpcrOdmRepository extends AbstractPhpcrRepository
      */
     public function contains($selector, $language = 'glob')
     {
-        return count($this->find($selector, $language)) > 0;
+        return \count($this->find($selector, $language)) > 0;
     }
 
     /**
@@ -111,6 +105,14 @@ class PhpcrOdmRepository extends AbstractPhpcrRepository
         }
 
         $this->getManager()->flush();
+    }
+
+    /**
+     * @return DocumentManagerInterface
+     */
+    protected function getManager()
+    {
+        return $this->managerRegistry->getManager();
     }
 
     /**

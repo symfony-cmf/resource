@@ -1,9 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the Symfony CMF package.
  *
- * (c) 2011-2017 Symfony CMF
+ * (c) Symfony CMF
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -93,12 +95,12 @@ class PhpcrRepositoryTest extends AbstractPhpcrRepositoryTestCase
 
     /**
      * {@inheritdoc}
-     *
-     * @expectedException \RuntimeException
-     * @expectedExceptionMessage No PHPCR node could be found at "/test"
      */
     public function testGetNotExisting()
     {
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage('No PHPCR node could be found at "/test"');
+
         $this->session->getNode('/test')->willThrow(new \PHPCR\PathNotFoundException());
         $this->getRepository()->get('/test');
     }

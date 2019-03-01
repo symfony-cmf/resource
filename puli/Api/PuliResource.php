@@ -1,9 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the Symfony CMF package.
  *
- * (c) 2011-2017 Symfony CMF
+ * (c) Symfony CMF
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -75,9 +77,9 @@ interface PuliResource extends \Serializable
      *
      * @param string $relPath the relative resource path
      *
-     * @return PuliResource the resource with the given path
-     *
      * @throws \RuntimeException if the resource cannot be found
+     *
+     * @return PuliResource the resource with the given path
      */
     public function getChild($relPath);
 

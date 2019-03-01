@@ -1,9 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the Symfony CMF package.
  *
- * (c) 2011-2017 Symfony CMF
+ * (c) Symfony CMF
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -11,7 +13,7 @@
 
 namespace Symfony\Cmf\Component\Resource\Tests\Unit\Repository;
 
-abstract class AbstractPhpcrRepositoryTestCase extends \PHPUnit_Framework_TestCase
+abstract class AbstractPhpcrRepositoryTestCase extends \PHPUnit\Framework\TestCase
 {
     protected $finder;
 
@@ -38,11 +40,6 @@ abstract class AbstractPhpcrRepositoryTestCase extends \PHPUnit_Framework_TestCa
             [0, false],
         ];
     }
-
-    /**
-     * @param string $path
-     */
-    abstract protected function getRepository($path = null);
 
     /**
      * @param string $basePath      Base path of repository
@@ -81,10 +78,11 @@ abstract class AbstractPhpcrRepositoryTestCase extends \PHPUnit_Framework_TestCa
 
     /**
      * @dataProvider provideGetInvalid
-     * @expectedException \InvalidArgumentException
      */
     public function testGetInvalid($basePath, $requestedPath)
     {
+        $this->expectException(\InvalidArgumentException::class);
+
         $this->getRepository($basePath)->get($requestedPath);
     }
 
@@ -100,11 +98,11 @@ abstract class AbstractPhpcrRepositoryTestCase extends \PHPUnit_Framework_TestCa
 
     /**
      * Clear is not supported.
-     *
-     * @expectedException \Exception
      */
     public function testClearShouldThrow()
     {
+        $this->expectException(\Exception::class);
+
         $this->getRepository()->clear();
     }
 
@@ -127,6 +125,11 @@ abstract class AbstractPhpcrRepositoryTestCase extends \PHPUnit_Framework_TestCa
         $numberOfNodes = $this->getRepository()->move('/path/to/foo', '/bar/bar');
         $this->assertEquals(0, $numberOfNodes);
     }
+
+    /**
+     * @param string $path
+     */
+    abstract protected function getRepository($path = null);
 
     protected function assertWrappedException($outerClass, $outerMessage, $innerClass, $innerMessage, \Exception $e)
     {

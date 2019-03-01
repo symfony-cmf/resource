@@ -1,9 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the Symfony CMF package.
  *
- * (c) 2011-2017 Symfony CMF
+ * (c) Symfony CMF
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -71,7 +73,7 @@ class PhpcrRepository extends AbstractPhpcrRepository
      */
     public function contains($selector, $language = 'glob')
     {
-        return count($this->find($selector, $language)) > 0;
+        return \count($this->find($selector, $language)) > 0;
     }
 
     /**
@@ -88,6 +90,28 @@ class PhpcrRepository extends AbstractPhpcrRepository
     public function getTags()
     {
         return [];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function reorderNode($sourcePath, $position)
+    {
+        $node = $this->getNode($sourcePath);
+        $parent = $node->getParent();
+        $nodeNames = $parent->getNodeNames();
+
+        if (0 === $position) {
+            $parent->orderBefore($node->getName(), $nodeNames[$position]);
+        } elseif (isset($nodeNames[$position + 1])) {
+            $parent->orderBefore($node->getName(), $nodeNames[$position + 1]);
+        } else {
+            $lastName = $nodeNames[\count($nodeNames) - 1];
+            $parent->orderBefore($node->getName(), $lastName);
+            $parent->orderBefore($lastName, $node->getName());
+        }
+
+        $this->session->save();
     }
 
     /**
@@ -129,28 +153,6 @@ class PhpcrRepository extends AbstractPhpcrRepository
     protected function moveNodes(array $nodes, $sourceQuery, $targetPath)
     {
         $this->doMoveNodes($nodes, $sourceQuery, $targetPath);
-        $this->session->save();
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function reorderNode($sourcePath, $position)
-    {
-        $node = $this->getNode($sourcePath);
-        $parent = $node->getParent();
-        $nodeNames = $parent->getNodeNames();
-
-        if (0 === $position) {
-            $parent->orderBefore($node->getName(), $nodeNames[$position]);
-        } elseif (isset($nodeNames[$position + 1])) {
-            $parent->orderBefore($node->getName(), $nodeNames[$position + 1]);
-        } else {
-            $lastName = $nodeNames[count($nodeNames) - 1];
-            $parent->orderBefore($node->getName(), $lastName);
-            $parent->orderBefore($lastName, $node->getName());
-        }
-
         $this->session->save();
     }
 

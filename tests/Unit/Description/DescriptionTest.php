@@ -1,9 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the Symfony CMF package.
  *
- * (c) 2011-2017 Symfony CMF
+ * (c) Symfony CMF
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -15,7 +17,7 @@ use Symfony\Cmf\Component\Resource\Description\Description;
 use Symfony\Cmf\Component\Resource\Description\Descriptor;
 use Symfony\Cmf\Component\Resource\Puli\Api\PuliResource;
 
-class DescriptionTest extends \PHPUnit_Framework_TestCase
+class DescriptionTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Description
@@ -55,23 +57,23 @@ class DescriptionTest extends \PHPUnit_Framework_TestCase
 
     /**
      * It should throw an exception if a non-scalar value is set.
-     *
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage Only scalar and array values are allowed as descriptor values, got "object" when setting descriptor "hello"
      */
     public function testSetNonScalar()
     {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('Only scalar and array values are allowed as descriptor values, got "object" when setting descriptor "hello"');
+
         $this->description->set('hello', new \stdClass());
     }
 
     /**
      * It should throw an exception when requesting an unsupported descriptor.
-     *
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage Supported descriptors: "foo", "bar"
      */
     public function testGetUnsupported()
     {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('Supported descriptors: "foo", "bar"');
+
         $this->description->set('foo', 'bar');
         $this->description->set('bar', 'foo');
         $this->description->get('not there');

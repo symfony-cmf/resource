@@ -1,9 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the Symfony CMF package.
  *
- * (c) 2011-2017 Symfony CMF
+ * (c) Symfony CMF
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -52,7 +54,7 @@ class Description
                 'Descriptor "%s" not supported for resource "%s" of class "%s". Supported descriptors: "%s"',
                 $descriptor,
                 $this->resource->getPath(),
-                get_class($this->resource),
+                \get_class($this->resource),
                 implode('", "', array_keys($this->descriptors))
             ));
         }
@@ -97,10 +99,10 @@ class Description
      */
     public function set($descriptor, $value)
     {
-        if (null !== $value && !is_scalar($value) && !is_array($value)) {
+        if (null !== $value && !is_scalar($value) && !\is_array($value)) {
             throw new \InvalidArgumentException(sprintf(
                 'Only scalar and array values are allowed as descriptor values, got "%s" when setting descriptor "%s"',
-                gettype($value), $descriptor
+                \gettype($value), $descriptor
             ));
         }
 
