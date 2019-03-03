@@ -183,7 +183,7 @@ abstract class AbstractPhpcrRepository extends AbstractRepository implements Res
         $path = $this->sanitizePath($path);
 
         if ($this->basePath) {
-            $path = $this->basePath . $path;
+            $path = $this->basePath.$path;
         }
 
         $path = Path::canonicalize($path);
@@ -243,7 +243,7 @@ abstract class AbstractPhpcrRepository extends AbstractRepository implements Res
      * @see EditableRepository::reorder()
      *
      * @param string $sourcePath
-     * @param int $position
+     * @param int    $position
      */
     abstract protected function reorderNode($sourcePath, $position);
 }
