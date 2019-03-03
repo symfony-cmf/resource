@@ -276,7 +276,11 @@ class PhpcrRepositoryTest extends AbstractPhpcrRepositoryTestCase
      */
     protected function getRepository($path = null)
     {
-        $repository = new PhpcrRepository($this->session->reveal(), $path, $this->finder->reveal());
+        $repository = new PhpcrRepository(
+            $this->session->reveal(),
+            $path,
+            $this->finder->reveal()
+        );
 
         return $repository;
     }

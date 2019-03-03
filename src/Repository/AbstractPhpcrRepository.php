@@ -37,12 +37,10 @@ abstract class AbstractPhpcrRepository extends AbstractRepository implements Res
      * @var string
      */
     private $basePath;
-
     /**
      * @var FinderInterface
      */
     private $finder;
-
     /**
      * @var GlobHelper
      */
@@ -74,10 +72,12 @@ abstract class AbstractPhpcrRepository extends AbstractRepository implements Res
     public function find($query, $language = 'glob')
     {
         if ('glob' !== $language) {
-            throw new \RuntimeException(sprintf(
-                'The language "%s" is not supported.',
-                $language
-            ));
+            throw new \RuntimeException(
+                sprintf(
+                    'The language "%s" is not supported.',
+                    $language
+                )
+            );
         }
 
         $nodes = $this->finder->find($this->resolvePath($query));
@@ -101,10 +101,14 @@ abstract class AbstractPhpcrRepository extends AbstractRepository implements Res
             // delegate remove nodes to the implementation
             $this->removeNodes($nodes);
         } catch (\Exception $e) {
-            throw new \RuntimeException(sprintf(
-                'Error encountered when removing resource(s) using query "%s"',
-                $query
-            ), null, $e);
+            throw new \RuntimeException(
+                sprintf(
+                    'Error encountered when removing resource(s) using query "%s"',
+                    $query
+                ),
+                0,
+                $e
+            );
         }
 
         return \count($nodes);
@@ -128,10 +132,14 @@ abstract class AbstractPhpcrRepository extends AbstractRepository implements Res
             // delegate moving to the implementation
             $this->moveNodes($nodes, $query, $targetPath);
         } catch (\Exception $e) {
-            throw new \RuntimeException(sprintf(
-                'Error encountered when moving resource(s) using query "%s"',
-                $query
-            ), null, $e);
+            throw new \RuntimeException(
+                sprintf(
+                    'Error encountered when moving resource(s) using query "%s"',
+                    $query
+                ),
+                0,
+                $e
+            );
         }
 
         return \count($nodes);
@@ -175,7 +183,7 @@ abstract class AbstractPhpcrRepository extends AbstractRepository implements Res
         $path = $this->sanitizePath($path);
 
         if ($this->basePath) {
-            $path = $this->basePath.$path;
+            $path = $this->basePath . $path;
         }
 
         $path = Path::canonicalize($path);
@@ -192,9 +200,11 @@ abstract class AbstractPhpcrRepository extends AbstractRepository implements Res
      */
     protected function unresolvePath($path)
     {
-        $path = substr($path, \strlen($this->basePath));
+        if (null === $this->basePath) {
+            return $path;
+        }
 
-        return $path;
+        return substr($path, \strlen($this->basePath));
     }
 
     protected function isGlobbed($string)
@@ -233,7 +243,7 @@ abstract class AbstractPhpcrRepository extends AbstractRepository implements Res
      * @see EditableRepository::reorder()
      *
      * @param string $sourcePath
-     * @param int    $position
+     * @param int $position
      */
     abstract protected function reorderNode($sourcePath, $position);
 }

@@ -35,12 +35,12 @@ class PhpcrRepository extends AbstractPhpcrRepository
 
     /**
      * @param SessionInterface $session
-     * @param string           $basePath
-     * @param FinderInterface  $finder
+     * @param string $basePath
+     * @param FinderInterface $finder
      */
     public function __construct(SessionInterface $session, $basePath = null, FinderInterface $finder = null)
     {
-        $finder = $finder ?: new PhpcrTraversalFinder($session);
+        $finder = $finder ? : new PhpcrTraversalFinder($session);
         parent::__construct($finder, $basePath);
         $this->session = $session;
     }
@@ -163,7 +163,7 @@ class PhpcrRepository extends AbstractPhpcrRepository
         }
 
         foreach ($nodes as $node) {
-            $this->session->move($node->getPath(), $targetPath.'/'.$node->getName());
+            $this->session->move($node->getPath(), $targetPath . '/' . $node->getName());
         }
     }
 
@@ -174,10 +174,14 @@ class PhpcrRepository extends AbstractPhpcrRepository
         try {
             $node = $this->session->getNode($resolvedPath);
         } catch (\PHPCR\PathNotFoundException $e) {
-            throw new \RuntimeException(sprintf(
-                'No PHPCR node could be found at "%s"',
-                $resolvedPath
-            ), null, $e);
+            throw new \RuntimeException(
+                sprintf(
+                    'No PHPCR node could be found at "%s"',
+                    $resolvedPath
+                ),
+                0,
+                $e
+            );
         }
 
         if (null === $node) {
