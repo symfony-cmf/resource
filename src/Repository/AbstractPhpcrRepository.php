@@ -1,9 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the Symfony CMF package.
  *
- * (c) 2011-2017 Symfony CMF
+ * (c) Symfony CMF
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -35,12 +37,10 @@ abstract class AbstractPhpcrRepository extends AbstractRepository implements Res
      * @var string
      */
     private $basePath;
-
     /**
      * @var FinderInterface
      */
     private $finder;
-
     /**
      * @var GlobHelper
      */
@@ -63,7 +63,7 @@ abstract class AbstractPhpcrRepository extends AbstractRepository implements Res
     {
         $children = $this->listChildren($path);
 
-        return (bool) count($children);
+        return (bool) \count($children);
     }
 
     /**
@@ -72,10 +72,12 @@ abstract class AbstractPhpcrRepository extends AbstractRepository implements Res
     public function find($query, $language = 'glob')
     {
         if ('glob' !== $language) {
-            throw new \RuntimeException(sprintf(
-                'The language "%s" is not supported.',
-                $language
-            ));
+            throw new \RuntimeException(
+                sprintf(
+                    'The language "%s" is not supported.',
+                    $language
+                )
+            );
         }
 
         $nodes = $this->finder->find($this->resolvePath($query));
@@ -91,7 +93,7 @@ abstract class AbstractPhpcrRepository extends AbstractRepository implements Res
         $this->failUnlessGlob($language);
         $nodes = $this->finder->find($this->resolvePath($query));
 
-        if (0 === count($nodes)) {
+        if (0 === \count($nodes)) {
             return 0;
         }
 
@@ -99,13 +101,17 @@ abstract class AbstractPhpcrRepository extends AbstractRepository implements Res
             // delegate remove nodes to the implementation
             $this->removeNodes($nodes);
         } catch (\Exception $e) {
-            throw new \RuntimeException(sprintf(
-                'Error encountered when removing resource(s) using query "%s"',
-                $query
-            ), null, $e);
+            throw new \RuntimeException(
+                sprintf(
+                    'Error encountered when removing resource(s) using query "%s"',
+                    $query
+                ),
+                0,
+                $e
+            );
         }
 
-        return count($nodes);
+        return \count($nodes);
     }
 
     /**
@@ -116,7 +122,7 @@ abstract class AbstractPhpcrRepository extends AbstractRepository implements Res
         $this->failUnlessGlob($language);
         $nodes = $this->finder->find($this->resolvePath($query));
 
-        if (0 === count($nodes)) {
+        if (0 === \count($nodes)) {
             return 0;
         }
 
@@ -126,13 +132,17 @@ abstract class AbstractPhpcrRepository extends AbstractRepository implements Res
             // delegate moving to the implementation
             $this->moveNodes($nodes, $query, $targetPath);
         } catch (\Exception $e) {
-            throw new \RuntimeException(sprintf(
-                'Error encountered when moving resource(s) using query "%s"',
-                $query
-            ), null, $e);
+            throw new \RuntimeException(
+                sprintf(
+                    'Error encountered when moving resource(s) using query "%s"',
+                    $query
+                ),
+                0,
+                $e
+            );
         }
 
-        return count($nodes);
+        return \count($nodes);
     }
 
     /**
@@ -190,9 +200,11 @@ abstract class AbstractPhpcrRepository extends AbstractRepository implements Res
      */
     protected function unresolvePath($path)
     {
-        $path = substr($path, strlen($this->basePath));
+        if (null === $this->basePath) {
+            return $path;
+        }
 
-        return $path;
+        return substr($path, \strlen($this->basePath));
     }
 
     protected function isGlobbed($string)

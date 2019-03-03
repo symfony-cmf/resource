@@ -1,9 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the Symfony CMF package.
  *
- * (c) 2011-2017 Symfony CMF
+ * (c) Symfony CMF
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -115,7 +117,7 @@ class ArrayResourceCollection implements \IteratorAggregate, ResourceCollection
     {
         Assert::allIsInstanceOf($resources, 'Puli\Repository\Api\Resource\PuliResource');
 
-        $this->resources = is_array($resources) ? $resources : iterator_to_array($resources);
+        $this->resources = \is_array($resources) ? $resources : iterator_to_array($resources);
     }
 
     /**
@@ -136,7 +138,7 @@ class ArrayResourceCollection implements \IteratorAggregate, ResourceCollection
      */
     public function isEmpty()
     {
-        return 0 === count($this->resources);
+        return 0 === \count($this->resources);
     }
 
     /**
@@ -203,7 +205,7 @@ class ArrayResourceCollection implements \IteratorAggregate, ResourceCollection
 
     public function count()
     {
-        return count($this->resources);
+        return \count($this->resources);
     }
 
     public function getIterator($mode = ResourceCollectionIterator::KEY_AS_CURSOR)

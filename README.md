@@ -8,11 +8,13 @@
 [![Monthly Downloads](https://poser.pugx.org/symfony-cmf/resource/d/monthly)](https://packagist.org/packages/symfony-cmf/resource)
 [![Daily Downloads](https://poser.pugx.org/symfony-cmf/resource/d/daily)](https://packagist.org/packages/symfony-cmf/resource)
 
-Branch | Travis | Coveralls |
------- | ------ | --------- |
-master | [![Build Status][travis_unstable_badge]][travis_link] | [![Coverage Status][coveralls_unstable_badge]][coveralls_unstable_link] |
+Branch | Travis | Coveralls | Scrutinizer |
+------ | ------ | --------- | ----------- |
+1.1   | [![Build Status][travis_stable_badge]][travis_stable_link]     | [![Coverage Status][coveralls_stable_badge]][coveralls_stable_link]     | [![Scrutinizer Status][scrutinizer_stable_badge]][scrutinizer_stable_link] |
+dev-master | [![Build Status][travis_unstable_badge]][travis_unstable_link] | [![Coverage Status][coveralls_unstable_badge]][coveralls_unstable_link] | [![Scrutinizer Status][scrutinizer_unstable_badge]][scrutinizer_unstable_link] |
 
-This package is part of the [Symfony Content Management Framework (CMF)](http://cmf.symfony.com/) and licensed
+
+This package is part of the [Symfony Content Management Framework (CMF)](https://cmf.symfony.com/) and licensed
 under the [MIT License](LICENSE).
 
 The Resource component provides PHPCR/ODM integration with Puli.
@@ -24,7 +26,7 @@ The Resource component provides PHPCR/ODM integration with Puli.
 
 ## Requirements
 
-* PHP 7.1 / 7.2
+* PHP 7.1 / 7.2 / 7.3
 * Symfony 
 * See also the `require` section of [composer.json](composer.json)
 
@@ -32,16 +34,16 @@ The Resource component provides PHPCR/ODM integration with Puli.
 
 For the install guide and reference, see:
 
-* [symfony-cmf/resource Documentation](http://symfony.com/doc/master/cmf/components/resource/index.html)
+* [symfony-cmf/resource Documentation](https://symfony.com/doc/master/cmf/components/resource/index.html)
 
 See also:
 
-* [All Symfony CMF documentation](http://symfony.com/doc/master/cmf/index.html) - complete Symfony CMF reference
-* [Symfony CMF Website](http://cmf.symfony.com/) - introduction, live demo, support and community links
+* [All Symfony CMF documentation](https://symfony.com/doc/master/cmf/index.html) - complete Symfony CMF reference
+* [Symfony CMF Website](https://cmf.symfony.com/) - introduction, live demo, support and community links
 
 ## Support
 
-For general support and questions, please use [StackOverflow](http://stackoverflow.com/questions/tagged/symfony-cmf).
+For general support and questions, please use [StackOverflow](https://stackoverflow.com/questions/tagged/symfony-cmf).
 
 ## Contributing
 
@@ -50,7 +52,7 @@ Pull requests are welcome. Please see our
 guide.
 
 Unit and/or functional tests exist for this package. See the
-[Testing documentation](http://symfony.com/doc/master/cmf/components/testing.html)
+[Testing documentation](https://symfony.com/doc/master/cmf/components/testing.html)
 for a guide to running the tests.
 
 Thanks to
@@ -60,14 +62,17 @@ Thanks to
 
 This package is available under the [MIT license](src/Resources/meta/LICENSE).
 
-[travis_legacy_badge]: https://travis-ci.org/symfony-cmf/resource.svg?branch=master
-[travis_stable_badge]: https://travis-ci.org/symfony-cmf/resource.svg?branch=master
-[travis_unstable_badge]: https://travis-ci.org/symfony-cmf/resource.svg?branch=master
-[travis_link]: https://travis-ci.org/symfony-cmf/resource
+[travis_stable_badge]: https://travis-ci.org/symfony-cmf/resource.svg?branch=1.1
+[travis_stable_link]: https://travis-ci.org/symfony-cmf/resource
+[travis_unstable_badge]: https://travis-ci.org/symfony-cmf/resource.svg?branch=dev-master
+[travis_unstable_link]: https://travis-ci.org/symfony-cmf/resource
 
-[coveralls_legacy_badge]: https://coveralls.io/repos/github/symfony-cmf/resource/badge.svg?branch=master
-[coveralls_legacy_link]: https://coveralls.io/github/symfony-cmf/resource?branch=master
-[coveralls_stable_badge]: https://coveralls.io/repos/github/symfony-cmf/resource/badge.svg?branch=master
-[coveralls_stable_link]: https://coveralls.io/github/symfony-cmf/resource?branch=master
-[coveralls_unstable_badge]: https://coveralls.io/repos/github/symfony-cmf/resource/badge.svg?branch=master
-[coveralls_unstable_link]: https://coveralls.io/github/symfony-cmf/resource?branch=master
+[coveralls_stable_badge]: https://coveralls.io/repos/github/symfony-cmf/resource/badge.svg?branch=1.1
+[coveralls_stable_link]: https://coveralls.io/github/symfony-cmf/resource?branch=1.1
+[coveralls_unstable_badge]: https://coveralls.io/repos/github/symfony-cmf/resource/badge.svg?branch=dev-master
+[coveralls_unstable_link]: https://coveralls.io/github/symfony-cmf/resource?branch=dev-master
+
+[scrutinizer_stable_badge]: https://scrutinizer-ci.com/g/symfony-cmf/resource/badges/quality-score.png?b=1.1
+[scrutinizer_stable_link]: https://scrutinizer-ci.com/g/symfony-cmf/resource/?branch=1.1
+[scrutinizer_unstable_badge]: https://scrutinizer-ci.com/g/symfony-cmf/resource/badges/quality-score.png?b=dev-master
+[scrutinizer_unstable_link]: https://scrutinizer-ci.com/g/symfony-cmf/resource/?branch=dev-master

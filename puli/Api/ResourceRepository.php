@@ -1,9 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the Symfony CMF package.
  *
- * (c) 2011-2017 Symfony CMF
+ * (c) Symfony CMF
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -45,11 +47,11 @@ interface ResourceRepository
      * @param string $path The path to the resource. Must start with "/". "."
      *                     and ".." segments in the path are supported.
      *
-     * @return PuliResource the resource at this path
-     *
      * @throws \RuntimeException         if the resource cannot be found
      * @throws \InvalidArgumentException if the path is invalid. The path must
      *                                   be a non-empty string starting with "/"
+     *
+     * @return PuliResource the resource at this path
      */
     public function get($path);
 
@@ -60,10 +62,10 @@ interface ResourceRepository
      * @param string $language The language of the query. All implementations
      *                         must support the language "glob".
      *
-     * @return ResourceCollection the resources matching the query
-     *
      * @throws \InvalidArgumentException    if the query is invalid
      * @throws UnsupportedLanguageException if the language is not supported
+     *
+     * @return ResourceCollection the resources matching the query
      */
     public function find($query, $language = 'glob');
 
@@ -74,10 +76,10 @@ interface ResourceRepository
      * @param string $language The language of the query. All implementations
      *                         must support the language "glob".
      *
-     * @return bool returns `true` if any resources exist that match the query
-     *
      * @throws \InvalidArgumentException    if the query is invalid
      * @throws UnsupportedLanguageException if the language is not supported
+     *
+     * @return bool returns `true` if any resources exist that match the query
      */
     public function contains($query, $language = 'glob');
 
@@ -87,11 +89,11 @@ interface ResourceRepository
      * @param string $path The path to the resource. Must start with "/".
      *                     "." and ".." segments in the path are supported.
      *
-     * @return bool returns `true` if the resource has child resources
-     *
      * @throws \RuntimeException         if the resource cannot be found
      * @throws \InvalidArgumentException If the path is invalid. The path must
      *                                   be a non-empty string starting with "/".
+     *
+     * @return bool returns `true` if the resource has child resources
      */
     public function hasChildren($path);
 
@@ -101,11 +103,11 @@ interface ResourceRepository
      * @param string $path The path to the resource. Must start with "/".
      *                     "." and ".." segments in the path are supported.
      *
-     * @return ResourceCollection the child resources of the resource
-     *
      * @throws \RuntimeException         if the resource cannot be found
      * @throws \InvalidArgumentException If the path is invalid. The path must
      *                                   be a non-empty string starting with "/".
+     *
+     * @return ResourceCollection the child resources of the resource
      */
     public function listChildren($path);
 }

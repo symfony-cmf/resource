@@ -1,9 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the Symfony CMF package.
  *
- * (c) 2011-2017 Symfony CMF
+ * (c) Symfony CMF
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -57,22 +59,22 @@ class ResourceCollectionIterator implements \RecursiveIterator
     /**
      * Return {@link PuliResource} instances as values.
      */
-    const CURRENT_AS_RESOURCE = 1;
+    public const CURRENT_AS_RESOURCE = 1;
 
     /**
      * Return the paths of the resources as values.
      */
-    const CURRENT_AS_PATH = 2;
+    public const CURRENT_AS_PATH = 2;
 
     /**
      * Return the names of the resources as values.
      */
-    const CURRENT_AS_NAME = 4;
+    public const CURRENT_AS_NAME = 4;
 
     /**
      * Return the paths of the resources as keys.
      */
-    const KEY_AS_PATH = 64;
+    public const KEY_AS_PATH = 64;
 
     /**
      * Return the collection keys as keys.
@@ -80,7 +82,7 @@ class ResourceCollectionIterator implements \RecursiveIterator
      * Attention: Don't use this mode when iterating recursively, as PHP's
      * {@link RecursiveIteratorIterator} skips inner nodes then.
      */
-    const KEY_AS_CURSOR = 128;
+    public const KEY_AS_CURSOR = 128;
 
     /**
      * @var PuliResource[]

@@ -1,9 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the Symfony CMF package.
  *
- * (c) 2011-2017 Symfony CMF
+ * (c) Symfony CMF
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -144,12 +146,12 @@ class PhpcrOdmRepositoryTest extends AbstractPhpcrRepositoryTestCase
 
     /**
      * {@inheritdoc}
-     *
-     * @expectedException \RuntimeException
-     * @expectedExceptionMessage No PHPCR-ODM document could be found at "/test"
      */
     public function testGetNotExisting()
     {
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage('No PHPCR-ODM document could be found at "/test"');
+
         $this->documentManager->find(null, '/test')->willReturn(null);
         $this->getRepository()->get('/test');
     }
@@ -274,6 +276,13 @@ class PhpcrOdmRepositoryTest extends AbstractPhpcrRepositoryTestCase
         $this->doTestReorder(66, false);
     }
 
+    protected function getRepository($path = null)
+    {
+        $repository = new PhpcrOdmRepository($this->managerRegistry->reveal(), $path, $this->finder->reveal());
+
+        return $repository;
+    }
+
     private function doTestReorder($position, $before)
     {
         $evaluatedPath = '/test/foo';
@@ -291,13 +300,6 @@ class PhpcrOdmRepositoryTest extends AbstractPhpcrRepositoryTestCase
         $this->documentManager->flush()->shouldBeCalled();
 
         $this->getRepository('/test')->reorder('/foo', $position);
-    }
-
-    protected function getRepository($path = null)
-    {
-        $repository = new PhpcrOdmRepository($this->managerRegistry->reveal(), $path, $this->finder->reveal());
-
-        return $repository;
     }
 }
 

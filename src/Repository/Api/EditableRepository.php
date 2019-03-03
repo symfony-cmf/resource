@@ -1,9 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the Symfony CMF package.
  *
- * (c) 2011-2017 Symfony CMF
+ * (c) Symfony CMF
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -46,10 +48,10 @@ interface EditableRepository extends ResourceRepository
      * @param string $language The language of the query. All implementations
      *                         must support the language "glob".
      *
-     * @return int the number of resources removed from the repository
-     *
      * @throws \InvalidArgumentException if the query is invalid
      * @throws \RuntimeException         if the language is not supported
+     *
+     * @return int the number of resources removed from the repository
      */
     public function remove($query, $language = 'glob');
 
@@ -70,10 +72,10 @@ interface EditableRepository extends ResourceRepository
      * @param string $targetPath
      * @param string $language
      *
-     * @return int
-     *
      * @throws \InvalidArgumentException if the sourceQuery is invalid
      * @throws \RuntimeException         if the language is not supported
+     *
+     * @return int
      */
     public function move($sourceQuery, $targetPath, $language = 'glob');
 

@@ -1,9 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the Symfony CMF package.
  *
- * (c) 2011-2017 Symfony CMF
+ * (c) Symfony CMF
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -41,7 +43,7 @@ interface RepositoryRegistryInterface
     /**
      * Return the named repository.
      *
-     * @param null|string $name
+     * @param string|null $name
      *
      * @return ResourceRepository
      */
@@ -50,18 +52,18 @@ interface RepositoryRegistryInterface
     /**
      * Return the name assigned to the given resource repository.
      *
-     * @return string
-     *
      * @throws \RuntimeException If the name cannot be determined
+     *
+     * @return string
      */
     public function getRepositoryName(ResourceRepository $resource);
 
     /**
      * Return the type for the given resource repository.
      *
-     * @return string
-     *
      * @throws \RuntimeException If the resource repository is not mapped
+     *
+     * @return string
      */
     public function getRepositoryType(ResourceRepository $resource);
 }

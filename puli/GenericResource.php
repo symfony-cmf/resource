@@ -1,9 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the Symfony CMF package.
  *
- * (c) 2011-2017 Symfony CMF
+ * (c) Symfony CMF
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -72,7 +74,7 @@ class GenericResource implements PuliResource
     public function getChild($relPath)
     {
         if (!$this->getRepository()) {
-            throw \RuntimeException(sprintf(
+            throw RuntimeException(sprintf(
                 'The resource %s does not exist.',
                 $this->getRepositoryPath().'/'.$relPath
             ));
